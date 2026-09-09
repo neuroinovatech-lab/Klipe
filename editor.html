@@ -291,26 +291,50 @@ body {
 .topbar-cc .brand-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   flex: 0 0 auto;
-  margin-right: 7px;
+  margin-right: 8px;
   user-select: none;
 }
 .topbar-cc .logo-img {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   display: block;
   flex: 0 0 auto;
 }
+.topbar-cc .brand-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
 .topbar-cc .brand-name {
   color: var(--text);
   font-family: var(--display);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.topbar-cc .brand-meaning {
+  margin-top: 4px;
+  color: var(--med);
+  font-family: var(--display);
+  font-size: 7px;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: 0;
   white-space: nowrap;
+  opacity: 0.78;
+}
+@media (max-width: 1420px) {
+  .topbar-cc .brand-meaning { display: none; }
+}
+@media (max-width: 1120px) {
+  .topbar-cc .brand-copy { display: none; }
+  .topbar-cc .brand-lockup { margin-right: 2px; }
 }
 .topbar-cc .logo {
   font-family: var(--display);
@@ -3386,14 +3410,12 @@ body:not(.theme-v2) #accent-picker { display: none; }
 <div class="toolbar topbar-cc">
   <!-- LEFT: Project actions -->
   <div class="tb-group">
-    <!-- `data-marca` é o gancho que `aplicarTemaClaro()` usa pra trocar a
-         versão: a original some no escuro, a clareada some no claro. O `src`
-         nasce na versão escura porque o editor abre escuro por padrão. -->
-    <span class="brand-lockup" title="Klipe">
-      <img class="logo-img" data-marca="icone" src="/marca/klipe-icone-escuro-32.png"
-           srcset="/marca/klipe-icone-escuro-32.png 1x, /marca/klipe-icone-escuro-64.png 2x"
-           alt="" height="32">
-      <span class="brand-name">Klipe</span>
+    <span class="brand-lockup" title="Klipe — Kinetic Linking Intelligent Production Engine">
+      <img class="logo-img" src="/marca/klipe-mark.svg" alt="" width="34" height="34">
+      <span class="brand-copy">
+        <span class="brand-name">Klipe</span>
+        <span class="brand-meaning">KINETIC LINKING INTELLIGENT PRODUCTION ENGINE</span>
+      </span>
     </span>
     <button class="tb-btn" onclick="NLE.projectManager.openNew()" title="Novo projeto" style="background:linear-gradient(135deg,#1B5E20,#43A047);border:none;color:#fff;font-weight:bold"><svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2.5"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2.5"/></svg>Novo</button>
     <button class="tb-btn" onclick="NLE.projectManager.openSave()" title="Salvar projeto"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
