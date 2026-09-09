@@ -1,24 +1,83 @@
-# Klipe
+<p align="center">
+  <img src="docs/klipe-lockup.svg" alt="Klipe - Kinetic Linking Intelligent Production Engine" width="900">
+</p>
 
-Editor de vídeo local com timeline no navegador e motor próprio de motion
-design em Python/Skia (MotionCore).
+<p align="center">
+  <strong>Não é só edição. É movimento construído dentro da timeline.</strong>
+</p>
+
+<p align="center">
+  <img alt="Local first" src="https://img.shields.io/badge/local--first-111827?style=flat-square">
+  <img alt="Node 20+" src="https://img.shields.io/badge/Node.js-20%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white">
+  <img alt="Python 3.11" src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white">
+  <img alt="Windows e macOS" src="https://img.shields.io/badge/Windows%20%7C%20macOS-compatível-7C3AED?style=flat-square">
+  <img alt="Licença proprietária" src="https://img.shields.io/badge/licença-proprietária-EA580C?style=flat-square">
+</p>
+
+## O Klipe
+
+Klipe é um editor de vídeo local com timeline multipista no navegador e um
+motor próprio de motion design em Python/Skia. Preview, composição e render
+vivem no mesmo fluxo para aproximar o que você vê do arquivo final.
+
+<p align="center">
+  <img src="docs/klipe-demo-cover.svg" alt="Vídeo de funcionamento do Klipe" width="900">
+</p>
+
+<!--
+Quando o vídeo estiver no YouTube, substitua o bloco de imagem acima por:
+<p align="center">
+  <a href="COLE_AQUI_O_LINK_DO_YOUTUBE">
+    <img src="docs/klipe-demo-cover.svg" alt="Assistir ao vídeo de funcionamento do Klipe" width="900">
+  </a>
+</p>
+-->
+
+## Quatro pilares
+
+| Pilar | No Klipe |
+| --- | --- |
+| **Composição** | Motion B-roll, formas, camadas, máscaras e enquadramento |
+| **Tipografia** | Títulos cinéticos, legendas e presets editáveis |
+| **Ritmo** | Cortes, zooms, transições e animações guiadas pela timeline |
+| **SFX** | Efeitos, música, voz e mixagem no preview e no render |
 
 ## Recursos
 
 - Timeline multipista para vídeo, Motion B-roll, títulos, legendas e áudio
-- Preview local e render final com MotionCore e FFmpeg
-- Composição, tipografia cinética, zooms, transições e SFX
+- MotionCore com render em Skia e composição final por FFmpeg
+- Preview local sem depender de nuvem para a edição básica
 - Projetos isolados em `public/projects/<slug>`
-- Integrações opcionais com Veo e Omni por chave configurada localmente
+- Salvamento manual por **Save** ou `Ctrl+S`
+- Importação local e por URL, transcrição e busca opcional de B-roll
+- Integrações opcionais com Veo e Omni, configuradas apenas na máquina local
 - Launchers para Windows e macOS
 
-## Requisitos
+## Começo rápido
 
-- Node.js 20 ou mais recente
-- Python 3.11
-- FFmpeg e FFprobe
+### Windows
 
-## Instalação
+1. Instale [Node.js 20+](https://nodejs.org/), Python 3.11 e FFmpeg.
+2. Execute `Iniciar Klipe.bat`.
+3. Abra `http://127.0.0.1:3002` caso o navegador não abra sozinho.
+
+O launcher verifica o ambiente Python, as dependências Node e o FFmpeg antes
+de iniciar o editor.
+
+### macOS
+
+```bash
+brew install node python ffmpeg
+npm install
+python3 -m pip install -r requirements.txt
+chmod +x "Iniciar Klipe.command"
+./Iniciar\ Klipe.command
+```
+
+O núcleo do editor e o MotionCore funcionam no macOS. Integrações nativas como
+NVENC, Explorer e automações do DaVinci podem exigir adaptação ao sistema.
+
+### Execução manual
 
 ```bash
 npm install
@@ -26,42 +85,50 @@ python -m pip install -r requirements.txt
 npm start
 ```
 
-Abra `http://127.0.0.1:3002` no navegador. No Windows, também é possível usar
-`Iniciar Klipe.bat`. No macOS, use `Iniciar Klipe.command`.
-
 ## Primeiro projeto
 
-O repositório não inclui vídeos nem projetos de clientes. Abra o Klipe, crie
-um projeto e importe uma mídia local. Cada projeto recebe seu próprio
-`edit_config.json`.
+O repositório começa sem vídeos nem projetos de clientes. Abra o Klipe, crie
+um projeto e importe uma mídia. Cada projeto recebe seu próprio
+`edit_config.json` e pode ser acessado em `/p/<slug>`.
 
-O editor trabalha em modo manual: as alterações só são gravadas ao clicar em
-**Save** ou pressionar `Ctrl+S`.
+## Arquitetura
 
-## Arquivos locais
-
-Vídeos, áudios, renders, caches, bancos, fontes de terceiros e configurações
-com chaves não entram no Git. Eles permanecem na máquina dentro das pastas
-locais do Klipe.
-
-Fontes opcionais podem ser instaladas localmente em `public/fonts/`. Consulte
-o arquivo nessa pasta antes de adicionar qualquer fonte.
-
-## macOS
-
-Instale as dependências com Homebrew e execute o launcher:
-
-```bash
-brew install node python ffmpeg
-chmod +x "Iniciar Klipe.command"
-./Iniciar\ Klipe.command
+```text
+editor.html              interface, preview e estado da timeline
+editor-server.js         servidor local, projetos e processos de render
+motioncore/              composição e animação em Python/Skia
+forge_render.py          render final e mixagem com FFmpeg
+public/klipe_player.js   player do preview
+public/projects/         projetos locais ignorados pelo Git
 ```
 
-NVENC é exclusivo de GPUs NVIDIA. No macOS, o render usa os encoders
-disponíveis no FFmpeg instalado.
+Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para o fluxo completo.
+
+## Configuração
+
+Copie somente as variáveis necessárias de `.env.example` para o seu ambiente.
+Chaves e configurações locais também podem ser definidas pela interface e são
+armazenadas fora do Git.
+
+## Desenvolvimento
+
+```bash
+npm run check
+python -m compileall -q motioncore
+```
+
+Pull requests passam por uma checagem automática de sintaxe e JSON. Consulte
+[CONTRIBUTING.md](CONTRIBUTING.md) antes de alterar contratos da timeline ou do
+render.
+
+## Privacidade
+
+Vídeos, áudios, renders, bancos, chaves, fontes de terceiros e projetos de
+trabalho são ignorados pelo Git. Antes de publicar qualquer mídia, confirme os
+direitos de uso do conteúdo e das pessoas que aparecem nele.
 
 ## Licença
 
-Este repositório é privado e não é software de código aberto. O acesso deve ser
-concedido individualmente pelo GitHub. Consulte [LICENSE](LICENSE). Mídias,
-marcas e fontes de terceiros continuam sujeitas às licenças de seus autores.
+O Klipe é software proprietário. A visibilidade ou o acesso ao repositório não
+concede permissão para copiar, redistribuir, sublicenciar ou revender o código.
+Consulte [LICENSE](LICENSE).

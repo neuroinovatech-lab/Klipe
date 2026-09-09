@@ -1,0 +1,39 @@
+name: Relatar problema
+description: Informe um erro reproduzível no editor, preview ou render.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Obrigado por ajudar a melhorar o Klipe. Não envie mídia ou chaves privadas.
+  - type: textarea
+    id: description
+    attributes:
+      label: O que aconteceu?
+      description: Explique o resultado atual e o resultado esperado.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Como reproduzir
+      placeholder: "1. Abra...\n2. Clique...\n3. Observe..."
+    validations:
+      required: true
+  - type: dropdown
+    id: system
+    attributes:
+      label: Sistema operacional
+      options: ["Windows", "macOS", "Linux"]
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versões
+      description: Informe as versões do Node.js, Python e FFmpeg.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs ou capturas sem dados privados
+      render: shell

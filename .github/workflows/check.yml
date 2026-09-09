@@ -1,0 +1,36 @@
+name: Verificação
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    name: Sintaxe e configuração
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validar servidor Node
+        run: npm run check
+
+      - name: Validar scripts Python
+        run: python -m compileall -q -x "(^|/)(node_modules|\.git)/" .
+
+      - name: Validar JSON
+        run: python -c "import json,pathlib; [json.loads(p.read_text(encoding='utf-8-sig')) for p in pathlib.Path('.').rglob('*.json')]"

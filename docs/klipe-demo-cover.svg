@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Veja o Klipe em ação</title>
+  <desc id="desc">Capa do vídeo de funcionamento do editor Klipe</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#060811"/>
+      <stop offset=".62" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset=".52" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#D946EF"/>
+    </linearGradient>
+    <linearGradient id="timeline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset=".33" stop-color="#8B5CF6"/>
+      <stop offset=".66" stop-color="#F97316"/>
+      <stop offset="1" stop-color="#EF4444"/>
+    </linearGradient>
+    <pattern id="grid" width="54" height="54" patternUnits="userSpaceOnUse">
+      <path d="M54 0H0V54" fill="none" stroke="#CBD5E1" stroke-opacity=".045"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000" flood-opacity=".55"/>
+    </filter>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="18" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" rx="28" fill="url(#bg)"/>
+  <rect width="1600" height="900" rx="28" fill="url(#grid)"/>
+  <rect x="1" y="1" width="1598" height="898" rx="27" fill="none" stroke="#334155" stroke-width="2"/>
+
+  <g transform="translate(84 72)">
+    <path d="M0 0h58" stroke="#22D3EE" stroke-width="6"/>
+    <text x="78" y="10" fill="#CBD5E1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="3">KLIPE / MOTIONCORE</text>
+  </g>
+
+  <g transform="translate(101 170)">
+    <text x="0" y="0" fill="#94A3B8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" letter-spacing="5">VÍDEO DE FUNCIONAMENTO</text>
+    <text x="0" y="100" fill="#F8FAFC" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="94" font-weight="800">Veja o Klipe</text>
+    <text x="0" y="198" fill="url(#brand)" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="98" font-weight="800">em movimento.</text>
+    <text x="2" y="258" fill="#CBD5E1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="29">Timeline, Motion B-roll, tipografia, ritmo e som.</text>
+  </g>
+
+  <g transform="translate(1090 222)" filter="url(#shadow)">
+    <circle cx="190" cy="190" r="164" fill="#0B1020" stroke="url(#brand)" stroke-width="4"/>
+    <circle cx="190" cy="190" r="128" fill="none" stroke="#22D3EE" stroke-opacity=".35" stroke-width="2" stroke-dasharray="8 13"/>
+    <path d="M159 115l111 75-111 75z" fill="#F8FAFC" filter="url(#glow)"/>
+    <g fill="#F97316">
+      <circle cx="304" cy="117" r="8"/><circle cx="330" cy="198" r="8"/><circle cx="292" cy="282" r="8"/>
+    </g>
+    <path d="M279 143l20-20M289 198h31M271 246l16 25" stroke="#A78BFA" stroke-width="4" fill="none"/>
+  </g>
+
+  <g transform="translate(94 600)">
+    <rect width="1412" height="188" rx="12" fill="#080B14" stroke="#263244"/>
+    <text x="28" y="40" fill="#64748B" font-family="ui-monospace,Consolas,monospace" font-size="17" letter-spacing="2">TIMELINE</text>
+    <rect x="28" y="60" width="1356" height="3" fill="#1E293B"/>
+    <g transform="translate(30 82)">
+      <rect x="0" y="0" width="250" height="74" rx="5" fill="#123044" stroke="#22D3EE" stroke-opacity=".55"/>
+      <rect x="260" y="0" width="198" height="74" rx="5" fill="#29205A" stroke="#8B5CF6" stroke-opacity=".7"/>
+      <rect x="468" y="0" width="308" height="74" rx="5" fill="#3B2442" stroke="#D946EF" stroke-opacity=".55"/>
+      <rect x="786" y="0" width="206" height="74" rx="5" fill="#49301B" stroke="#F97316" stroke-opacity=".65"/>
+      <rect x="1002" y="0" width="326" height="74" rx="5" fill="#421E27" stroke="#EF4444" stroke-opacity=".6"/>
+      <rect x="0" y="90" width="1328" height="5" rx="2" fill="url(#timeline)"/>
+      <path d="M802-18v126" stroke="#F8FAFC" stroke-width="3"/>
+      <path d="M794-18h16l-8 12z" fill="#F8FAFC"/>
+      <g fill="#E2E8F0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700">
+        <text x="18" y="44">CORTE</text><text x="278" y="44">MOTION</text><text x="486" y="44">TIPO</text><text x="804" y="44">RITMO</text><text x="1020" y="44">SFX + RENDER</text>
+      </g>
+    </g>
+  </g>
+
+  <text x="1506" y="842" text-anchor="end" fill="#64748B" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">KINETIC LINKING INTELLIGENT PRODUCTION ENGINE</text>
+</svg>

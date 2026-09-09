@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="420" viewBox="0 0 1600 420" role="img" aria-labelledby="title desc">
+  <title id="title">Klipe</title>
+  <desc id="desc">Kinetic Linking Intelligent Production Engine</desc>
+  <defs>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070A12"/>
+      <stop offset="1" stop-color="#121827"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="0.52" stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#D946EF"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="0.5" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#94A3B8" stroke-opacity=".055"/>
+    </pattern>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="420" rx="24" fill="url(#panel)"/>
+  <rect width="1600" height="420" rx="24" fill="url(#grid)"/>
+  <rect x="1" y="1" width="1598" height="418" rx="23" fill="none" stroke="#334155"/>
+
+  <g transform="translate(92 70)">
+    <rect width="280" height="280" rx="58" fill="#0B1020" stroke="#334155" stroke-width="2"/>
+    <circle cx="140" cy="140" r="104" fill="none" stroke="url(#brand)" stroke-width="3" opacity=".42"/>
+    <circle cx="140" cy="140" r="82" fill="none" stroke="#22D3EE" stroke-width="2" stroke-dasharray="5 10" opacity=".48"/>
+    <path d="M74 69v142h34v-54l55 54h47l-72-70 68-72h-45l-53 58V69z" fill="url(#brand)" filter="url(#glow)"/>
+    <path d="M118 108l72 32-72 33z" fill="#F8FAFC" opacity=".96"/>
+    <g fill="#F97316">
+      <circle cx="226" cy="75" r="7"/><circle cx="239" cy="137" r="7"/><circle cx="218" cy="207" r="7"/>
+    </g>
+    <path d="M196 104l25-24M198 142h34M194 174l20 28" fill="none" stroke="#A78BFA" stroke-width="3"/>
+  </g>
+
+  <g transform="translate(440 92)">
+    <text x="0" y="126" fill="#F8FAFC" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="138" font-weight="800">Klipe</text>
+    <rect x="4" y="158" width="855" height="5" rx="2.5" fill="url(#accent)"/>
+    <text x="4" y="211" fill="#CBD5E1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="29" font-weight="600" letter-spacing="2">KINETIC LINKING INTELLIGENT PRODUCTION ENGINE</text>
+    <text x="4" y="253" fill="#94A3B8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24">Motion design construído dentro da timeline.</text>
+  </g>
+
+  <g transform="translate(1360 83)" fill="none" stroke-linecap="round">
+    <path d="M0 34h118" stroke="#22D3EE" stroke-width="3"/>
+    <path d="M18 88h100" stroke="#8B5CF6" stroke-width="3"/>
+    <path d="M0 142h118" stroke="#F97316" stroke-width="3"/>
+    <circle cx="32" cy="34" r="7" fill="#22D3EE" stroke="none"/>
+    <circle cx="82" cy="88" r="7" fill="#8B5CF6" stroke="none"/>
+    <circle cx="55" cy="142" r="7" fill="#F97316" stroke="none"/>
+  </g>
+</svg>
