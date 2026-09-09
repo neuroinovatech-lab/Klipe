@@ -1,0 +1,43 @@
+{
+  "_": "Lower third. Serve de molde: copie, mexa so no bloco 'params'.",
+  "duracao": 4.0,
+  "params": {
+    "nome": "DRA. ELIZANGILA LEITE",
+    "cargo": "dermatologista",
+    "cor": "#F5C518",
+    "escuro": "#12121A"
+  },
+  "camadas": [
+    {
+      "tipo": "retangulo",
+      "y": "-28%", "x": 0,
+      "larg": "78%", "alt": 190, "raio": 10,
+      "cor": "@escuro", "opacidade": 0.9,
+      "escalaX": [[0, 0], [0.42, 1, "outCubic"]]
+    },
+    {
+      "tipo": "retangulo",
+      "y": "-28%", "x": "-38%",
+      "larg": 10, "alt": 190,
+      "cor": "@cor",
+      "escalaY": [[0.15, 0], [0.5, 1, "outBack"]]
+    },
+    {
+      "tipo": "texto",
+      "texto": "@nome",
+      "y": "-26%",
+      "fonte": "Montserrat", "peso": 800, "tamanho": 62,
+      "cor": "#FFFFFF", "espacamento": -1,
+      "revelar": { "prog": [[0.3, 0], [0.75, 1, "outCubic"]], "dir": "esq" }
+    },
+    {
+      "tipo": "texto",
+      "texto": "@cargo",
+      "y": "-31%",
+      "fonte": "Montserrat", "peso": 500, "tamanho": 34,
+      "cor": "@cor", "espacamento": 6,
+      "opacidade": [[0.55, 0], [0.9, 1]],
+      "x": [[0.55, -30], [0.9, 0, "outCubic"]]
+    }
+  ]
+}

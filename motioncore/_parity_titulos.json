@@ -1,0 +1,170 @@
+{
+ "width": 1080,
+ "height": 1920,
+ "fps": 30,
+ "frames": [
+  0
+ ],
+ "cases": [
+  {
+   "name": "lower3rd",
+   "frames": [
+    0,
+    2,
+    5,
+    9,
+    14,
+    22,
+    40,
+    90,
+    143
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 5,
+    "style": "lower3rd",
+    "text": "Esconder características gera mal-entendidos"
+   }
+  },
+  {
+   "name": "hero",
+   "frames": [
+    0,
+    2,
+    5,
+    9,
+    14,
+    22,
+    40,
+    90,
+    143
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 5,
+    "style": "hero",
+    "text": "MASKING = SOBREVIVÊNCIA"
+   }
+  },
+  {
+   "name": "flash",
+   "frames": [
+    0,
+    2,
+    5,
+    9,
+    14,
+    22,
+    40,
+    90,
+    143
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 5,
+    "style": "flash",
+    "text": "DIAGNÓSTICO TARDIO"
+   }
+  },
+  {
+   "name": "kinetic",
+   "frames": [
+    0,
+    2,
+    5,
+    9,
+    14,
+    22,
+    40,
+    90,
+    143
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 5,
+    "style": "kinetic",
+    "text": "CIRCUITO DOPAMINÉRGICO"
+   }
+  },
+  {
+   "name": "panel",
+   "frames": [
+    0,
+    2,
+    5,
+    9,
+    14,
+    22,
+    40,
+    90,
+    143
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 5,
+    "style": "panel",
+    "text": "O COLAPSO|Exaustão física|Exaustão emocional|Exaustão mental"
+   }
+  },
+  {
+   "name": "ribbon",
+   "frames": [
+    0,
+    2,
+    5,
+    9,
+    14,
+    22,
+    40,
+    90,
+    143
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 5,
+    "style": "ribbon",
+    "text": "Atrasar o diagnóstico traz consequências"
+   }
+  },
+  {
+   "name": "counter",
+   "frames": [
+    0,
+    2,
+    5,
+    9,
+    14,
+    22,
+    40,
+    90,
+    143
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 5,
+    "style": "counter",
+    "text": "87% das mulheres autistas"
+   }
+  },
+  {
+   "name": "quote",
+   "frames": [
+    0,
+    2,
+    5,
+    9,
+    14,
+    22,
+    40,
+    90,
+    143
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 5,
+    "style": "quote",
+    "text": "Não falo só como médica — é a minha realidade"
+   }
+  }
+ ]
+}

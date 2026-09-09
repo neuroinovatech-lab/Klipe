@@ -1,0 +1,67 @@
+# Dependencias e ambientes locais
+node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Chaves, configuracoes privadas e bancos locais
+.env
+.env.*
+!.env.example
+klipe_settings.json
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.db-*
+*.sqlite
+*.sqlite3
+
+# Midia e projetos de trabalho (grandes ou pessoais)
+public/projects/
+public/.config_backups/
+public/.posters/
+public/.previa/
+public/.preview_cache/
+public/.wave_cache/
+public/fonts/*
+!public/fonts/README.md
+output/
+renders/
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.flac
+*.ogg
+
+# Cache, logs e artefatos gerados
+*.log
+*.tmp
+*.temp
+*.bak*
+*BACKUP*
+.forge_cache/
+motioncore/_parity/
+motioncore/_*.png
+app/build/
+app/dist/
+app/*.spec
+
+# Referencias externas usadas durante o desenvolvimento
+referencias/
+.claude/
+.mcp.json
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

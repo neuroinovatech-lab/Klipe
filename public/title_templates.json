@@ -1,0 +1,753 @@
+[
+  {
+    "nome": "Câmera acompanha",
+    "style": "cameraFollow",
+    "categoria": "Revelação",
+    "amostra": "o *klipe* monta o corte *sozinho*",
+    "padrao": true,
+    "opcoes": {
+      "acento": "gold",
+      "ar": "standard",
+      "borrao": "standard"
+    },
+    "intencao": "a câmera é quem se move — marque *assim* pra destacar"
+  },
+  {
+    "nome": "Split text",
+    "style": "kinetic",
+    "categoria": "Revelação",
+    "amostra": "CADA PALAVRA NO SEU TEMPO",
+    "padrao": true,
+    "intencao": "uma palavra por vez"
+  },
+  {
+    "nome": "Character reveal",
+    "style": "descending",
+    "categoria": "Revelação",
+    "amostra": "LETRA POR LETRA",
+    "padrao": true,
+    "intencao": "revela letra a letra"
+  },
+  {
+    "nome": "Kinetic type",
+    "style": "flash",
+    "categoria": "Revelação",
+    "amostra": "IMPACTO CURTO",
+    "padrao": true,
+    "intencao": "soco de uma palavra"
+  },
+  {
+    "nome": "Cut mask",
+    "style": "cutMask",
+    "categoria": "Revelação",
+    "amostra": "CORTE",
+    "padrao": true,
+    "intencao": "marca a virada"
+  },
+  {
+    "nome": "Hero",
+    "style": "hero",
+    "categoria": "Ênfase",
+    "amostra": "TÍTULO DE IMPACTO",
+    "padrao": true,
+    "intencao": "abre com peso"
+  },
+  {
+    "nome": "Hero âmbar",
+    "style": "hero",
+    "categoria": "Ênfase",
+    "amostra": "A LINHA QUE PESA",
+    "padrao": true,
+    "color": "#F59E0B",
+    "intencao": "abre com peso"
+  },
+  {
+    "nome": "Word highlight",
+    "style": "mixedSerif",
+    "categoria": "Ênfase",
+    "amostra": "a palavra que|IMPORTA",
+    "padrao": true,
+    "intencao": "destaca a palavra que importa"
+  },
+  {
+    "nome": "Lower third",
+    "style": "lower3rd",
+    "categoria": "Rótulo",
+    "amostra": "Rótulo com barra de accent",
+    "padrao": true,
+    "intencao": "apresenta quem fala"
+  },
+  {
+    "nome": "Ribbon",
+    "style": "ribbon",
+    "categoria": "Rótulo",
+    "amostra": "FAIXA HORIZONTAL",
+    "padrao": true,
+    "intencao": "faixa que atravessa"
+  },
+  {
+    "nome": "Counter",
+    "style": "counter",
+    "categoria": "Dado",
+    "amostra": "72% o que o número quer dizer",
+    "padrao": true,
+    "intencao": "joga o numero na cara"
+  },
+  {
+    "nome": "Counter âmbar",
+    "style": "counter",
+    "categoria": "Dado",
+    "amostra": "3,6s o que o número quer dizer",
+    "padrao": true,
+    "color": "#F59E0B",
+    "intencao": "joga o numero na cara"
+  },
+  {
+    "nome": "Quote",
+    "style": "quote",
+    "categoria": "Citação",
+    "amostra": "Uma frase entre aspas, em serifada",
+    "padrao": true,
+    "intencao": "da voz a uma frase"
+  },
+  {
+    "nome": "Paradox",
+    "style": "paradoxQuote",
+    "categoria": "Citação",
+    "amostra": "linha leve|LINHA FORTE|linha leve|LINHA FORTE",
+    "padrao": true,
+    "intencao": "opoe duas ideias"
+  },
+  {
+    "nome": "Letter eyebrow",
+    "style": "letterEyebrow",
+    "categoria": "Composto",
+    "amostra": "rótulo pequeno|LINHA PRINCIPAL|cauda em itálico",
+    "padrao": true,
+    "intencao": "prepara, diz, arremata"
+  },
+  {
+    "nome": "Compound blur",
+    "style": "compound2",
+    "categoria": "Composto",
+    "amostra": "primeira linha|SEGUNDA EM BLUR|terceira sobe",
+    "padrao": true,
+    "intencao": "tres tempos numa peca"
+  },
+  {
+    "nome": "Stacked reveal",
+    "style": "stackedReveal",
+    "categoria": "Composto",
+    "amostra": "PRIMEIRA|segunda|TERCEIRA",
+    "padrao": true,
+    "intencao": "empilha e revela"
+  },
+  {
+    "nome": "Slide reveal",
+    "style": "slideReveal",
+    "categoria": "Composto",
+    "amostra": "entra da esquerda|ENTRA DA DIREITA|e a terceira sobe",
+    "padrao": true,
+    "intencao": "entra pelos lados"
+  },
+  {
+    "nome": "Point list",
+    "style": "pointList",
+    "categoria": "Lista",
+    "amostra": "TÍTULO DA LISTA|Primeiro item|Segundo item|Terceiro item",
+    "padrao": true,
+    "intencao": "lista o que importa"
+  },
+  {
+    "nome": "Panel",
+    "style": "panel",
+    "categoria": "Lista",
+    "amostra": "Primeiro item|Segundo item|Terceiro item",
+    "padrao": true,
+    "intencao": "enumera itens"
+  },
+  {
+    "nome": "Live comments",
+    "style": "liveComments",
+    "categoria": "Tela cheia",
+    "amostra": "um comentário sobe|outro aparece|e mais um",
+    "padrao": true,
+    "intencao": "simula uma live"
+  },
+  {
+    "nome": "Word collapse",
+    "style": "wordCollapse",
+    "categoria": "Tela cheia",
+    "amostra": "PALAVRA|PALAVRA MAIOR|MENOR|COLAPSA",
+    "padrao": true,
+    "intencao": "cresce ate colapsar"
+  },
+  {
+    "nome": "Echo words",
+    "style": "echoWords",
+    "categoria": "Tela cheia",
+    "amostra": "primeira frase|segunda frase|terceira frase",
+    "padrao": true,
+    "intencao": "ecoa a ideia"
+  },
+  {
+    "nome": "Sensory storm",
+    "style": "sensoryStorm",
+    "categoria": "Tela cheia",
+    "amostra": "PALAVRA|PALAVRA|PALAVRA|PALAVRA|PALAVRA",
+    "padrao": true,
+    "intencao": "tempestade de palavras"
+  },
+  {
+    "nome": "Livre — em branco",
+    "style": "livre",
+    "categoria": "Montar do zero",
+    "amostra": "SEU TÍTULO",
+    "padrao": true,
+    "partes": [
+      {
+        "texto": "SEU TÍTULO",
+        "fonte": "Montserrat",
+        "tamanho": 110,
+        "cor": "#FFFFFF",
+        "peso": 800,
+        "entrada": "subir",
+        "atraso": 0,
+        "espaco": 0
+      }
+    ],
+    "intencao": "monta do zero"
+  },
+  {
+    "nome": "Livre — eyebrow",
+    "style": "livre",
+    "categoria": "Montar do zero",
+    "amostra": "LINHA PRINCIPAL",
+    "padrao": true,
+    "partes": [
+      {
+        "texto": "rótulo pequeno",
+        "fonte": "Montserrat",
+        "tamanho": 34,
+        "cor": "#A1A1AA",
+        "peso": 700,
+        "entrada": "descer",
+        "atraso": 0,
+        "espaco": 0
+      },
+      {
+        "texto": "LINHA PRINCIPAL",
+        "fonte": "BebasNeue",
+        "tamanho": 120,
+        "cor": "#FFFFFF",
+        "peso": 400,
+        "entrada": "escala",
+        "atraso": 5,
+        "espaco": 12
+      },
+      {
+        "texto": "cauda em itálico",
+        "fonte": "PlayfairDisplay",
+        "tamanho": 40,
+        "cor": "#06B6D4",
+        "peso": 400,
+        "entrada": "esquerda",
+        "atraso": 3,
+        "espaco": 10,
+        "italico": true
+      }
+    ],
+    "intencao": "monta do zero"
+  },
+  {
+    "nome": "Livre — pilha kinética",
+    "style": "livre",
+    "categoria": "Montar do zero",
+    "amostra": "CINCO CAMADAS",
+    "padrao": true,
+    "partes": [
+      {
+        "texto": "primeira linha",
+        "fonte": "Montserrat",
+        "tamanho": 38,
+        "cor": "#A1A1AA",
+        "peso": 700,
+        "entrada": "fade",
+        "atraso": 0,
+        "espaco": 0
+      },
+      {
+        "texto": "SEGUNDA",
+        "fonte": "BebasNeue",
+        "tamanho": 96,
+        "cor": "#FFFFFF",
+        "peso": 400,
+        "entrada": "esquerda",
+        "atraso": 3,
+        "espaco": 8
+      },
+      {
+        "texto": "TERCEIRA",
+        "fonte": "BebasNeue",
+        "tamanho": 96,
+        "cor": "#FFFFFF",
+        "peso": 400,
+        "entrada": "direita",
+        "atraso": 3,
+        "espaco": 0
+      },
+      {
+        "texto": "e a quarta em itálico",
+        "fonte": "PlayfairDisplay",
+        "tamanho": 42,
+        "cor": "#3B82F6",
+        "peso": 400,
+        "entrada": "subir",
+        "atraso": 5,
+        "espaco": 18,
+        "italico": true
+      },
+      {
+        "texto": "CINCO CAMADAS",
+        "fonte": "BebasNeue",
+        "tamanho": 150,
+        "cor": "#F59E0B",
+        "peso": 400,
+        "entrada": "estourar",
+        "atraso": 5,
+        "espaco": 6
+      }
+    ],
+    "intencao": "monta do zero"
+  },
+  {
+    "nome": "Grifo",
+    "style": "cena",
+    "categoria": "Ênfase",
+    "amostra": "A IDEIA CERTA",
+    "padrao": true,
+    "color": "#F5C518",
+    "intencao": "marca a frase como quem grifa",
+    "cena": {
+      "_": "Grifo. Caixa de destaque revela atras do titulo, tipo marcador. Texto vem de @titulo (a caixa Texto do painel); cor/fonte sao os ajustes do template.",
+      "duracao": 2.0,
+      "params": {
+        "titulo": "A IDEIA CERTA",
+        "linha1": "A IDEIA CERTA",
+        "linha2": "",
+        "cor": "#F5C518",
+        "fonte": "BebasNeue"
+      },
+      "camadas": [
+        {
+          "tipo": "retangulo",
+          "larg": "62%",
+          "alt": 130,
+          "raio": 16,
+          "cor": "@cor",
+          "escalaX": [
+            [
+              0.05,
+              0,
+              "outCubic"
+            ],
+            [
+              0.42,
+              1
+            ]
+          ]
+        },
+        {
+          "tipo": "texto",
+          "texto": "@titulo",
+          "fonte": "@fonte",
+          "peso": 400,
+          "tamanho": 84,
+          "cor": "#12121A",
+          "espacamento": 1,
+          "largura_max": "56%",
+          "opacidade": [
+            [
+              0.05,
+              0
+            ],
+            [
+              0.16,
+              1
+            ]
+          ],
+          "escala": [
+            [
+              0.05,
+              0.85,
+              "outBack"
+            ],
+            [
+              0.4,
+              1
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "nome": "Assinatura final",
+    "style": "cena",
+    "categoria": "Tela cheia",
+    "amostra": "SUA MARCA\nconteúdo que fica",
+    "padrao": true,
+    "color": "#7C6BE8",
+    "intencao": "fecha o vídeo com a marca",
+    "cena": {
+      "_": "Assinatura final. Encerramento: marca grande, brilho atras, linha de acento e um subtitulo. @linha1 = marca, @linha2 = subtitulo (opcional).",
+      "duracao": 2.4,
+      "params": {
+        "titulo": "SUA MARCA",
+        "linha1": "SUA MARCA",
+        "linha2": "conteudo que fica",
+        "cor": "#7C6BE8",
+        "fonte": "Montserrat"
+      },
+      "camadas": [
+        {
+          "tipo": "elipse",
+          "raio": 260,
+          "cor": "@cor",
+          "blur": 70,
+          "opacidade": [
+            [
+              0,
+              0
+            ],
+            [
+              0.6,
+              0.3
+            ]
+          ]
+        },
+        {
+          "tipo": "texto",
+          "texto": "@linha1",
+          "fonte": "@fonte",
+          "peso": 800,
+          "tamanho": 108,
+          "cor": "#FFFFFF",
+          "espacamento": 1,
+          "largura_max": "80%",
+          "opacidade": [
+            [
+              0,
+              0
+            ],
+            [
+              0.2,
+              1
+            ]
+          ],
+          "escala": {
+            "mola": {
+              "damping": 13,
+              "stiffness": 170
+            },
+            "de": 0.7,
+            "para": 1,
+            "em": 0.05
+          }
+        },
+        {
+          "tipo": "retangulo",
+          "y": -90,
+          "alt": 5,
+          "raio": 3,
+          "cor": "@cor",
+          "larg": [
+            [
+              0.35,
+              0,
+              "outCubic"
+            ],
+            [
+              0.68,
+              190
+            ]
+          ]
+        },
+        {
+          "tipo": "texto",
+          "texto": "@linha2",
+          "fonte": "@fonte",
+          "peso": 500,
+          "tamanho": 30,
+          "cor": "@cor",
+          "espacamento": 5,
+          "y": -150,
+          "largura_max": "70%",
+          "opacidade": [
+            [
+              0.55,
+              0
+            ],
+            [
+              0.85,
+              1
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "nome": "Onda de partículas",
+    "style": "cena",
+    "categoria": "Revelação",
+    "amostra": "GRANDE IDEIA",
+    "padrao": true,
+    "color": "#06B6D4",
+    "intencao": "abre com uma onda de partículas",
+    "cena": {
+      "_": "Onda de particulas. Grade de quadradinhos entra em onda do centro pra fora (repetir + atraso), titulo aparece por cima quando a onda ja tomou o quadro.",
+      "duracao": 2.2,
+      "params": {
+        "titulo": "GRANDE IDEIA",
+        "linha1": "GRANDE IDEIA",
+        "linha2": "",
+        "cor": "#06B6D4",
+        "fonte": "Poppins"
+      },
+      "camadas": [
+        {
+          "tipo": "retangulo",
+          "larg": 12,
+          "alt": 12,
+          "raio": 3,
+          "cor": "@cor",
+          "opacidade": [
+            [
+              0,
+              0
+            ],
+            [
+              0.14,
+              0.55
+            ]
+          ],
+          "escala": [
+            [
+              0,
+              0,
+              "outBack"
+            ],
+            [
+              0.14,
+              1
+            ]
+          ],
+          "repetir": {
+            "cols": 11,
+            "linhas": 7,
+            "espX": 80,
+            "espY": 80,
+            "atraso": 0.016,
+            "ordem": "centro"
+          }
+        },
+        {
+          "tipo": "texto",
+          "texto": "@titulo",
+          "fonte": "@fonte",
+          "peso": 800,
+          "tamanho": 100,
+          "cor": "#FFFFFF",
+          "espacamento": 1,
+          "largura_max": "80%",
+          "opacidade": [
+            [
+              0.75,
+              0
+            ],
+            [
+              1.05,
+              1
+            ]
+          ],
+          "escala": [
+            [
+              0.75,
+              0.8,
+              "outBack"
+            ],
+            [
+              1.15,
+              1
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "nome": "Ordem do Caos",
+    "style": "cena",
+    "categoria": "Revelação",
+    "amostra": "e a resposta é que sim",
+    "padrao": true,
+    "color": "#3FC7B8",
+    "intencao": "grade vibra em caos e se organiza num instante — pro momento em que a bagunça vira sentido",
+    "cena": {
+      "_": "Grade dupla (repetir): camada A vibra em ruido (caos, cinza morto) e desaparece; camada B nasce fixa (ordem, cor viva) com pop outBack. Mesmo atraso+ordem:centro nas duas -> a virada se propaga do centro pra fora, cada quadrado troca de estado no mesmo instante em que o vizinho. Texto entra depois que a grade assenta.",
+      "duracao": 3.4,
+      "params": {
+        "titulo": "E A RESPOSTA É QUE SIM",
+        "linha1": "E A RESPOSTA",
+        "linha2": "É QUE SIM",
+        "corCaos": "#7A6350",
+        "corOrdem": "#3FC7B8",
+        "fonte": "Poppins"
+      },
+      "camadas": [
+        {
+          "tipo": "retangulo",
+          "larg": 9,
+          "alt": 9,
+          "raio": 1,
+          "cor": "@corCaos",
+          "x": {
+            "ruido": {
+              "escala": 0.03,
+              "amp": 13,
+              "semente": 2
+            }
+          },
+          "y": {
+            "ruido": {
+              "escala": 0.028,
+              "amp": 9,
+              "semente": 5
+            }
+          },
+          "escala": {
+            "ruido": {
+              "escala": 0.05,
+              "amp": 0.22,
+              "base": 0.82,
+              "semente": 13
+            }
+          },
+          "opacidade": [
+            [
+              0,
+              0.85
+            ],
+            [
+              1.3,
+              0.85,
+              "inCubic"
+            ],
+            [
+              1.56,
+              0
+            ]
+          ],
+          "repetir": {
+            "cols": 13,
+            "linhas": 8,
+            "espX": 66,
+            "espY": 60,
+            "atraso": 0.0045,
+            "ordem": "centro"
+          }
+        },
+        {
+          "tipo": "retangulo",
+          "larg": 9,
+          "alt": 9,
+          "raio": 4,
+          "cor": "@corOrdem",
+          "x": {
+            "ruido": {
+              "escala": 0.01,
+              "amp": 3,
+              "semente": 21
+            }
+          },
+          "y": {
+            "ruido": {
+              "escala": 0.009,
+              "amp": 2,
+              "semente": 34
+            }
+          },
+          "opacidade": [
+            [
+              1.3,
+              0
+            ],
+            [
+              1.5,
+              1
+            ]
+          ],
+          "escala": [
+            [
+              1.3,
+              0.3,
+              "outBack"
+            ],
+            [
+              1.62,
+              1
+            ]
+          ],
+          "repetir": {
+            "cols": 13,
+            "linhas": 8,
+            "espX": 66,
+            "espY": 60,
+            "atraso": 0.0045,
+            "ordem": "centro"
+          }
+        },
+        {
+          "tipo": "texto",
+          "texto": "@titulo",
+          "fonte": "@fonte",
+          "peso": 800,
+          "tamanho": 92,
+          "cor": "#FFFFFF",
+          "espacamento": 1,
+          "largura_max": "78%",
+          "sombra": [
+            {
+              "x": 0,
+              "y": 6,
+              "blur": 22,
+              "cor": "rgba(0,0,0,0.55)"
+            }
+          ],
+          "opacidade": [
+            [
+              2.15,
+              0
+            ],
+            [
+              2.45,
+              1
+            ]
+          ],
+          "escala": [
+            [
+              2.15,
+              0.82,
+              "outBack"
+            ],
+            [
+              2.45,
+              1
+            ]
+          ]
+        }
+      ]
+    }
+  }
+]

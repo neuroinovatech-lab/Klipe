@@ -1,0 +1,141 @@
+{
+ "width": 1080,
+ "height": 1920,
+ "fps": 30,
+ "frames": [
+  0
+ ],
+ "cases": [
+  {
+   "name": "legenda_0_1palavras",
+   "frames": [
+    0,
+    2,
+    6,
+    11
+   ],
+   "props": {
+    "titles": [],
+    "showProgressBar": false,
+    "shapes": [],
+    "playbackRate": 1.0,
+    "showCaptions": true,
+    "captionBg": true,
+    "captionFontSize": 90,
+    "captionStyle": "outline",
+    "captionFont": "Noka",
+    "captionX": 0,
+    "captionY": -80,
+    "captionColor": "#FFFFFF",
+    "captionHighlightColor": "#da8b0b",
+    "captionKaraoke": true,
+    "captionMaxLines": 2,
+    "captionContrast": 55,
+    "captionWordGap": 38,
+    "captionLineGap": 6,
+    "captions": [
+     {
+      "id": "cap0018",
+      "startSec": 0.0,
+      "endSec": 0.73,
+      "text": "medial."
+     }
+    ]
+   }
+  },
+  {
+   "name": "legenda_1_7palavras",
+   "frames": [
+    0,
+    2,
+    5,
+    6,
+    14,
+    23,
+    28,
+    30,
+    33,
+    34,
+    42,
+    51,
+    56,
+    58
+   ],
+   "props": {
+    "titles": [],
+    "showProgressBar": false,
+    "shapes": [],
+    "playbackRate": 1.0,
+    "showCaptions": true,
+    "captionBg": true,
+    "captionFontSize": 90,
+    "captionStyle": "outline",
+    "captionFont": "Noka",
+    "captionX": 0,
+    "captionY": -80,
+    "captionColor": "#FFFFFF",
+    "captionHighlightColor": "#da8b0b",
+    "captionKaraoke": true,
+    "captionMaxLines": 2,
+    "captionContrast": 55,
+    "captionWordGap": 38,
+    "captionLineGap": 6,
+    "captions": [
+     {
+      "id": "cap0024",
+      "startSec": 0.0,
+      "endSec": 2.79,
+      "text": "a apresentar um sistema de comportamento, um"
+     }
+    ]
+   }
+  },
+  {
+   "name": "legenda_2_10palavras",
+   "frames": [
+    0,
+    2,
+    3,
+    6,
+    10,
+    16,
+    20,
+    22,
+    23,
+    26,
+    29,
+    36,
+    39,
+    41
+   ],
+   "props": {
+    "titles": [],
+    "showProgressBar": false,
+    "shapes": [],
+    "playbackRate": 1.0,
+    "showCaptions": true,
+    "captionBg": true,
+    "captionFontSize": 90,
+    "captionStyle": "outline",
+    "captionFont": "Noka",
+    "captionX": 0,
+    "captionY": -80,
+    "captionColor": "#FFFFFF",
+    "captionHighlightColor": "#da8b0b",
+    "captionKaraoke": true,
+    "captionMaxLines": 2,
+    "captionContrast": 55,
+    "captionWordGap": 38,
+    "captionLineGap": 6,
+    "captions": [
+     {
+      "id": "cap0043",
+      "startSec": 0.0,
+      "endSec": 2.61,
+      "text": "que ela vai funcionar, como é que o nosso cérebro,"
+     }
+    ]
+   }
+  }
+ ]
+}

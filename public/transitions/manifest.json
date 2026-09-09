@@ -1,0 +1,77 @@
+{
+ "luma": [
+  {
+   "nome": "wipe_direita",
+   "file": "transitions/luma/wipe_direita.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "wipe_esquerda",
+   "file": "transitions/luma/wipe_esquerda.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "wipe_baixo",
+   "file": "transitions/luma/wipe_baixo.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "wipe_cima",
+   "file": "transitions/luma/wipe_cima.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "diagonal",
+   "file": "transitions/luma/diagonal.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "circulo_abre",
+   "file": "transitions/luma/circulo_abre.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "circulo_fecha",
+   "file": "transitions/luma/circulo_fecha.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "relogio",
+   "file": "transitions/luma/relogio.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "persianas",
+   "file": "transitions/luma/persianas.mp4",
+   "dur": 0.6
+  },
+  {
+   "nome": "dissolve",
+   "file": "transitions/luma/dissolve.mp4",
+   "dur": 0.6
+  }
+ ],
+ "overlay": [
+  {
+   "nome": "light_leak_quente",
+   "file": "transitions/overlay/light_leak_quente.mp4",
+   "dur": 1.2
+  },
+  {
+   "nome": "light_leak_frio",
+   "file": "transitions/overlay/light_leak_frio.mp4",
+   "dur": 1.2
+  },
+  {
+   "nome": "flash_suave",
+   "file": "transitions/overlay/flash_suave.mp4",
+   "dur": 0.4
+  },
+  {
+   "nome": "glitch_slices",
+   "file": "transitions/overlay/glitch_slices.mp4",
+   "dur": 0.4
+  }
+ ],
+ "nota": "luma: branco=clip novo. overlay: blend screen por cima do corte."
+}

@@ -1,0 +1,23 @@
+{
+  "name": "klipe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Klipe - editor de vídeo local com MotionCore e render próprio",
+  "main": "editor-server.js",
+  "scripts": {
+    "start": "node editor-server.js",
+    "check": "node --check editor-server.js"
+  },
+  "keywords": [
+    "video-editor",
+    "motion-design",
+    "ffmpeg",
+    "skia"
+  ],
+  "author": "Klipe",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "dependencies": {
+    "better-sqlite3": "^12.11.1"
+  }
+}

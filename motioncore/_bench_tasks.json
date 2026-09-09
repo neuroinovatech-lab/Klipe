@@ -1,0 +1,9 @@
+{
+  "width": 1080, "height": 1920, "fps": 30,
+  "tasks": [
+    {"hash":"bench_a","outPath":"motioncore/_parity/_bench/a.mov",
+     "title":{"startSec":0,"endSec":9.0,"style":"stackedReveal","text":"MASKING|É CANSAR|todo dia|SEM PARAR"}},
+    {"hash":"bench_b","outPath":"motioncore/_parity/_bench/b.mov",
+     "title":{"startSec":0,"endSec":9.0,"style":"stackedReveal","text":"MASCARAMENTO É CAMUFLAR TUDO|Suprimir o natural sempre|Imitar quem está em volta agora|Sem parar nunca mais"}}
+  ]
+}

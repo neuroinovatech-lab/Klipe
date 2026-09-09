@@ -1,0 +1,25 @@
+{
+  "deep-boom": {
+    "name": "Deep Boom",
+    "description": "Deep Bass 3.8s entra 1.5s antes, Boom 1.2x 2.7s cai no impacto",
+    "icon": "💥",
+    "clips": [
+      {
+        "src": "sfx/bass_drop/Deep Bass Faded Long (197098).mp3",
+        "offset": -1.5,
+        "durationSec": 3.8,
+        "srcStart": 0,
+        "speed": 1,
+        "volume": 0.45
+      },
+      {
+        "src": "sfx/transition_impacts/Boom - Giant Impact.mp3",
+        "offset": 0,
+        "durationSec": 2.7,
+        "srcStart": 0,
+        "speed": 1.2,
+        "volume": 0.251188643150958
+      }
+    ]
+  }
+}

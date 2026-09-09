@@ -1,0 +1,172 @@
+{
+ "width": 1080,
+ "height": 1920,
+ "fps": 30,
+ "frames": [
+  0
+ ],
+ "cases": [
+  {
+   "name": "descending",
+   "frames": [
+    0,
+    3,
+    8,
+    15,
+    25,
+    45,
+    80,
+    120,
+    175
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 6.4,
+    "style": "descending",
+    "text": "POR DENTRO Facilita a integração, mas pesa",
+    "posY": 300
+   }
+  },
+  {
+   "name": "wordCollapse",
+   "frames": [
+    0,
+    3,
+    8,
+    15,
+    25,
+    45,
+    80,
+    120,
+    175
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 6.2,
+    "style": "wordCollapse",
+    "text": "EXAUSTÃO|COBRANÇA|CANSAÇO|COLAPSO"
+   }
+  },
+  {
+   "name": "echoWords",
+   "frames": [
+    0,
+    3,
+    8,
+    15,
+    25,
+    45,
+    80,
+    120,
+    175
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 10.0,
+    "style": "echoWords",
+    "text": "\"É exagero\"|\"Você é dramática\"|\"Se acalme\"|VOCÊ NÃO É NADA DISSO"
+   }
+  },
+  {
+   "name": "liveComments",
+   "frames": [
+    0,
+    3,
+    8,
+    15,
+    25,
+    45,
+    80,
+    120,
+    175
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 10.0,
+    "style": "liveComments",
+    "text": "Ana: Nossa, eu me identifico demais|Carla: Faço isso desde criança|Juliana: É exatamente isso|Bia: Achei que era só eu|Marina: Chorei aqui|Paula: Cansa demais|Renata: Eu faço masking|Lu: Me sinto vista agora"
+   }
+  },
+  {
+   "name": "paradoxQuote",
+   "frames": [
+    0,
+    3,
+    8,
+    15,
+    25,
+    45,
+    80,
+    120,
+    175
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 9.2,
+    "style": "paradoxQuote",
+    "text": "Muito normal|PRA SER AUTISTA|E muito estranha|SER NORMAL"
+   }
+  },
+  {
+   "name": "sensoryStorm",
+   "frames": [
+    0,
+    3,
+    8,
+    15,
+    25,
+    45,
+    80,
+    120,
+    175
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 9.63,
+    "style": "sensoryStorm",
+    "text": "PERTENCER|SE ENCAIXAR|OS GRUPOS|PRESSÃO SOCIAL|MASCARAR"
+   }
+  },
+  {
+   "name": "mixedSerif",
+   "frames": [
+    0,
+    3,
+    8,
+    15,
+    25,
+    45,
+    80,
+    120,
+    175
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 8.22,
+    "style": "mixedSerif",
+    "text": "Adolescência|pressão pra se encaixar"
+   }
+  },
+  {
+   "name": "letterEyebrow",
+   "frames": [
+    0,
+    3,
+    8,
+    15,
+    25,
+    45,
+    80,
+    120,
+    175
+   ],
+   "title": {
+    "startSec": 0,
+    "endSec": 10.0,
+    "style": "letterEyebrow",
+    "text": "Antes do diagnóstico|VOCÊ SÓ SE ADAPTAVA",
+    "posY": -206
+   }
+  }
+ ]
+}

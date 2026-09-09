@@ -1,0 +1,54 @@
+# Ambiente do Klipe — o que o motor REALMENTE importa.
+#
+# A lista saiu de varrer os 51 arquivos que o servidor executa e coletar os
+# imports de verdade, não de olhar o que já estava instalado. Por isso é curta:
+# o Klipe rodava emprestado num ambiente montado para clonagem de voz, e
+# carregava torch, Coqui TTS e OpenVoice sem usar nada disso.
+#
+# NÃO precisa de torch: o faster-whisper roda sobre CTranslate2, não PyTorch.
+# São ~2 GB a menos por máquina.
+#
+#   conda create -n klipe python=3.11 -y
+#   conda activate klipe
+#   pip install -r requirements.txt
+#
+# Depois aponte esse python em Configurações › Render (campo "Python"), ou
+# defina a variável de ambiente PYTHON_EXE.
+
+# ── o motor ──────────────────────────────────────────────────────────────
+skia-python==144.0.post2      # desenha títulos, legendas e cenas do DSL
+numpy==2.2.6                  # buffer de pixels entre o skia e o ffmpeg
+
+# ── transcrição ──────────────────────────────────────────────────────────
+# Ancora o texto na fala. Em GPU precisa das libs cuBLAS/cuDNN da NVIDIA no
+# PATH; sem elas cai para CPU sozinho, mais devagar mas funciona.
+faster-whisper==1.2.1
+
+# ── busca de b-roll (Pexels) ─────────────────────────────────────────────
+requests==2.32.5
+
+# ── importar vídeo de URL ────────────────────────────────────────────────
+# O `import_youtube.py` baixa com isto. Ficou de fora da varredura original —
+# o script existia e era chamado pelo servidor, mas a dependência não estava
+# declarada, então numa máquina nova o import falhava com ModuleNotFoundError.
+yt-dlp>=2026.8
+
+# ── análise de estilos por IA (opcional) ─────────────────────────────────
+# Só o analyze_styles.py usa. Sem chave do Gemini configurada, nada aqui roda.
+google-genai==1.59.0
+
+# ── ferramentas de verificação (opcional) ────────────────────────────────
+# Só os scripts _check_*.py e parity.py. O render não precisa.
+pillow==12.2.0
+
+# ── NÃO entra aqui, de propósito ─────────────────────────────────────────
+# torch, TTS, openvoice, librosa: são do pipeline de voz, que é outro
+# projeto. Misturar foi o que fez o ambiente do Klipe pesar gigabytes à toa.
+# diffusers/transformers: são do gerador de SFX, que mora em
+# ferramentas/gerador_sfx/ e pede ambiente próprio (ele exige transformers
+# >= 4.49, incompatível com o que o pipeline de voz usa).
+
+# glfw abre uma janela OCULTA so pra existir um contexto de OpenGL — e ele que
+# deixa o Skia rasterizar na placa. Medido: 391 s -> 15 s no video de marca.
+# Sem ele o Klipe renderiza igual, na CPU, so mais devagar.
+glfw>=2.7
