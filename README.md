@@ -11,7 +11,7 @@
   <img alt="Node 20+" src="https://img.shields.io/badge/Node.js-20%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white">
   <img alt="Python 3.11" src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Windows e macOS" src="https://img.shields.io/badge/Windows%20%7C%20macOS-compatível-7C3AED?style=flat-square">
-  <img alt="Licença proprietária" src="https://img.shields.io/badge/licença-proprietária-EA580C?style=flat-square">
+  <a href="LICENSE"><img alt="Uso gratuito; revenda restrita" src="https://img.shields.io/badge/uso-gratuito-22863A?style=flat-square"></a>
 </p>
 
 ## O Klipe
@@ -150,6 +150,19 @@ direitos de uso do conteúdo e das pessoas que aparecem nele.
 
 ## Licença
 
-O Klipe é software proprietário. A visibilidade ou o acesso ao repositório não
-concede permissão para copiar, redistribuir, sublicenciar ou revender o código.
-Consulte [LICENSE](LICENSE).
+**Grátis para usar, inclusive em trabalhos pagos.** Você pode baixar e instalar
+o Klipe no seu computador, editar vídeos para clientes, cobrar pela edição e
+monetizar os conteúdos produzidos. Não há cobrança de royalties do Klipe sobre
+esses vídeos.
+
+Você também pode estudar o código, adaptá-lo para uso próprio ou interno e
+contribuir por forks gratuitos no GitHub, preservando a licença e a autoria.
+
+**Não é permitido vender o Klipe ou versões modificadas, cobrar pelo acesso ao
+software ou incorporá-lo a outro software comercializado sem autorização por
+escrito.** Compartilhar o link oficial é permitido; outras formas de
+redistribuição seguem as condições da licença.
+
+Esta é uma licença própria de uso gratuito com restrições, não uma licença MIT
+ou open source. Componentes e mídias de terceiros mantêm suas próprias licenças.
+Consulte os termos completos em [LICENSE](LICENSE).
