@@ -1,11 +1,30 @@
-Copyright (c) 2026 Klipe. All rights reserved.
+LICENÇA KLIPE DE USO GRATUITO
+Versão 1.0
+Copyright (c) 2026 Klipe. Todos os direitos reservados, exceto os expressamente concedidos abaixo.
 
-The source code in this repository is provided for viewing, evaluation,
-installation, and authorized collaboration only.
+1. PERMISSÕES
+É permitido gratuitamente baixar, copiar para instalação ou backup, instalar e executar o Klipe em computadores pessoais ou profissionais. Pessoas físicas e jurídicas podem utilizá-lo para fins pessoais, educacionais e comerciais, incluindo editar vídeos para clientes, cobrar por serviços de edição e publicar ou monetizar os conteúdos produzidos.
 
-No permission is granted to copy, modify, redistribute, sublicense, sell, or
-use this software or substantial portions of it in another product without
-prior written permission from the copyright holder.
+É permitido estudar o código e modificá-lo para uso próprio ou interno da sua organização. Também é permitido criar forks gratuitos no GitHub e enviar contribuições ao repositório oficial, preservando esta licença e os avisos de autoria. Essas permissões não autorizam a comercialização do software.
 
-Third-party components, fonts, media, and trademarks remain subject to their
-respective licenses and ownership.
+2. COMERCIALIZAÇÃO DO SOFTWARE
+Sem autorização prévia e por escrito do titular dos direitos, é proibido vender, revender, alugar, sublicenciar mediante pagamento ou cobrar pelo acesso ao Klipe, ao seu código ou a versões modificadas. Também é proibido incorporar o Klipe ou partes substanciais de seu código a outro software comercializado, ou disponibilizá-lo como editor hospedado pago, assinatura ou serviço de acesso pago ao software.
+
+Esta restrição se refere ao software. Ela não proíbe cobrar pelos vídeos, pelos conteúdos ou pelos serviços de edição realizados com o Klipe.
+
+3. DISTRIBUIÇÃO E AUTORIA
+As cópias e os forks autorizados devem conservar esta licença e os avisos de direitos autorais. Outras formas de redistribuição ou sublicenciamento exigem autorização prévia e por escrito. Compartilhar o link do repositório oficial é permitido.
+
+Esta licença não transfere a propriedade do software, do nome ou da marca Klipe e não autoriza apresentar versões modificadas como versões oficiais. Direitos não expressamente concedidos permanecem reservados.
+
+4. CONTEÚDOS PRODUZIDOS E COMPONENTES DE TERCEIROS
+Esta licença não exige royalties, crédito ao Klipe nem aplicação desta licença aos vídeos e demais conteúdos produzidos pelo usuário. Os direitos sobre mídias, fontes, músicas, modelos, bibliotecas, marcas e outros componentes de terceiros continuam sujeitos às respectivas licenças e autorizações. Esta licença abrange somente os direitos que o titular do Klipe pode conceder e não substitui licenças de terceiros.
+
+5. GARANTIAS E RESPONSABILIDADE
+O software é disponibilizado no estado em que se encontra, sem garantia contratual de funcionamento ininterrupto, adequação a uma finalidade específica ou suporte. Na medida permitida pela legislação aplicável, os titulares e colaboradores não respondem por danos decorrentes do uso do software. Esta cláusula não exclui direitos ou responsabilidades que não possam ser afastados por lei.
+
+6. NATUREZA DA LICENÇA
+Esta é uma licença própria de uso gratuito com restrições à comercialização e à redistribuição do software. Não é a licença MIT e não é uma licença open source nos termos da Open Source Definition.
+
+Autorizações adicionais podem ser solicitadas ao mantenedor pelo repositório oficial:
+https://github.com/neuroinovatech-lab/Klipe
