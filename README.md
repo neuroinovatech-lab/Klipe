@@ -22,11 +22,10 @@ vivem no mesmo fluxo para aproximar o que você vê do arquivo final.
 
 ## Veja o Klipe em ação
 
-<p align="center">
-  <a href="https://youtu.be/EPf02R5D8Rs">
-    <img src="docs/klipe-demo-cover.svg" alt="Assistir à demonstração do Klipe no YouTube" width="900">
-  </a>
-</p>
+https://github.com/user-attachments/assets/a23f85e0-d39c-4471-a5ef-d7ef4f518d5b
+
+Prévia com áudio em 720p, reproduzível nesta página.
+
 
 <p align="center">
   <a href="https://youtu.be/EPf02R5D8Rs"><strong>Assistir à demonstração no YouTube</strong></a> · 1 minuto · Full HD
