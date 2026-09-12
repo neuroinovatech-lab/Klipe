@@ -20,18 +20,21 @@ Klipe é um editor de vídeo local com timeline multipista no navegador e um
 motor próprio de motion design em Python/Skia. Preview, composição e render
 vivem no mesmo fluxo para aproximar o que você vê do arquivo final.
 
-<p align="center">
-  <img src="docs/klipe-demo-cover.svg" alt="Vídeo de funcionamento do Klipe" width="900">
-</p>
+## Veja o Klipe em ação
 
-<!--
-Quando o vídeo estiver no YouTube, substitua o bloco de imagem acima por:
 <p align="center">
-  <a href="COLE_AQUI_O_LINK_DO_YOUTUBE">
-    <img src="docs/klipe-demo-cover.svg" alt="Assistir ao vídeo de funcionamento do Klipe" width="900">
+  <a href="https://youtu.be/EPf02R5D8Rs">
+    <img src="docs/klipe-demo-cover.svg" alt="Assistir à demonstração do Klipe no YouTube" width="900">
   </a>
 </p>
--->
+
+<p align="center">
+  <a href="https://youtu.be/EPf02R5D8Rs"><strong>Assistir à demonstração no YouTube</strong></a> · 1 minuto · Full HD
+</p>
+
+Motion B-roll, gráficos animados, tipografia cinética, zooms, transições e
+SFX: veja diferentes estilos reunidos em um vídeo editado e renderizado no
+Klipe. Demonstração publicada no canal **Xang TV**.
 
 ## Quatro pilares
 
