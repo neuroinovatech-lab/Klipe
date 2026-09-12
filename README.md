@@ -36,6 +36,25 @@ Motion B-roll, gráficos animados, tipografia cinética, zooms, transições e
 SFX: veja diferentes estilos reunidos em um vídeo editado e renderizado no
 Klipe. Demonstração publicada no canal **Xang TV**.
 
+## Desempenho na prática
+
+**Um vídeo de 60 segundos em Full HD renderizado em 32 segundos.**
+
+Esse foi o tempo informado pelo ForgeRender ao exportar a demonstração acima
+em 11/09/2026, na máquina de desenvolvimento: 1920 × 1080, H.264 com
+NVENC na GPU, áudio AAC e reaproveitamento do cache de overlays. O arquivo
+final tem aproximadamente 76 MiB.
+
+O Klipe combina composição em Skia, FFmpeg e cache para reduzir o trabalho
+repetido na exportação. Nesse teste com cache, o render levou menos tempo
+que a duração do próprio vídeo. Uma primeira exportação sem cache pode
+levar mais tempo; hardware, resolução e complexidade da timeline também
+influenciam o resultado.
+
+Este é um resultado medido no demo, não um benchmark comparativo com React
+ou Remotion. Uma comparação de velocidade exige a mesma composição,
+hardware, qualidade de saída e condições de cache.
+
 ## Quatro pilares
 
 | Pilar | No Klipe |
