@@ -63,6 +63,9 @@ _POR_TIPO = {
     "texto": {"texto", "fonte", "peso", "tamanho", "cor", "italico",
               "entrelinha", "alinha", "espacamento", "largura_max",
               "contorno", "contorno_larg", "sombra"},
+    "numero": {"valor", "prefixo", "sufixo", "casas", "separador_milhar",
+               "separador_decimal", "fonte", "peso", "tamanho", "cor",
+               "italico", "alinha"},
     "retangulo": {"larg", "alt", "raio", "cor", "contorno", "contorno_larg",
                   "hachura"},
     "elipse": {"raio", "rx", "ry", "de_grau", "varre_grau", "raio_int",
@@ -188,6 +191,8 @@ def validar(spec: dict, avisos: bool = False) -> list[str]:
             return
         if tipo == "texto" and not str(c.get("texto", "")).strip():
             erros.append(f"{caminho}: camada de texto sem 'texto'")
+        if tipo == "numero" and "valor" not in c:
+            erros.append(f"{caminho}: camada de numero sem 'valor'")
         if tipo == "path" and not c.get("d"):
             erros.append(f"{caminho}: camada de path sem 'd'")
 
@@ -286,6 +291,8 @@ class Cena:
         for c in cs:
             if c["tipo"] == "texto":
                 self._blocos[id(c)] = _cam.construir_texto(c, ctx)
+            elif c["tipo"] == "numero":
+                self._blocos[id(c)] = _cam.construir_numero(c, ctx)
             elif c["tipo"] == "grupo":
                 self._medir(c.get("camadas") or [], ctx)
 

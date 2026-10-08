@@ -141,7 +141,8 @@ caractere.
 
 ## Tipos de camada
 
-Sete: `texto`, `retangulo`, `elipse`, `linha`, `path`, `grupo`, `textura`.
+Nove: `texto`, `numero`, `retangulo`, `elipse`, `linha`, `path`, `grupo`,
+`textura`, `imagem`.
 
 ### `texto`
 
@@ -161,6 +162,22 @@ Sete: `texto`, `retangulo`, `elipse`, `linha`, `path`, `grupo`, `textura`.
 | `sombra` | `[]` | lista de `{x, y, blur, cor}` |
 
 `\n` no texto é quebra obrigatória e sobrevive à quebra por largura.
+
+### `numero`
+
+Número animável de uma linha, desenhado sem reconstruir o texto a cada frame.
+Serve para contadores, moeda, porcentagem e métricas de dashboard.
+
+```json
+{"tipo":"numero", "valor":[[0,0,"linear"],[5,1000]],
+ "prefixo":"R$ ", "casas":2, "separador_milhar":".",
+ "separador_decimal":",", "fonte":"Arial", "peso":700,
+ "tamanho":132, "cor":"#00C853"}
+```
+
+Campos tipográficos: `fonte`, `peso`, `tamanho`, `cor`, `italico`, `alinha`.
+Formatação: `prefixo`, `sufixo`, `casas`, `separador_milhar` e
+`separador_decimal`.
 
 ### `retangulo`
 

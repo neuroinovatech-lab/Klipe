@@ -11,7 +11,7 @@ animacao duas vezes; quando as duas leituras divergiam, o dedup jurava que dois
 frames eram iguais e o video saia com frame errado. Aqui a assinatura E o
 `resolver()`, entao divergir e impossivel.
 
-Tipos: texto, retangulo, elipse, linha, path, grupo.
+Tipos: texto, numero, retangulo, elipse, linha, path, grupo.
 """
 from __future__ import annotations
 
@@ -206,6 +206,64 @@ def _pintar_texto(canvas: skia.Canvas, c: dict, vals: dict, bloco: TextBlock):
     bloco.draw(canvas, 0.0, -bloco.height / 2.0, opacity=vals["opacidade"])
 
 
+@dataclass
+class NumberBlock:
+    """Numero de uma linha sem reconstruir o shaping a cada frame."""
+    font: skia.Font
+    color: str
+    prefix: str
+    suffix: str
+    decimals: int
+    thousands: str
+    decimal: str
+    align: str
+
+    def format(self, value: float) -> str:
+        raw = f"{value:,.{self.decimals}f}"
+        raw = raw.replace(",", "\0").replace(".", self.decimal).replace("\0", self.thousands)
+        return f"{self.prefix}{raw}{self.suffix}"
+
+
+def construir_numero(c: dict, ctx: Ctx) -> NumberBlock:
+    fonte = c.get("fonte") or "'Inter', sans-serif"
+    if "," not in fonte and "'" not in fonte:
+        fonte = f"'{fonte}', sans-serif"
+    face = ctx.registry.resolve(
+        fonte, int(c.get("peso", 400)), bool(c.get("italico", False))
+    )
+    font = skia.Font(face.typeface, float(c.get("tamanho", 82)))
+    font.setSubpixel(True)
+    font.setEdging(skia.Font.Edging.kAntiAlias)
+    return NumberBlock(
+        font=font,
+        color=c.get("cor", "#FFFFFF"),
+        prefix=str(c.get("prefixo", "")),
+        suffix=str(c.get("sufixo", "")),
+        decimals=max(0, int(c.get("casas", 0))),
+        thousands=str(c.get("separador_milhar", ".")),
+        decimal=str(c.get("separador_decimal", ",")),
+        align=c.get("alinha", "center"),
+    )
+
+
+def _pintar_numero(canvas: skia.Canvas, vals: dict, bloco: NumberBlock):
+    if bloco is None:
+        return
+    value = float(vals.get("valor", 0.0))
+    txt = bloco.format(value)
+    width = bloco.font.measureText(txt)
+    if bloco.align in ("esquerda", "left"):
+        x = 0.0
+    elif bloco.align in ("direita", "right"):
+        x = -width
+    else:
+        x = -width / 2.0
+    metrics = bloco.font.getMetrics()
+    baseline = -(metrics.fAscent + metrics.fDescent) / 2.0
+    canvas.drawString(txt, x, baseline, bloco.font,
+                      _tinta(bloco.color, vals["opacidade"]))
+
+
 # ── formas ───────────────────────────────────────────────────────────────
 def _path_da_camada(c: dict, ctx: Ctx, vals: dict) -> skia.Path | None:
     tipo = c["tipo"]
@@ -266,13 +324,16 @@ def _path_da_camada(c: dict, ctx: Ctx, vals: dict) -> skia.Path | None:
 
 
 # ── despacho ─────────────────────────────────────────────────────────────
-TIPOS = {"texto", "retangulo", "elipse", "linha", "path", "grupo", "textura",
+TIPOS = {"texto", "numero", "retangulo", "elipse", "linha", "path", "grupo", "textura",
          "imagem"}
 
 
 def resolver(c: dict, ctx: Ctx) -> dict:
     """Todos os valores animados desta camada no instante de `ctx`."""
-    return _resolver_transform(c, ctx)
+    vals = _resolver_transform(c, ctx)
+    if c["tipo"] == "numero":
+        vals["valor"] = avaliar(c.get("valor"), ctx.t, ctx.fps, 0.0)
+    return vals
 
 
 def grade(rep: dict, ctx: Ctx):
@@ -372,6 +433,8 @@ def _pintar_um(canvas: skia.Canvas, c: dict, vals: dict, ctx: Ctx,
         _pintar_imagem(canvas, c, vals, ctx)
     elif tipo == "texto":
         _pintar_texto(canvas, c, vals, (blocos or {}).get(id(c)))
+    elif tipo == "numero":
+        _pintar_numero(canvas, vals, (blocos or {}).get(id(c)))
     else:
         path = _path_da_camada(c, ctx, vals)
         if path is not None:
@@ -456,7 +519,7 @@ def _assinar_um(c: dict, ctx: Ctx) -> tuple:
         if a is not None:
             itens.append((k, a))
     # geometria animada (larg/alt/raio/rx/ry/varre_grau/de/para) tambem conta
-    for k in ("larg", "alt", "raio", "rx", "ry", "de_grau", "varre_grau"):
+    for k in ("larg", "alt", "raio", "rx", "ry", "de_grau", "varre_grau", "valor"):
         a = assinatura(c.get(k), ctx.t, ctx.fps)
         if a is not None:
             itens.append((k, a))
