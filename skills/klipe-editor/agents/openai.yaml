@@ -1,0 +1,4 @@
+interface:
+  display_name: "Klipe Editor"
+  short_description: "Edite e valide projetos profissionais no Klipe"
+  default_prompt: "Use $klipe-editor para editar este video no Klipe com motions, ritmo e render verificado."

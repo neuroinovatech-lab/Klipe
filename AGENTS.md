@@ -22,6 +22,12 @@ npm start
 Cada projeto abre em `/p/<slug>`. O repositório público começa sem mídias ou
 projetos de clientes; use a interface para criar o primeiro projeto.
 
+## Skill do Klipe
+
+Em tarefas de criação, edição, correção, validação ou render de projetos, leia e
+siga `skills/klipe-editor/SKILL.md`. A Skill organiza o fluxo completo e aponta
+para a documentação específica do MotionCore somente quando ela for necessária.
+
 ## Regras de edição
 
 1. Trate cada projeto como isolado. Nunca grave o conteúdo de um slug em outro.
