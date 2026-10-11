@@ -5,7 +5,8 @@
 1. Baixe o [ZIP oficial](https://github.com/neuroinovatech-lab/Klipe/archive/refs/heads/main.zip).
 2. Extraia o ZIP inteiro para uma pasta permanente e gravavel, como `Documentos\Klipe`.
 3. Abra `Instalar Klipe.bat`, leia o resumo e confirme com **S**.
-4. Espere a mensagem **Pronto**. Abra **Klipe** na area de trabalho.
+4. Espere a mensagem **Pronto**. Abra **Klipe Desktop** na area de trabalho.
+   O atalho **Klipe** continua disponivel para usar o navegador.
 
 Nao execute de dentro do ZIP. Nao mova a pasta depois: os ambientes Python e o
 atalho guardam caminhos absolutos. Para outra maquina, baixe uma copia limpa e
@@ -19,6 +20,7 @@ execute o instalador nela; transfira projetos separadamente.
 - Dependencias do editor pelo `package-lock.json` e um ambiente Python `.venv`.
 - Remocao de fundo em `.venv-vision`, com o modelo oficial MediaPipe em `models/`.
 - Atalho na area de trabalho e caminhos locais em `.klipe-runtime.json`.
+- Janela Desktop com WebView2 e executavel gerado em `app/dist/Klipe.exe`.
 
 Os pacotes Windows usam o [WinGet da Microsoft](https://learn.microsoft.com/en-us/windows/package-manager/winget/install),
 com identificadores exatos e verificacao de integridade do gerenciador. O Node
@@ -70,6 +72,8 @@ e instalado por padrao. O modo sem recorte mantem a edicao e o render basico.
 `-NoShortcut` evita criar/substituir o atalho, util em testes. Para testar a
 inicializacao sem abrir o navegador e encerrar ao concluir, execute
 `powershell -NoProfile -ExecutionPolicy Bypass -File tools/start-windows.ps1 -SmokeTest`.
+`-SkipDesktop` mantem apenas a versao de navegador. O modulo Desktop pode ser
+instalado depois com `tools/install-desktop.ps1`. Feche o Desktop antes de atualizar.
 
 ## macOS
 

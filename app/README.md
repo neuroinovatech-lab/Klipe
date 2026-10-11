@@ -1,70 +1,77 @@
-# Klipe — app de desktop e modo web
+# Klipe Desktop para Windows
 
-Duas portas de entrada pro **mesmo** Klipe, no mesmo servidor e na mesma porta.
-Não existe "versão app" e "versão web" — existe o Klipe, e duas formas de olhar
-pra ele. Os projetos, o cache de render e o login são os mesmos nos dois.
+O mesmo editor, projetos, timeline e MotionCore, em uma janela propria com icone.
+Nao precisa abrir o navegador nem iniciar o servidor manualmente.
 
-| | como abre | quando usar |
-|---|---|---|
-| **App** | `Klipe.exe` | dia a dia. Janela própria, ícone na barra, sem barra de endereço, sem console preto. |
-| **Web** | `Klipe Web.bat` | quando quiser abrir do celular ou de outro PC da rede — o `.bat` mostra o endereço. |
+## Instalar e abrir
 
-Se você abrir o modo web primeiro e depois o app, **o app se pluga no servidor
-que já está de pé** em vez de subir outro. E nesse caso, fechar a janela não
-derruba nada — quem é dono do servidor é quem o subiu.
+Execute `Instalar Klipe.bat`. O instalador prepara o editor, o WebView2 e gera o
+executavel. Abra **Klipe Desktop** na area de trabalho ou `Klipe Desktop.bat`.
+`Iniciar Klipe.bat` continua sendo a opcao de navegador.
 
-## Gerar o exe
+Esta primeira versao usa o Klipe e suas dependencias na pasta instalada. O
+`app/dist/Klipe.exe` e a janela desktop, nao um pacote offline completo. Nao
+distribua apenas o executavel como se ele incluisse Node, Python, FFmpeg e os
+modelos. O executavel ainda nao tem assinatura digital.
 
-```bash
-python app/build_exe.py
+## Processos e projetos
+
+- Cada instancia desktop inicia seu proprio servidor em portas locais livres.
+- Nao conecta a um programa desconhecido que ocupe a porta 3002.
+- Ao fechar, encerra somente o servidor que iniciou e seus processos filhos.
+- Um servidor ja aberto no navegador nao e encerrado pelo Desktop.
+- Confirma antes de fechar com alteracoes nao salvas ou render Forge ativo.
+- Save continua manual. Evite editar o mesmo projeto simultaneamente em duas janelas.
+- Uma segunda janela desktop da mesma pasta e bloqueada.
+- O servidor continua restrito ao proprio PC; esta versao nao e acesso pela rede.
+
+O navegador integrado usa [pywebview/WebView2](https://pywebview.flowrl.com/api/).
+Nao ha API Python de acesso a arquivos exposta ao JavaScript da pagina.
+
+## Desenvolvimento
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/install-desktop.ps1
+.venv-desktop/Scripts/python.exe app/klipe_app.py
 ```
 
-Sai em `app/dist/Klipe.exe` (~15 MB). Pode copiar pra qualquer lugar ou fazer
-atalho na área de trabalho.
+Abrir uma instalacao/projeto especifico:
 
-Duas coisas que o exe **não** empacota, de propósito:
+```powershell
+app/dist/Klipe.exe --root C:\Klipe --project meu-projeto
+```
 
-- **Navegador.** Usa o WebView2 que já vem no Windows. É por isso que são 15 MB
-  e não 200.
-- **O Klipe.** Ele abre o `editor-server.js` que está na pasta do projeto —
-  então mexer no editor continua valendo na hora, sem recompilar o exe.
+O app procura a raiz pelo argumento `--root`, pela variavel `KLIPE_DIR`, nas
+pastas acima do executavel ou no ultimo caminho salvo em `%APPDATA%/Klipe/app.json`.
+O build nao encerra automaticamente nenhum Klipe aberto. Feche o executavel
+antes de reconstruir, para nao travar o arquivo de destino.
 
-## Onde ele procura a pasta do projeto
+O icone vem de `public/marca/klipe-mark.svg`, a mesma marca do editor. Para
+atualizar suas sete resolucoes (16 a 256 px), execute com o Python principal:
 
-Nesta ordem: variável `KLIPE_DIR` → ao lado do exe → pastas acima → o que ficou
-salvo da última vez. Se não achar nada, pergunta uma vez e guarda em
-`%APPDATA%/Klipe/app.json`.
+```powershell
+.venv/Scripts/python.exe app/generate_icon.py
+.venv-desktop/Scripts/python.exe app/build_exe.py
+```
 
-Ou seja: se você deixar o exe dentro da pasta `motionforge`, ele acha sozinho.
-Se levar pra área de trabalho, ele pergunta na primeira abertura e não pergunta
-mais.
+O build inclui o ICO no executavel e na janela. Para testar sem substituir um
+executavel aberto, use `app/build_exe.py --dist-dir app/dist/brand`.
 
-## Se o exe abrir e sumir
+## Testes e diagnostico
 
-Ele grava tudo em **`%APPDATA%\Klipe\app.log`** — abra esse arquivo primeiro.
-Um app `--windowed` não tem console, então sem o log a falha some sem deixar
-rastro. O servidor tem log próprio em `server.log`, na mesma pasta.
+```powershell
+.venv/Scripts/python.exe -m unittest discover -s tests -p 'test_*.py'
+.venv-desktop/Scripts/python.exe app/klipe_app.py --smoke-test logs/desktop.json
+```
 
-Duas pedras já pagas nesse caminho (o `build_exe.py` já cuida das duas):
+O teste abre o WebView2, confere o DOM e encerra o servidor. Com `--project SLUG`,
+tambem abre a janela visivel e verifica pixels do preview; grava JSON e PNG ao
+lado do relatorio. Nao salva a timeline. Logs de erros ficam em
+`%APPDATA%/Klipe/app.log` e `%APPDATA%/Klipe/logs/`.
 
-- **`pythonnet` não vem junto com o `pywebview`.** É ele que faz a ponte pro
-  WebView2. Sem ele o app morre na hora de abrir a janela.
-- **O `_ctypes` do Anaconda precisa da `ffi-*.dll`**, que mora em
-  `Library/bin/` — pasta que o PyInstaller não varre. Sem ela o exe morre com
-  `ImportError: DLL load failed while importing _ctypes`.
+Adicione `--smoke-close-test` para passar pelo fechamento normal (incluindo a
+consulta de alteracoes), em vez de ignorar a protecao durante o teste. O
+relatorio deve registrar `guardedClose: true` e `serverStopped: true`.
 
-E cuidado com a mensagem do pywebview: ele responde **"You must have pythonnet
-installed"** para *qualquer* falha ao carregar o backend, inclusive quando o
-pythonnet está instalado e o problema é outro. Foi por isso que o app passou a
-tentar `import clr` sozinho no começo e registrar o erro **de verdade** no log.
-
-## Detalhes que valem saber
-
-- **Login persiste.** A janela guarda cookies em `%APPDATA%/Klipe/webview`, em
-  vez de pedir senha toda vez.
-- **Fechar durante um render pergunta antes.** Fechar a janela derruba o
-  servidor, e isso cancelaria o render em andamento — então ele confirma
-  primeiro. (Só quando a janela é dona do servidor.)
-- **Ao fechar, mata a árvore de processos.** Um render deixa ffmpeg, Chrome
-  headless e Python rodando embaixo do servidor; encerrar só o Node deixaria
-  esses órfãos comendo CPU.
+O build usa [PyInstaller](https://pywebview.flowrl.com/guide/freezing), em ambiente
+isolado `.venv-desktop`, sem incluir bibliotecas pesadas do render na janela.

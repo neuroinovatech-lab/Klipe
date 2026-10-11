@@ -1,4 +1,4 @@
-param([switch]$Yes, [switch]$SkipVision, [switch]$CheckOnly, [switch]$NoShortcut)
+param([switch]$Yes, [switch]$SkipVision, [switch]$CheckOnly, [switch]$NoShortcut, [switch]$SkipDesktop)
 . "$PSScriptRoot\windows-runtime.ps1"
 Set-Location -LiteralPath $KlipeRoot
 $logging = $false
@@ -14,6 +14,7 @@ try {
     Write-Host 'Requer internet e espaco em disco. O Windows pode solicitar permissao para instalar o Node.'
     Write-Host 'Nenhum projeto sera apagado. Dependencias existentes compativeis serao reutilizadas.'
     if (-not $SkipVision) { Write-Host 'Inclui Remover fundo: ambiente de visao e modelo local.' }
+    if (-not $SkipDesktop) { Write-Host 'Inclui Klipe Desktop: janela propria com WebView2 e executavel local.' }
     if (-not $Yes -and (Read-Host 'Continuar? [S/N]') -notmatch '^(s|sim)$') { exit 0 }
     $logs = Join-Path $KlipeRoot 'logs'
     New-Item -ItemType Directory -Path $logs -Force | Out-Null
@@ -58,7 +59,12 @@ try {
         $shortcut.Description = 'Abrir o editor Klipe'
         $shortcut.Save()
     }
-    Write-Host "`nPronto! Abra Iniciar Klipe.bat ou o atalho criado na area de trabalho."
+    if (-not $SkipDesktop) {
+        $desktopArgs = @('-NoProfile','-ExecutionPolicy','Bypass','-File',"$PSScriptRoot\install-desktop.ps1")
+        if ($NoShortcut) { $desktopArgs += '-NoShortcut' }
+        Invoke-Checked 'powershell.exe' $desktopArgs
+    }
+    Write-Host "`nPronto! Abra Klipe Desktop.bat (janela propria) ou Iniciar Klipe.bat (navegador)."
 } catch {
     Write-Host "`nERRO: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host 'Corrija o problema e execute Instalar Klipe novamente. Logs na pasta logs/.'

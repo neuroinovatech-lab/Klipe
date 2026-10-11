@@ -598,6 +598,13 @@ function comRede(handler) {
 
 const server = http.createServer(comRede(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
+  if (url.pathname === '/api/desktop/health') {
+    const token = process.env.KLIPE_DESKTOP_TOKEN;
+    const valid = req.method === 'GET' && token && req.headers['x-klipe-desktop'] === token;
+    res.writeHead(valid ? 200 : 404, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify(valid ? {app:'klipe', pid:process.pid} : {error:'not_found'}));
+    return;
+  }
 
   // Resolve UMA vez por requisicao qual config esta em jogo, e sombreia as
   // duas funcoes do modulo. As ~29 chamadas de readConfig()/writeConfig()

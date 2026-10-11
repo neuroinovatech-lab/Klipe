@@ -4,6 +4,7 @@ node_modules/
 logs/
 .venv/
 .venv-vision/
+.venv-desktop/
 models/*.tflite
 models/*.source.json
 models/*.download

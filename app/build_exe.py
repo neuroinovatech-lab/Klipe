@@ -3,9 +3,8 @@ build_exe.py — gera o `Klipe.exe`.
 
     python app/build_exe.py
 
-Sai em `app/dist/Klipe.exe`. Copie (ou faca atalho) pra onde quiser: o app
-descobre a pasta do projeto sozinho e, se nao achar, pergunta uma vez e guarda
-a resposta em `%APPDATA%/Klipe/app.json`.
+Sai em `app/dist/Klipe.exe`. Mantenha na pasta instalada ou use um atalho com
+`--root CAMINHO`. O app tambem guarda a ultima raiz em `%APPDATA%/Klipe/app.json`.
 
 O exe NAO empacota navegador: usa o WebView2 que ja vem no Windows. Por isso
 fica em ~15 MB em vez de ~200 MB. Tambem nao empacota o Klipe em si — ele abre
@@ -14,10 +13,9 @@ continua valendo na hora, sem recompilar nada.
 """
 from __future__ import annotations
 
+import argparse
 import os
-import shutil
 import subprocess
-import time
 import sys
 from pathlib import Path
 
@@ -46,20 +44,16 @@ def dlls_do_ctypes() -> list[str]:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dist-dir', type=Path, default=APP / 'dist')
+    options = parser.parse_args()
+    dist = options.dist_dir.resolve()
     icone = APP / "klipe.ico"
     if not icone.exists():
         print(f"faltou o icone: {icone}")
         return 1
 
-    # Um Klipe.exe aberto trava o arquivo e o PyInstaller morre com "Acesso
-    # negado" bem no fim do build — depois de varios minutos de trabalho.
-    # Melhor fechar antes do que descobrir no fim.
-    if os.name == "nt":
-        r = subprocess.run(["taskkill", "/T", "/F", "/IM", f"{NOME}.exe"],
-                           capture_output=True, text=True)
-        if r.returncode == 0:
-            print(f"(fechei um {NOME}.exe que estava aberto)")
-            time.sleep(1.5)
+    # Never kill an open editor to build: it may contain unsaved user work.
 
     extras = []
     for b in dlls_do_ctypes():
@@ -73,7 +67,8 @@ def main() -> int:
         "--windowed",                      # sem console preto atras
         f"--name={NOME}",
         f"--icon={icone}",
-        f"--distpath={APP / 'dist'}",
+        f"--add-data={icone}{os.pathsep}.",
+        f"--distpath={dist}",
         f"--workpath={APP / 'build'}",
         f"--specpath={APP}",
         # O pywebview carrega o backend por NOME em tempo de execucao, entao o
@@ -94,15 +89,12 @@ def main() -> int:
     if r.returncode != 0:
         return r.returncode
 
-    exe = APP / "dist" / f"{NOME}.exe"
+    exe = dist / f"{NOME}.exe"
     if not exe.exists():
         print("o PyInstaller terminou mas nao gerou o exe")
         return 1
     print(f"\npronto: {exe}  ({exe.stat().st_size/1e6:.1f} MB)")
 
-    # limpeza do intermediario (o build/ do PyInstaller nao serve pra nada
-    # depois e ocupa algumas centenas de MB)
-    shutil.rmtree(APP / "build", ignore_errors=True)
     return 0
 
 

@@ -1,303 +1,200 @@
-"""
-klipe_app.py — o Klipe como aplicativo de desktop.
-
-Mesmo produto, duas portas de entrada:
-
-  - **App**  : este arquivo (ou o .exe gerado por `build_exe.py`). Janela
-               nativa, icone proprio, sem console preto, sem barra de endereco.
-  - **Web**  : `Klipe Web.bat` (ou o `Iniciar Klipe.bat` de sempre). Abre no
-               navegador e continua acessivel do celular/outro PC da rede.
-
-Os dois falam com o MESMO servidor na mesma porta. Nao existe versao "app" e
-versao "web" do Klipe — existe o Klipe, e duas formas de olhar pra ele. Se o
-servidor ja estiver de pe (porque voce abriu pelo .bat antes), o app se PLUGA
-nele em vez de subir outro; e nesse caso nao derruba nada ao fechar, porque a
-janela nao e dona do servidor.
-
-A janela usa o WebView2 que ja vem no Windows — nao empacota navegador nenhum,
-por isso o exe fica em ~15 MB em vez de 200.
-"""
+"""Klipe Desktop: native WebView2 window over an owned local Klipe server."""
 from __future__ import annotations
 
+import argparse
+import base64
+import ctypes
+import hashlib
 import json
 import os
-import shutil
-import socket
-import subprocess
+from pathlib import Path
+import re
 import sys
+import threading
 import time
 import traceback
-import urllib.error
-import urllib.request
-from datetime import datetime
-from pathlib import Path
 
-import webview
+from desktop_runtime import AsyncCloseGuard, DesktopServer, close_reasons
 
-PORTA = int(os.environ.get("PORT", "3002"))
-HOST = "127.0.0.1"
-BASE_CFG = Path(os.environ.get("APPDATA", Path.home())) / "Klipe"
-CONFIG = BASE_CFG / "app.json"
-LOG = BASE_CFG / "app.log"
-ESPERA_SERVIDOR = 40           # segundos ate desistir de esperar o server subir
+BASE = Path(os.environ.get('APPDATA', str(Path.home()))) / 'Klipe'
 
 
-def log(msg: str):
-    """
-    App `--windowed` nao tem console: sem isto, qualquer falha some sem deixar
-    rastro e a janela simplesmente nao abre. O log e o unico jeito de saber
-    por que.
-    """
-    linha = f"{datetime.now():%H:%M:%S}  {msg}"
-    try:
-        BASE_CFG.mkdir(parents=True, exist_ok=True)
-        with open(LOG, "a", encoding="utf-8") as f:
-            f.write(linha + "\n")
-    except Exception:
-        pass
-    if not getattr(sys, "frozen", False):
-        print(linha)
-
-
-# ── onde mora o projeto ───────────────────────────────────────────────────
-def raiz_projeto() -> Path | None:
-    """
-    Acha a pasta do Klipe (a que tem `editor-server.js`).
-
-    Ordem: variavel de ambiente -> ao lado do exe/script -> pasta pai ->
-    o que ficou salvo na ultima vez. Se nada servir, devolve None e quem chamou
-    pede a pasta pro usuario.
-    """
-    candidatas = []
-    if os.environ.get("KLIPE_DIR"):
-        candidatas.append(Path(os.environ["KLIPE_DIR"]))
-
-    base = Path(sys.executable).parent if getattr(sys, "frozen", False) \
-        else Path(__file__).resolve().parent
-    candidatas += [base, base.parent, base.parent.parent]
-
-    if CONFIG.exists():
+def root_path(explicit=None):
+    base = Path(sys.executable).parent if getattr(sys, 'frozen', False) else Path(__file__).resolve().parent
+    if explicit:
+        candidates = [Path(explicit)]
+    else:
+        candidates = ([Path(os.environ['KLIPE_DIR'])] if os.environ.get('KLIPE_DIR') else [])
+        candidates += [base, base.parent, base.parent.parent]
         try:
-            salvo = json.loads(CONFIG.read_text(encoding="utf-8")).get("raiz")
-            if salvo:
-                candidatas.append(Path(salvo))
-        except Exception:
+            candidates.append(Path(json.loads((BASE / 'app.json').read_text(encoding='utf-8'))['raiz']))
+        except (OSError, ValueError, KeyError):
             pass
-
-    for c in candidatas:
-        try:
-            if (c / "editor-server.js").exists():
-                return c.resolve()
-        except OSError:
-            continue
-    return None
+    for root in candidates:
+        if (root / 'editor-server.js').is_file() and (root / 'editor.html').is_file():
+            return root.resolve()
+    raise RuntimeError('Pasta do Klipe nao encontrada. Mantenha o aplicativo na pasta instalada ou use --root CAMINHO.')
 
 
-def salvar_raiz(raiz: Path):
-    try:
-        CONFIG.parent.mkdir(parents=True, exist_ok=True)
-        CONFIG.write_text(json.dumps({"raiz": str(raiz)}), encoding="utf-8")
-    except Exception:
-        pass
-
-
-# ── servidor ──────────────────────────────────────────────────────────────
-def porta_responde(porta: int = PORTA, timeout: float = 0.4) -> bool:
-    try:
-        with socket.create_connection((HOST, porta), timeout=timeout):
-            return True
-    except OSError:
-        return False
-
-
-def achar_node() -> str | None:
-    """
-    Onde esta o `node`.
-
-    `shutil.which` resolve pelo PATH, mas o PATH de um app aberto pelo Explorer
-    nao e o mesmo do terminal — o instalador do Node poe a pasta no PATH do
-    usuario, e isso nem sempre chega num processo iniciado por atalho. Por isso
-    tem uma lista de lugares conhecidos como reserva.
-    """
-    achado = shutil.which("node")
-    if achado:
-        return achado
-    for p in (r"C:\Program Files\nodejs\node.exe",
-              r"C:\Program Files (x86)\nodejs\node.exe",
-              str(Path.home() / "AppData/Roaming/npm/node.exe"),
-              str(Path.home() / "AppData/Local/Programs/nodejs/node.exe")):
-        if Path(p).exists():
-            return p
-    return None
-
-
-def subir_servidor(raiz: Path) -> subprocess.Popen | None:
-    """Sobe o `editor-server.js` sem janela de console."""
-    node = achar_node()
-    if not node:
-        log("ERRO: nao achei o node.exe (nem no PATH nem nos lugares padrao)")
-        return None
-    log(f"node: {node}")
-    flags = 0
-    si = None
-    if os.name == "nt":
-        flags = subprocess.CREATE_NO_WINDOW
-        si = subprocess.STARTUPINFO()
-        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    # a saida do servidor vai pro log: se ele morrer na largada (porta ocupada,
-    # modulo faltando), da pra ler o motivo em vez de adivinhar
-    saida = open(BASE_CFG / "server.log", "a", encoding="utf-8", errors="replace")
-    return subprocess.Popen(
-        [node, "editor-server.js"], cwd=str(raiz),
-        stdout=saida, stderr=subprocess.STDOUT,
-        creationflags=flags, startupinfo=si)
-
-
-def esperar_servidor(proc: subprocess.Popen | None, limite=ESPERA_SERVIDOR) -> bool:
-    t0 = time.time()
-    while time.time() - t0 < limite:
-        if porta_responde():
-            return True
-        if proc is not None and proc.poll() is not None:
-            return False          # o node morreu antes de abrir a porta
-        time.sleep(0.25)
-    return False
-
-
-def derrubar(proc: subprocess.Popen | None):
-    """
-    Mata o servidor E os filhos dele.
-
-    `proc.terminate()` sozinho nao serve: o `editor-server.js` spawna ffmpeg,
-    Chrome headless e Python durante um render, e esses ficariam orfaos
-    comendo CPU depois que a janela fechasse.
-    """
-    if proc is None or proc.poll() is not None:
-        return
-    if os.name == "nt":
-        subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)],
-                       capture_output=True)
+def message(text):
+    if os.name == 'nt':
+        ctypes.windll.user32.MessageBoxW(None, str(text), 'Klipe Desktop', 0x40)
     else:
-        proc.terminate()
+        print(text)
+
+
+def evaluate(window, expression):
+    # Video streams can keep NavigationCompleted pending after the editor is
+    # usable. Use the native WebView2 executor instead of waiting for onload.
+    if os.name == 'nt':
+        return window.native.browser.evaluate_js('JSON.stringify(' + expression + ')', True)
+    return window.evaluate_js(expression)
+
+
+class SingleInstance:
+    def __init__(self, root):
+        self.handle = None
+        if os.name == 'nt':
+            api = ctypes.windll.kernel32
+            api.CreateMutexW.argtypes = [ctypes.c_void_p, ctypes.c_bool, ctypes.c_wchar_p]
+            api.CreateMutexW.restype = ctypes.c_void_p
+            name = hashlib.sha256(str(root).lower().encode()).hexdigest()[:24]
+            self.handle = api.CreateMutexW(None, False, 'Local\\KlipeDesktop-' + name)
+            if not self.handle:
+                raise RuntimeError('Nao foi possivel criar a janela do Klipe.')
+            if api.GetLastError() == 183:
+                self.close()
+                raise RuntimeError('O Klipe Desktop desta pasta ja esta aberto. Procure a janela na barra de tarefas.')
+
+    def close(self):
+        if self.handle:
+            api = ctypes.windll.kernel32
+            api.CloseHandle.argtypes = [ctypes.c_void_p]
+            api.CloseHandle(self.handle)
+            self.handle = None
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--root')
+    parser.add_argument('--project', default='')
+    parser.add_argument('--smoke-test', metavar='REPORT_JSON')
+    parser.add_argument('--smoke-close-test', action='store_true')
+    args = parser.parse_args()
+    if args.project and not re.fullmatch(r'[a-zA-Z0-9_-]+', args.project):
+        raise RuntimeError('Identificador de projeto invalido.')
+    root = root_path(args.root)
+    instance = SingleInstance(root)
+    BASE.mkdir(parents=True, exist_ok=True)
+    if not args.smoke_test:
+        (BASE / 'app.json').write_text(json.dumps({'raiz': str(root)}), encoding='utf-8')
+    server = DesktopServer(root, BASE / 'logs')
     try:
-        proc.wait(timeout=10)
-    except Exception:
-        pass
+        url = server.start()
+        import webview
+        webview.settings['OPEN_EXTERNAL_LINKS_IN_BROWSER'] = True
+        webview.settings['ALLOW_DOWNLOADS'] = True
+        window = webview.create_window('Klipe Desktop', url + ('/p/' + args.project if args.project else '/'),
+                                       width=1440, height=900, min_size=(960, 640),
+                                       background_color='#111318', text_select=True,
+                                       hidden=bool(args.smoke_test and not args.project))
+        testing = threading.Event()
+        report = {}
 
+        def confirm_close():
+            try:
+                state = evaluate(window, """(() => {
+                  if (typeof NLE === 'undefined' || !NLE.sm || !NLE.liveSync) return {};
+                  return {saving:!!NLE.liveSync.saving,
+                    dirty:!!NLE.liveSync.savedFingerprint && NLE.liveSync.fingerprint() !== NLE.liveSync.savedFingerprint};
+                })()""") or {}
+                if state.get('saving'):
+                    window.create_confirmation_dialog('Salvando projeto', 'Aguarde o salvamento terminar antes de fechar.')
+                    return False
+                reasons = close_reasons(state, server.render_running())
+            except Exception:
+                reasons = ['Nao foi possivel conferir se existem alteracoes nao salvas.']
+            return not reasons or window.create_confirmation_dialog('Fechar Klipe?', '\n\n'.join(reasons) + '\n\nFechar mesmo assim?')
 
-def render_rodando() -> bool:
-    """Pergunta ao servidor se tem render em andamento."""
-    try:
-        with urllib.request.urlopen(
-                f"http://{HOST}:{PORTA}/api/render-forge/status", timeout=2) as r:
-            return json.loads(r.read()).get("status") == "running"
-    except Exception:
-        return False
+        close_guard = AsyncCloseGuard(confirm_close, window.destroy)
+        window.events.closing += lambda: True if testing.is_set() else close_guard.request()
 
+        def smoke():
+            if not args.smoke_test:
+                return
+            try:
+                if not window.events.shown.wait(30):
+                    raise RuntimeError('A janela nao abriu em 30 segundos.')
+                prepared = False
+                for _ in range(300):
+                    time.sleep(.2)
+                    report.update(evaluate(window, """({title:document.title, url:location.href,
+                      ready:document.readyState, body:document.body.innerText.length,
+                      editor:typeof NLE !== 'undefined' && !!NLE.sm,
+                      player:typeof NLE !== 'undefined' && !!NLE.preview?.p,
+                      width:innerWidth, height:innerHeight})""") or {})
+                    if report.get('ready') in ('interactive', 'complete') and report.get('body', 0) > 30:
+                        if not args.project:
+                            report['ok'] = True
+                            break
+                        if report.get('editor'):
+                            if not prepared:
+                                time.sleep(2)
+                                prepared = bool(evaluate(window, """(() => {
+                                  const p=NLE.preview?.p; if(!p?.video) return false;
+                                  const t=Math.min(2,Math.max(0,NLE.sm.getState().videoDuration-.1));
+                                  NLE.sm.dispatch('SET_PLAYHEAD',t); p.seek(t); return true;
+                                })()"""))
+                                continue
+                            preview = evaluate(window, """(() => {
+                              const p = NLE.preview?.p;
+                              if (!p?.gl || !p.video || p.video.readyState < 2) return {visible:0,player:!!p,gl:!!p?.gl,video:!!p?.video,state:p?.video?.readyState,src:p?.video?.currentSrc};
+                              p.desenhar();
+                              const brolls=(p.cfg.brolls||[]).filter(b=>p.t>=b.startSec&&p.t<b.endSec);
+                              const titles=(p.cfg.titles||[]).filter(t=>p.t>=t.startSec&&p.t<t.endSec);
+                              if (brolls.some(b=>{const v=p._brolls.get(b.id||b.src);return !v||v.readyState<2||v.seeking||v._klipeWarming;}) ||
+                                  titles.some(t=>!p._quadrosTitulos?.get(t.id??t.startSec)?.bitmap && !p._pedirTitulo(t).pronto)) return {visible:0,waiting:'layers'};
+                              const gl=p.gl, w=p.canvas.width, h=p.canvas.height;
+                              const pixels=new Uint8Array(w*h*4); gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
+                              let visible=0; for(let i=0;i<pixels.length;i+=64) if(pixels[i]+pixels[i+1]+pixels[i+2]>35) visible++;
+                              return {visible,width:w,height:h,time:p.t,brolls:brolls.length,titles:titles.length,png:visible>0?p.canvas.toDataURL('image/png'):null};
+                            })()""")
+                            report['preview'] = preview
+                            if preview and preview.get('visible', 0) > 0:
+                                Path(args.smoke_test).with_suffix('.png').write_bytes(base64.b64decode(preview.pop('png').split(',', 1)[1]))
+                                report.update(ok=True, preview=preview)
+                                break
+                report.setdefault('ok', False)
+                report['serverPid'] = server.proc.pid
+            except Exception as exc:
+                report.update(ok=False, error=str(exc))
+            finally:
+                if not args.smoke_close_test:
+                    testing.set()
+                window.destroy()
 
-# ── janela ────────────────────────────────────────────────────────────────
-def checar_backend() -> str | None:
-    """
-    Confere se a ponte pro WebView2 carrega, e devolve o erro DE VERDADE.
-
-    O pywebview engole qualquer falha aqui e responde sempre "You must have
-    pythonnet installed" — mesmo quando o pythonnet esta instalado e o problema
-    e outro (DLL faltando no pacote, .NET ausente). Sem isto, o exe morre com
-    uma mensagem que aponta pro lugar errado.
-    """
-    try:
-        import clr  # noqa: F401
-        return None
-    except Exception:
-        return traceback.format_exc()
-
-
-def main() -> int:
-    log(f"--- abrindo Klipe (frozen={getattr(sys, 'frozen', False)}) ---")
-    log(f"executavel: {sys.executable}")
-    erro_backend = checar_backend()
-    if erro_backend:
-        log("ERRO REAL ao carregar o clr/pythonnet:\n" + erro_backend)
-    raiz = raiz_projeto()
-    log(f"raiz do projeto: {raiz}")
-    if raiz is None:
-        # sem a pasta o app nao tem o que abrir — pede uma vez e guarda
-        escolha = webview.create_window("Klipe", html="<p>escolhendo pasta…</p>",
-                                        hidden=True)
-        pasta = None
-
-        def _pedir():
-            nonlocal pasta
-            r = escolha.create_file_dialog(webview.FOLDER_DIALOG)
-            pasta = Path(r[0]) if r else None
-            escolha.destroy()
-
-        webview.start(_pedir, escolha)
-        if not pasta or not (pasta / "editor-server.js").exists():
-            return 1
-        raiz = pasta.resolve()
-        salvar_raiz(raiz)
-    else:
-        salvar_raiz(raiz)
-
-    # Se o servidor ja estiver de pe (voce abriu pelo .bat), a janela so se
-    # pluga nele — e ao fechar NAO derruba, porque nao foi ela que subiu.
-    proc = None
-    dono = False
-    if porta_responde():
-        log(f"porta {PORTA} ja responde — plugando no servidor existente")
-    else:
-        log(f"porta {PORTA} livre — subindo o servidor")
-        proc = subir_servidor(raiz)
-        dono = True
-        if not esperar_servidor(proc):
-            log("ERRO: o servidor nao respondeu a tempo (ver server.log)")
-            derrubar(proc)
-            aviso = webview.create_window(
-                "Klipe", html=(
-                    "<body style='font:14px system-ui;padding:28px;color:#eceff1;"
-                    "background:#12151b'><h2 style='color:#E8940A'>Não consegui subir o servidor</h2>"
-                    f"<p>Tentei rodar <code>node editor-server.js</code> em<br><code>{raiz}</code></p>"
-                    "<p>Confira se o Node está instalado e se a porta "
-                    f"<b>{PORTA}</b> está livre.</p></body>"),
-                width=620, height=320)
-            webview.start()
-            return 1
-
-    janela = webview.create_window(
-        "Klipe", f"http://{HOST}:{PORTA}/",
-        width=1500, height=950, min_size=(1024, 700),
-        background_color="#12151b", text_select=True)
-
-    def ao_fechar():
-        # Fechar a janela no meio de um render mataria o render junto. Se a
-        # janela e dona do servidor, pergunta antes.
-        if dono and render_rodando():
-            return janela.create_confirmation_dialog(
-                "Render em andamento",
-                "Tem um render rodando. Fechar agora cancela ele.\n\nFechar mesmo assim?")
-        return True
-
-    janela.events.closing += ao_fechar
-    try:
-        log("abrindo a janela")
-        # private_mode=False guarda cookies: sem isso o login do Klipe seria
-        # pedido de novo a cada abertura.
-        webview.start(private_mode=False, storage_path=str(BASE_CFG / "webview"))
-        log("janela fechada")
+        webview.start(smoke, gui='edgechromium' if os.name == 'nt' else None,
+                      icon=str(Path(__file__).resolve().parent / 'klipe.ico'),
+                      private_mode=False, storage_path=str(BASE / 'webview-desktop'))
+        if args.smoke_test:
+            server.stop()
+            report['serverStopped'] = server.proc.poll() is not None
+            report['guardedClose'] = close_guard.allowed
+            Path(args.smoke_test).write_text(json.dumps(report, indent=2), encoding='utf-8')
+            return 0 if report.get('ok') and report['serverStopped'] else 1
+        return 0
     finally:
-        if dono:
-            derrubar(proc)
-            log("servidor derrubado")
-    return 0
+        server.stop()
+        instance.close()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     try:
         raise SystemExit(main())
-    except SystemExit:
-        raise
-    except Exception:
-        # sem console, um traceback nao aparece em lugar nenhum
-        log("FALHA:\n" + traceback.format_exc())
-        raise
+    except Exception as exc:
+        BASE.mkdir(parents=True, exist_ok=True)
+        with (BASE / 'app.log').open('a', encoding='utf-8') as output:
+            output.write(traceback.format_exc() + '\n')
+        if '--smoke-test' not in sys.argv:
+            message(f'{exc}\n\nDetalhes em {BASE / "app.log"}')
+        raise SystemExit(1)

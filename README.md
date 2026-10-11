@@ -83,7 +83,8 @@ hardware, qualidade de saída e condições de cache.
 1. Baixe o [ZIP do Klipe](https://github.com/neuroinovatech-lab/Klipe/archive/refs/heads/main.zip).
 2. **Extraia tudo** para uma pasta permanente, por exemplo `Documentos\Klipe`.
 3. Dê dois cliques em **`Instalar Klipe.bat`** e confirme com **S**.
-4. Quando terminar, abra o atalho **Klipe** na área de trabalho.
+4. Quando terminar, abra **Klipe Desktop** na área de trabalho para usar a janela
+   própria, ou **Klipe** para abrir no navegador.
 
 O instalador verifica Node.js, Python 3.11 e FFmpeg, instala o que faltar pelo
 WinGet e prepara as dependências e o modelo de remoção de fundo. **Não precisa
@@ -96,6 +97,13 @@ continua local e os projetos não são apagados pelo instalador.
 
 Veja [o guia de instalação e solução de problemas](docs/INSTALACAO.md).
 Esta primeira versão é um instalador por script, não um `.exe` assinado.
+
+### Klipe Desktop
+
+O instalador também prepara o **Klipe Desktop para Windows**, com ícone, janela
+própria e inicialização automática dos processos. Os projetos e o editor são os
+mesmos; `Klipe Desktop.bat` abre a janela e `Iniciar Klipe.bat` mantém o modo web.
+Confira [o guia do Desktop](app/README.md) para os detalhes e limites desta versão.
 
 ### macOS
 

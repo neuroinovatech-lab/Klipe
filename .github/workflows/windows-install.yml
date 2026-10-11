@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'tools/*windows*.ps1'
+      - 'tools/install-desktop.ps1'
+      - 'app/**'
       - '*Klipe.bat'
       - 'requirements*.txt'
       - 'package*.json'
@@ -13,6 +15,8 @@ on:
   pull_request:
     paths:
       - 'tools/*windows*.ps1'
+      - 'tools/install-desktop.ps1'
+      - 'app/**'
       - '*Klipe.bat'
       - 'requirements*.txt'
       - 'package*.json'
@@ -40,6 +44,16 @@ jobs:
         run: ./tools/install-windows.ps1 -Yes
       - name: Testar editor
         run: node --test tests/*.test.cjs
+      - name: Testar render e ciclo de vida Desktop
+        run: .venv/Scripts/python.exe -m unittest discover -s tests -p 'test_*.py'
+      - name: Verificar executavel Desktop
+        shell: powershell
+        run: |
+          $app = Start-Process -FilePath app/dist/Klipe.exe -ArgumentList '--smoke-test logs/desktop-ci.json --smoke-close-test' -WindowStyle Hidden -PassThru
+          if (-not $app.WaitForExit(90000)) { Stop-Process -Id $app.Id; throw 'Desktop excedeu o tempo de teste' }
+          if ($app.ExitCode -ne 0) { throw 'Desktop falhou' }
+          $result = Get-Content logs/desktop-ci.json -Raw | ConvertFrom-Json
+          if (-not $result.ok -or -not $result.serverStopped -or -not $result.guardedClose) { throw 'Janela, fechamento ou servidor nao passou na verificacao' }
       - name: Iniciar e verificar servidor
         shell: powershell
         run: ./tools/start-windows.ps1 -SmokeTest
