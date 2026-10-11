@@ -1,5 +1,12 @@
 # Instalar o Klipe
 
+[Voltar](../README.md) · [Primeiro video](PRIMEIROS-PASSOS.md) · [Novidades](NOVIDADES.md)
+
+No Windows, o caminho mais simples e baixar o ZIP e executar o instalador.
+Nao e preciso saber programar, instalar Conda ou copiar comandos para comecar.
+Use Windows 10/11 de 64 bits, internet, WinGet e alguns GB livres para os
+programas, modelos e arquivos temporarios. Videos e renders exigem espaco extra.
+
 ## Windows: dois cliques
 
 1. Baixe o [ZIP oficial](https://github.com/neuroinovatech-lab/Klipe/archive/refs/heads/main.zip).
@@ -34,13 +41,31 @@ O tamanho e o tempo variam com os downloads e a conexao; reserve alguns GB livre
 
 ## Abrir e atualizar
 
-Use o atalho ou `Iniciar Klipe.bat`. O navegador abre somente depois de o servidor
-responder. Mantenha a janela do Klipe aberta; `Ctrl+C` encerra o servidor iniciado
-por ela. Portas ocupadas sao evitadas sem encerrar outros programas.
+**Desktop:** use **Klipe Desktop** ou `Klipe Desktop.bat`. Ele abre a janela e
+inicia seus processos locais. Salve antes de fechar. Fechar durante um render
+pode cancela-lo; espere a exportacao terminar.
+
+**Navegador:** use **Klipe** ou `Iniciar Klipe.bat`. O navegador abre depois de o
+servidor responder. Mantenha a janela do servidor aberta; `Ctrl+C` encerra o
+servidor iniciado por ela. Portas ocupadas sao evitadas sem fechar outros apps.
+
+Nao edite o mesmo projeto em duas janelas ao mesmo tempo. Nao e necessario
+instalar uma extensao de navegador para usar o editor.
 
 Antes de atualizar, salve e feche o Klipe e faca backup de `public/projects/`.
 Atualize os arquivos do aplicativo e execute `Instalar Klipe.bat` novamente para
 atualizar as dependencias. Nao substitua projetos por pastas vazias de um ZIP.
+
+Se voce nao usa Git, uma forma de preservar a instalacao anterior e:
+
+1. Salve, feche e copie `public/projects/` para um backup fora da instalacao.
+2. Baixe o ZIP atualizado e extraia em outra pasta permanente, como `Documentos\Klipe-atualizado`.
+3. Execute `Instalar Klipe.bat` nessa nova pasta. O atalho passara a apontar para ela.
+4. Copie suas pastas de projeto para `public/projects/` da nova instalacao. Confira tambem dependencias externas, como fontes e musicas, conforme o guia de primeiros passos.
+5. Abra um projeto e confira preview, Save e um render curto antes de descartar a instalacao anterior.
+
+Nao copie ambientes `.venv`, `node_modules` ou apenas `app/dist/Klipe.exe` para
+substituir a instalacao em outro PC. Cada maquina deve executar o instalador.
 
 ## Problemas comuns
 
@@ -52,6 +77,14 @@ atualizar as dependencias. Nao substitua projetos por pastas vazias de um ZIP.
 - **Pasta sem permissao:** extraia em uma pasta do seu usuario, fora de Program Files.
 - **Aviso de seguranca:** esta versao nao tem assinatura digital. Confirme que o
   download veio do repositorio oficial; nao desative protecoes do Windows.
+- **Desktop ja aberto:** procure a janela na barra de tarefas. O app impede duas instancias Desktop da mesma pasta.
+- **Erro ao atualizar o executavel:** salve e feche o Desktop antes de executar o instalador. O build nao encerra editores abertos automaticamente.
+- **Desktop travou ao fechar:** atualize para a versao com fechamento assincrono; houve uma correcao especifica desse problema. Antes de forcar o encerramento, considere alteracoes nao salvas.
+
+Logs do Desktop ficam em `%APPDATA%/Klipe/app.log` e `%APPDATA%/Klipe/logs/`.
+Cole `%APPDATA%/Klipe` na barra de endereco do Explorador de Arquivos para
+encontrar essa pasta. Logs de instalacao ficam em `logs/` dentro do Klipe.
+Revise dados pessoais antes de compartilhar qualquer log.
 
 ## Opcoes avancadas
 

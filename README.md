@@ -16,9 +16,35 @@
 
 ## O Klipe
 
-Klipe é um editor de vídeo local com timeline multipista no navegador e um
+Klipe é um editor de vídeo local com timeline multipista no Desktop Windows ou no navegador e um
 motor próprio de motion design em Python/Skia. Preview, composição e render
 vivem no mesmo fluxo para aproximar o que você vê do arquivo final.
+
+**Primeira vez por aqui?** Não precisa saber programar para começar a editar.
+Baixe o aplicativo, instale e siga o [guia para iniciantes](docs/PRIMEIROS-PASSOS.md).
+O ZIP público não inclui os vídeos e projetos particulares da demonstração.
+
+| Quero... | Onde começar |
+| --- | --- |
+| Instalar no meu PC | [Instalação passo a passo](docs/INSTALACAO.md) |
+| Fazer meu primeiro vídeo | [Do primeiro projeto ao MP4](docs/PRIMEIROS-PASSOS.md) |
+| Entender o que mudou | [Novidades da versão](docs/NOVIDADES.md) |
+| Tirar o fundo ou colocar texto atrás da pessoa | [Recorte explicado](docs/PRIMEIROS-PASSOS.md#remover-fundo-e-colocar-texto-atras-da-pessoa) |
+| Resolver um problema | [Dúvidas frequentes](docs/PRIMEIROS-PASSOS.md#duvidas-frequentes) |
+| Usar ajuda de um agente de código | [Edição assistida](docs/ASSISTENTE.md) |
+
+## Novidades
+
+- **Klipe Desktop para Windows:** o editor em janela própria, com a marca oficial e atalho na área de trabalho.
+- **Instalação automática:** prepara as dependências, o Desktop e o módulo local de remoção de fundo.
+- **Recorte em Propriedades:** modos para remover o cenário ou colocar a pessoa na frente dos títulos, com limpeza e suavidade ajustáveis.
+- **Posição e escala do vídeo principal:** reenquadre cada clipe em Propriedades, sem confundir isso com um zoom animado.
+- **Fechamento do Desktop corrigido:** verifica alterações sem bloquear a janela e avisa sobre edições não salvas ou render ativo.
+- **Preview do recorte ajustado:** correções de sincronismo entre o vídeo e a pessoa recortada.
+
+Veja [o que cada novidade faz e seus limites](docs/NOVIDADES.md). O Desktop usa
+a pasta instalada do Klipe; ainda não é um pacote offline independente nem um
+executável assinado. A versão Desktop atual é para Windows.
 
 ## Veja o Klipe em ação
 
@@ -131,6 +157,16 @@ npm start
 O repositório começa sem vídeos nem projetos de clientes. Abra o Klipe, crie
 um projeto e importe uma mídia. Cada projeto recebe seu próprio
 `edit_config.json` e pode ser acessado em `/p/<slug>`.
+
+1. Clique em **Novo** e dê um nome simples, como `meu-primeiro-video`.
+2. Escolha seu vídeo principal e clique em **Criar**.
+3. Dê **Play**, selecione um clipe na timeline e veja seus controles em **Propriedades**.
+4. Adicione textos e efeitos, confira o resultado e clique em **Save**.
+5. Para gerar o vídeo final, abra **Render**, escolha o destino e use **Iniciar Render**.
+
+**Save guarda a edição; Render cria o arquivo de vídeo.** Um MP4 não substitui
+a pasta do projeto editável. O [guia de primeiros passos](docs/PRIMEIROS-PASSOS.md)
+explica cada etapa, o recorte e como levar o projeto para outro computador.
 
 ## Arquitetura
 

@@ -45,7 +45,12 @@ jobs:
       - name: Testar editor
         run: node --test tests/*.test.cjs
       - name: Testar render e ciclo de vida Desktop
-        run: .venv/Scripts/python.exe -m unittest discover -s tests -p 'test_*.py'
+        shell: powershell
+        run: |
+          $runtime = Get-Content .klipe-runtime.json -Raw | ConvertFrom-Json
+          $env:KLIPE_FFMPEG = $runtime.ffmpeg
+          $env:KLIPE_FFPROBE = $runtime.ffprobe
+          .venv/Scripts/python.exe -m unittest discover -s tests -p 'test_*.py'
       - name: Verificar executavel Desktop
         shell: powershell
         run: |
