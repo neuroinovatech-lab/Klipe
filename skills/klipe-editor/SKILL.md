@@ -20,6 +20,9 @@ the user's timeline and make the smallest change that satisfies the request.
 4. Measure source media with FFprobe. Do not infer duration, frame rate,
    dimensions, or audio presence from filenames.
 5. Choose the applicable mode in [references/workflows.md](references/workflows.md).
+6. For speech-driven edits or reference matching, use
+   [references/editorial-review.md](references/editorial-review.md). The local
+   assistant can supply candidates and diagnostics; these are not editorial facts.
 
 ## Editing Decisions
 

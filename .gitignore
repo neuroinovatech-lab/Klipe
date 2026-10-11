@@ -1,6 +1,10 @@
 # Dependencias e ambientes locais
 node_modules/
 .venv/
+.venv-vision/
+models/*.tflite
+models/*.source.json
+models/*.download
 venv/
 env/
 __pycache__/

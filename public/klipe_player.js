@@ -784,8 +784,9 @@ class KlipePlayer {
     // o catalogo desenha os titulos sobre ele, como folha em branco.
     if (this.video) this._camada('fonte', this.video, { recorte: this._recorteZoom(t), corrigirCor: true });
 
+    const paintBrolls = (foreground) => {
     for (const b of (this.cfg.brolls || [])) {
-      if (t < b.startSec || t >= b.endSec) continue;
+      if (!!b.foreground !== foreground || t < b.startSec || t >= b.endSec) continue;
       const v = this._pedirBroll(b);
       // `rel` é o tempo dentro do CLIPE — é o que os fades medem.
       // O <video> tem que ser sincronizado com o tempo dentro da FONTE, que é
@@ -818,6 +819,9 @@ class KlipePlayer {
                      escala: b.scale || 1 });
     }
 
+    };
+    paintBrolls(false);
+
     for (const tt of (this.cfg.titles || [])) {
       if (t < tt.startSec || t >= tt.endSec) continue;
       let e = this._pedirTitulo(tt);
@@ -842,6 +846,7 @@ class KlipePlayer {
       });
     }
 
+    paintBrolls(true);
     // legenda + barra por último: no render elas ficam por cima de tudo
     const ov = this._pedirOverlay(t);
     const velho = this._velhos.get(Math.floor(t / KlipePlayer.JANELA_S));

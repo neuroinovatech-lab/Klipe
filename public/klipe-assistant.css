@@ -1,0 +1,21 @@
+#assistant-panel { color:#e4e6eb;background:#14191f;border:1px solid #414957;border-radius:8px;width:min(660px,94vw);max-height:86vh;padding:0;overflow:auto;font:13px Arial,sans-serif;letter-spacing:0; }
+#assistant-panel::backdrop { background:#0009; }
+#assistant-panel header,#assistant-panel footer {display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#1d252e;position:sticky;z-index:1;}
+#assistant-panel header {top:0;} #assistant-panel footer {bottom:0;}
+#assistant-panel button {font:inherit;color:#f0f3f6;background:#303c49;border:1px solid #536173;border-radius:4px;padding:7px 10px;cursor:pointer;flex-shrink:0;}
+#assistant-panel button:hover {background:#405166;} #assistant-panel button:disabled {opacity:.5;cursor:default;}
+#assistant-panel button:focus-visible,#assistant-panel input:focus-visible {outline:2px solid #52c3a6;outline-offset:2px;}
+#assistant-panel header button {font-size:20px;width:32px;height:32px;padding:0;}
+#assistant-panel .assist-actions {display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:16px 18px 0;}
+#assistant-panel input[type=checkbox] {accent-color:#52c3a6;}
+#assist-status {padding:0 18px;color:#91d9c6;overflow-wrap:anywhere;min-height:18px;}
+#assist-results section {padding:0 18px 12px;border-bottom:1px solid #343d49;}
+#assist-results h3 {font-size:14px;margin:14px 0 8px;}
+.assist-issue,.assist-suggestion {display:flex;gap:10px;align-items:center;border-bottom:1px solid #2b333d;padding:10px 0;}
+.assist-issue span,.assist-suggestion div {flex:1;min-width:0;overflow-wrap:anywhere;}
+.assist-issue.error {color:#ff9c9c;} .assist-issue.warning {color:#efd28a;}
+.assist-suggestion small {display:block;color:#a9b4bf;margin-top:4px;}
+#assistant-panel fieldset {margin:16px 18px;border:1px solid #414957;border-radius:4px;}
+.assist-range {display:flex;flex-wrap:wrap;align-items:end;gap:12px;}
+.assist-range label {display:flex;flex-direction:column;gap:6px;flex:1;min-width:100px;}
+.assist-range input {box-sizing:border-box;background:#090d12;color:white;border:1px solid #536173;padding:7px;width:100%;font:inherit;}

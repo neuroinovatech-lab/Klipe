@@ -3404,6 +3404,7 @@ body.theme-v2 .timeline-area, body.theme-v2 .tracks-scroll { background: var(--b
 #accent-picker:hover { border-color: var(--accent-line, #888); }
 body:not(.theme-v2) #accent-picker { display: none; }
 </style>
+<link rel="stylesheet" href="/klipe-assistant.css">
 </head>
 <body>
 
@@ -8089,6 +8090,7 @@ class PropertiesPanel {
         ).join('')}</select></div>`;
       }
       html += `<div class="prop-field"><label>Label</label><input value="${clip.label || ''}" data-prop="label"></div>`;
+      html += `<div class="prop-field"><label><input type="checkbox" data-prop="foreground" ${clip.foreground ? 'checked' : ''}> Acima dos t\u00edtulos</label></div>`;
       if (isElasticMotion) {
         html += `<div class="prop-hint" style="font-size:9px;color:#8bc8a0;margin:-2px 0 8px">
           Motion B-roll: puxe qualquer borda na timeline para ajustar a duração.</div>`;
@@ -8536,7 +8538,7 @@ class PropertiesPanel {
         // Audio
         'pan','pitchSemi','pitchCents','speedChange','fadeIn','fadeOut',
         'eq1Freq','eq1Gain','eq2Freq','eq2Gain','eq3Freq','eq3Gain','eq4Freq','eq4Gain','eq5Freq','eq5Gain','eq6Freq','eq6Gain'];
-      const boolProps = ['behindPerson','stabilize','muted','volumeOn','panOn','pitchOn','speedOn','eqOn'];
+      const boolProps = ['foreground','behindPerson','stabilize','muted','volumeOn','panOn','pitchOn','speedOn','eqOn'];
       // Props that require a full panel re-render (different UI per value)
       const rerenderProps = ['style','subStyle'];
       inputs.forEach(inp => {
@@ -9454,6 +9456,7 @@ const NLE = {
           // save apagava o alpha de todos os blocos da prancha e a folha virava
           // um bloco chapado por cima dela. É a razão real de "F5 sem salvar".
           if (c.alpha) b.alpha = true;
+          if (c.foreground) b.foreground = true;
           if (c.fadeIn) b.fadeIn = c.fadeIn;
           if (c.fadeOut) b.fadeOut = c.fadeOut;
           // ponto de entrada na fonte + duração real do arquivo: sem os dois o
@@ -10385,6 +10388,7 @@ const NLE = {
         // clipe assado com alpha lado-a-lado — camada de EFEITO sobre o
         // video principal, em vez de efeito fundido nele
         ...(c.alpha ? { alpha: true } : {}),
+        ...(c.foreground ? { foreground: true } : {}),
         ...(c.posX ? { posX: c.posX } : {}),
         ...(c.posY ? { posY: c.posY } : {}),
         ...(c.scale && c.scale !== 1 ? { scale: c.scale } : {}),
@@ -21344,5 +21348,7 @@ setTimeout(() => {
 // Re-render media lib after config loads (availableBrolls etc)
 setTimeout(() => { if (NLE.mediaLib && NLE.mediaLib.render) NLE.mediaLib.render(); }, 1500);
 </script>
+<script src="/klipe-assist-core.js"></script>
+<script src="/klipe-assistant.js"></script>
 </body>
 </html>

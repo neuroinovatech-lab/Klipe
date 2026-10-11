@@ -1304,7 +1304,9 @@ def build_video_filter_graph(cfg, n_brolls_inputs, titles_input_idx,
     # 3. Sequential overlays brolls (CPU)
     cur_label = source_label
     for i, (start, end) in enumerate(broll_intervals):
-        next_label = f"v_after_b{i}" if i < len(broll_intervals) - 1 else "v_with_brolls"
+        if brolls_cfg[i].get("foreground"):
+            continue
+        next_label = f"v_after_b{i}"
         ox, oy = broll_pos[i] if i < len(broll_pos) else (0, 0)
         parts.append(
             f"[{cur_label}][b{i}]overlay={ox}:{oy}:enable='between(t,{start},{end})':"
@@ -1312,9 +1314,11 @@ def build_video_filter_graph(cfg, n_brolls_inputs, titles_input_idx,
         )
         cur_label = next_label
 
-    if n_brolls_inputs == 0:
-        parts.append(f"[{source_label}]copy[v_with_brolls]")
+    parts.append(f"[{cur_label}]copy[v_with_brolls]")
 
+    # Keep captions/shapes separate when a person sits above the title layer.
+    above_foreground = [it for it in (titles_indiv or []) if len(it) > 4 and it[4]]
+    titles_indiv = [it for it in (titles_indiv or []) if not (len(it) > 4 and it[4])]
     # 4. Titles overlay — 3 modos
     if skip_titles:
         parts.append(f"[v_with_brolls]copy[vout]")
@@ -1359,6 +1363,8 @@ def build_video_filter_graph(cfg, n_brolls_inputs, titles_input_idx,
                     f"[{cur}][{in_idx}:v]overlay=0:0:enable='between(t,{s_sec},{e_sec})':format=auto[{nxt}]"
                 )
             cur = nxt
+    elif above_foreground:
+        parts.append(f"[v_with_brolls]copy[vout]")
     elif titles_input_idx is None:
         # NATIVE drawtext: chain de drawtext direto na video output
         titles_chain = build_native_titles_chain(cfg.get("titles", []), W, H)
@@ -1371,6 +1377,23 @@ def build_video_filter_graph(cfg, n_brolls_inputs, titles_input_idx,
             f"[v_with_brolls][{titles_input_idx}:v]overlay=0:0:format=auto[vout]"
         )
 
+    foreground = [i for i in range(n_brolls_inputs) if brolls_cfg[i].get("foreground")]
+    if foreground:
+        parts[-1] = parts[-1].replace("[vout]", "[v_before_foreground]")
+        current = "v_before_foreground"
+        for index, i in enumerate(foreground):
+            start, end = broll_intervals[i]
+            ox, oy = broll_pos[i]
+            target = "vout" if index == len(foreground)-1 else f"v_foreground_{i}"
+            parts.append(f"[{current}][b{i}]overlay={ox}:{oy}:"
+                         f"enable='gte(t,{start})*lt(t,{end})':"
+                         f"eof_action=pass:repeatlast=0:format=auto[{target}]")
+            current = target
+
+    for index, item in enumerate(above_foreground):
+        parts[-1] = parts[-1].replace("[vout]", f"[v_before_extra_{index}]")
+        parts.append(f"[v_before_extra_{index}][{item[0]}:v]overlay=0:0:"
+                     f"enable='gte(t,{item[1]})*lt(t,{item[2]})':format=auto[vout]")
     return ";".join(parts)
 
 
@@ -1476,7 +1499,8 @@ def render_composite(cfg, titles_mov, out_path, ass_path=None,
             tf = item[3] if len(item) > 3 else {}
             # -itsoffset desloca o input pra alinhar com timeline
             inputs_with_flags.append(([f"-itsoffset", str(start_sec)], str(path)))
-            titles_indiv.append((len(inputs_with_flags) - 1, start_sec, end_sec, tf))
+            titles_indiv.append((len(inputs_with_flags) - 1, start_sec, end_sec, tf,
+                                 item[4] if len(item) > 4 else False))
     elif titles_mov is not None:
         # ProRes 4444 alpha = libprores CPU only (sem hwaccel)
         inputs_with_flags.append(([], str(titles_mov)))
@@ -1744,6 +1768,9 @@ def main():
 
     # Step 1: ensure titles MOVs (cache or render)
     ass_rel = None
+    has_foreground = any(b.get("foreground") for b in cfg.get("brolls", []))
+    if has_foreground and not args.no_titles:
+        args.per_title = True
     if args.per_title:
         # Phase 2: per-title cache. Cada title eh um MOV separado.
         # Captions E SHAPES precisam de TitlesOverlay monolithic separado:
@@ -1811,7 +1838,7 @@ def main():
                 except Exception as e:
                     log(f"    merge WARN: {e} — seguindo com as entradas separadas")
             # Combina: shapes/captions monolithic + individual titles
-            titles = [(extra_mov, 0, cfg["videoDuration"])] + indiv_titles
+            titles = [(extra_mov, 0, cfg["videoDuration"], {}, has_foreground)] + indiv_titles
         else:
             titles = ensure_individual_titles(cfg, force=args.no_cache, max_workers=args.per_title_workers)
     elif args.no_titles:

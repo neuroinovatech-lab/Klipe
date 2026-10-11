@@ -5,6 +5,7 @@ const os = require("os");
 const crypto = require("crypto");
 const { spawn } = require("child_process");
 const auth = require("./auth.js");
+const assistantAPI = require('./assistant-api').createAssistantAPI({root: __dirname, pythonExe, ffbin, listSfx});
 
 const PORT = Number(process.env.PORT) || 3002;
 const CONFIG_PATH = path.join(__dirname, "public", "edit_config.json");
@@ -687,6 +688,7 @@ const server = http.createServer(comRede(async (req, res) => {
     return res.end("O Klipe roda sem login e por isso so aceita conexao local.");
   }
   req.user = auth.getRequestUser(req) || { username: "local", role: "admin" };
+  if (await assistantAPI(req, res, url, _projeto)) return;
 
   // ─── Admin: CRUD de users ────────────────────────────────────────────
   if (url.pathname === "/api/admin/users" && req.method === "GET") {

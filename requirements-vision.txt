@@ -1,0 +1,3 @@
+# Optional, isolated by tools/setup_assistant_vision.py. No PyTorch required.
+mediapipe==0.10.32
+opencv-contrib-python==4.13.0.92
