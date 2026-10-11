@@ -77,7 +77,7 @@ const FS_FONTE = `precision mediump float;
       a   = texture2D(tex, vec2(uv.x*0.5 + 0.5, uv.y)).r;
     } else {
       cor = texture2D(tex, uv).rgb;
-      a   = 1.0;
+      a   = texture2D(tex, uv).a;
     }
     float forca = cc2.w;
     if (forca > 0.001 && (cc != vec4(0.0) || cc2.xyz != vec3(0.0))) {
@@ -422,9 +422,18 @@ class KlipePlayer {
   _pedirTitulo(t) {
     const chave = this._chaveTitulo(t);
     let e = this._titulos.get(chave);
-    if (e) return e;
-    e = { pronto: false, erro: null, video: null };
+    if (e && (!e.erro || Date.now() < e.retryAt)) return e;
+    const attempt = (e?.attempt || 0) + 1;
+    e = { pronto: false, erro: null, video: null, attempt };
     this._titulos.set(chave, e);
+    const falhar = (mensagem) => {
+      e.erro = mensagem;
+      e.retryAt = Date.now() + 1000 * (2 ** Math.min(3, attempt - 1));
+      setTimeout(() => {
+        if (this._titulos.get(chave) === e && this.t >= t.startSec && this.t < t.endSec)
+          this._redesenhar();
+      }, e.retryAt - Date.now() + 20);
+    };
 
     // FILA, nao disparo direto. Cada titulo e um pedido que pode levar
     // dezenas de segundos (medido: echoWords 39s, sensoryStorm 31s), e o
@@ -445,7 +454,8 @@ class KlipePlayer {
       .then(r => r.json())
       .then(j => {
         if (j.error) {
-          e.erro = j.error;
+          falhar(j.error);
+          console.error('[Klipe] Falha no motion de titulo', t.id, j.error);
           // Estilo que o motor ainda nao desenha: sem este aviso o titulo
           // simplesmente SOME da tela e nao ha como saber por que.
           if (/nao portado|não portado/i.test(j.error) && this._avisadoT !== t.style) {
@@ -458,7 +468,12 @@ class KlipePlayer {
           return;
         }
         const v = this._novoVideo('/' + j.src);
+        v.onerror = () => {
+          falhar(v.error?.message || 'Nao foi possivel carregar o motion');
+          console.error('[Klipe] Falha no video do titulo', t.id, j.src, e.erro);
+        };
         v.onloadeddata = () => {
+          v.onloadeddata = null;
           this._cutucar(v).then(() => {
             e.pronto = true;
             // memoriza o clipe BOM deste titulo: enquanto uma edicao de texto/
@@ -470,7 +485,54 @@ class KlipePlayer {
         };
         e.video = v;
       })
-      .catch(err => { e.erro = err.message; }));
+      .catch(err => {
+        falhar(err.message);
+        console.error('[Klipe] Falha ao preparar titulo', t.id, e.erro);
+      }));
+    return e;
+  }
+
+  _pedirQuadroTitulo(t, rel) {
+    this._quadrosTitulos ||= new Map();
+    const fps = this.cfg.fps || 30;
+    const frame = Math.max(0, Math.round(rel * fps));
+    const chave = this._chaveTitulo(t) + ':' + frame;
+    const id = t.id ?? t.startSec;
+    const anterior = this._quadrosTitulos.get(id);
+    if (anterior?.chave === chave &&
+        (!anterior.erro || Date.now() < anterior.retryAt)) return anterior;
+    anterior?.controller.abort();
+    anterior?.bitmap?.close();
+    const attempt = anterior?.chave === chave ? (anterior.attempt || 0) + 1 : 1;
+    const e = { chave, controller: new AbortController(), bitmap: null, attempt };
+    this._quadrosTitulos.set(id, e);
+    const neutro = { ...t, startSec: 0, endSec: t.endSec - t.startSec };
+    delete neutro.posX; delete neutro.posY; delete neutro.scale;
+    delete neutro.rotation; delete neutro.opacity;
+    // A paused preview asks MotionCore for the exact frame, without relying
+    // on a detached MP4 decoder completing a seek in Chromium.
+    fetch('/api/preview/frame', {
+      method: 'POST', signal: e.controller.signal,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: neutro, width: this.w, height: this.h,
+        fps, frame, durationFrames: Math.round(neutro.endSec * fps) }),
+    }).then(async r => {
+      if (!r.ok) throw new Error(`MotionCore: HTTP ${r.status}`);
+      return createImageBitmap(await r.blob(), { premultiplyAlpha: 'none' });
+    }).then(bitmap => {
+      if (e.controller.signal.aborted) { bitmap.close(); return; }
+      e.bitmap = bitmap;
+      this._redesenhar();
+    }).catch(err => {
+      if (err.name === 'AbortError') return;
+      e.erro = err.message;
+      console.error('[Klipe] Falha no quadro do titulo', t.id, err.message);
+      e.retryAt = Date.now() + 1000 * (2 ** Math.min(3, attempt - 1));
+      setTimeout(() => {
+        if (this._quadrosTitulos.get(id) === e && this.t >= t.startSec && this.t < t.endSec)
+          this._redesenhar();
+      }, e.retryAt - Date.now() + 20);
+    });
     return e;
   }
 
@@ -567,6 +629,7 @@ class KlipePlayer {
         e.inicio = j.inicio ?? e.inicio;
         const v = this._novoVideo('/' + j.src);
         v.onloadeddata = () => {
+          v.onloadeddata = null;
           this._cutucar(v).then(() => {
             e.pronto = true;
             const antigo = this._velhos.get(idx);
@@ -595,6 +658,10 @@ class KlipePlayer {
     let v = this._brolls.get(id);
     if (!v) {
       v = this._novoVideo('/' + String(b.src).replace(/^\/+/, ''));
+      if (b.alpha && b.foreground && document.body) {
+        v.style.cssText = 'position:fixed;left:0;top:0;width:2px;height:2px;opacity:.001;pointer-events:none;z-index:0';
+        document.body.appendChild(v);
+      }
       this._brolls.set(id, v);
       // B-roll criado enquanto o preview esta pausado nunca chega a produzir
       // um frame decodificado sozinho. Acorda o decoder como ja fazemos com
@@ -605,7 +672,8 @@ class KlipePlayer {
         // usuario mova o playhead uma segunda vez.
         this._redesenhar();
         setTimeout(() => this._redesenhar(), 180);
-        this._cutucar(v).finally(() => this._redesenhar());
+        v._klipeWarming = true;
+        this._cutucar(v).finally(() => { v._klipeWarming = false; this._redesenhar(); });
       };
       if (v.readyState >= 2) acordar();
       else v.addEventListener('loadeddata', acordar, { once: true });
@@ -644,6 +712,32 @@ class KlipePlayer {
       } catch {}
     }
     if (this.tocando && v.paused) v.play().catch(() => {});
+  }
+
+  // A cutout duplicates source pixels, so B-roll drift creates a second face.
+  // Hold the last composition until the cutout has completed its seek.
+  _sincronizarRecorte(v, rel, rate) {
+    const tolerance = 0.75 / Math.max(1, this.cfg.fps || 30);
+    v.playbackRate = rate;
+    if (v.readyState < 2 || v._klipeWarming) return false;
+    // Start its clock before checking drift, otherwise a paused layer keeps
+    // chasing the advancing source and can never pass the frame barrier.
+    if (this.tocando && v.paused) v.play().catch(() => {});
+    if (!this.tocando && !v.paused) v.pause();
+    if (v.seeking) return false;
+    const drift = rel - v.currentTime;
+    if (this.tocando && Math.abs(drift) <= 0.12) {
+      // Correct small clock drift without repeated seeks starving decoding.
+      v.playbackRate = Math.max(0.1, rate + Math.max(-0.3, Math.min(0.3, drift * 4)));
+      return Math.abs(drift) <= 1.5 / Math.max(1, this.cfg.fps || 30);
+    }
+    if (Math.abs(drift) > tolerance) {
+      v.addEventListener('seeked', () => this._redesenhar(), {once:true});
+      if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(() => this._redesenhar());
+      try { v.currentTime = rel; } catch {}
+      return false;
+    }
+    return true;
   }
 
   /** Redesenho único no próximo quadro (junta várias camadas numa passada).
@@ -770,10 +864,35 @@ class KlipePlayer {
     return [-e, -e, e, e, uvOffY];
   }
 
+  _videoTransform(t) {
+    const clips = this.cfg.videoClips || [];
+    const c = clips.length ? (clips.find(c => t >= c.startSec && t < c.endSec) || {}) :
+      {posX:this.cfg.videoPosX,posY:this.cfg.videoPosY,scale:this.cfg.videoBaseScale};
+    const finite = (value, fallback) => Number.isFinite(Number(value)) && value != null ? Number(value) : fallback;
+    const w = this.cfg.width || 1920, h = this.cfg.height || 1080;
+    return {posX:Math.max(-w,Math.min(w,finite(c.posX,0))),
+      posY:Math.max(-h,Math.min(h,finite(c.posY,0))),
+      escala:Math.max(.1,Math.min(3,finite(c.scale,1)))};
+  }
+
   // ── desenho ──────────────────────────────────────────────────────────
   desenhar() {
     const gl = this.gl, t = this.t;
     this._tocarAudios(t);
+    let cutoutsReady = true;
+    for (const b of (this.cfg.brolls || [])) {
+      if (!b.alpha || !b.foreground) continue;
+      if (t >= b.startSec - 2 && t < b.startSec) this._pedirBroll(b);
+      if (t < b.startSec || t >= b.endSec) {
+        this._brolls?.get(b.id || b.src)?.pause();
+        continue;
+      }
+      const speed = Math.min(10, Math.max(0.1, b.speed || 1));
+      const v = this._pedirBroll(b);
+      const ready = this._sincronizarRecorte(v, (b.srcStart || 0) + (t-b.startSec)*speed, speed*(this._vel || 1));
+      cutoutsReady = ready && cutoutsReady;
+    }
+    if (!cutoutsReady) return;
     // volume/mudo do vídeo principal são propriedades editáveis — reler
     // sempre, senão mexer no painel não muda nada até recarregar
     if (this.video) this.video.volume = this.cfg.videoMuted ? 0 : (this.cfg.videoVolume ?? 1);
@@ -782,7 +901,20 @@ class KlipePlayer {
 
     // Sem fonte, o quadro preto que o `clear` acabou de pintar E o fundo:
     // o catalogo desenha os titulos sobre ele, como folha em branco.
-    if (this.video) this._camada('fonte', this.video, { recorte: this._recorteZoom(t), corrigirCor: true });
+    if (this.video) {
+      const transform = this._videoTransform(t);
+      const w=this.cfg.width || 1920, h=this.cfg.height || 1080;
+      const cw=gl.drawingBufferWidth, ch=gl.drawingBufferHeight, e=transform.escala;
+      // Crop the animated zoom inside the transformed source rectangle.
+      // Otherwise shrinking a zoomed source reveals pixels beyond its frame.
+      const left=Math.max(0,Math.min(cw,Math.round(((1-e)/2+transform.posX/w)*cw)));
+      const right=Math.max(0,Math.min(cw,Math.round(((1+e)/2+transform.posX/w)*cw)));
+      const bottom=Math.max(0,Math.min(ch,Math.round(((1-e)/2-transform.posY/h)*ch)));
+      const top=Math.max(0,Math.min(ch,Math.round(((1+e)/2-transform.posY/h)*ch)));
+      gl.enable(gl.SCISSOR_TEST);gl.scissor(left,bottom,right-left,top-bottom);
+      try { this._camada('fonte',this.video,{recorte:this._recorteZoom(t),corrigirCor:true,...transform}); }
+      finally { gl.disable(gl.SCISSOR_TEST); }
+    }
 
     const paintBrolls = (foreground) => {
     for (const b of (this.cfg.brolls || [])) {
@@ -800,8 +932,11 @@ class KlipePlayer {
       // render também ignorava. Os dois ignoravam junto, então o controle
       // existia e não fazia nada em lugar nenhum.
       const vel = Math.min(10, Math.max(0.1, b.speed || 1));
-      if (v.playbackRate !== vel) { try { v.playbackRate = vel; } catch {} }
-      this._sincronizar(v, (b.srcStart || 0) + rel * vel, 0.25);
+      const rate = vel * (this._vel || 1);
+      if (!(b.alpha && b.foreground)) {
+        if (v.playbackRate !== rate) { try { v.playbackRate = rate; } catch {} }
+        this._sincronizar(v, (b.srcStart || 0) + rel * vel, 0.25);
+      }
       let op = 1;
       if (b.fadeIn) op = Math.min(op, rel / b.fadeIn);
       if (b.fadeOut) op = Math.min(op, (b.endSec - t) / b.fadeOut);
@@ -821,23 +956,31 @@ class KlipePlayer {
 
     };
     paintBrolls(false);
-
-    for (const tt of (this.cfg.titles || [])) {
+    const titulosAtivos = (this.cfg.titles || []).filter(tt => t >= tt.startSec && t < tt.endSec);
+    const idsAtivos = new Set(titulosAtivos.map(tt => tt.id ?? tt.startSec));
+    for (const [id, quadro] of (this._quadrosTitulos || [])) {
+      if (idsAtivos.has(id)) continue;
+      quadro.controller.abort();
+      quadro.bitmap?.close();
+      this._quadrosTitulos.delete(id);
+    }
+    for (const tt of titulosAtivos) {
       if (t < tt.startSec || t >= tt.endSec) continue;
       let e = this._pedirTitulo(tt);
+      const quadro = !this.tocando ? this._pedirQuadroTitulo(tt, t - tt.startSec) : null;
       if (!e.pronto || !e.video) {
         // o clipe novo ainda esta assando — desenha o ultimo bom deste
         // titulo em vez de sumir com ele da tela
         const velho = this._tituloPronto.get(tt.id ?? tt.startSec);
         if (velho && velho.pronto && velho.video) e = velho;
       }
-      if (!e.pronto || !e.video) continue;
-      this._sincronizar(e.video, t - tt.startSec);
+      if (!quadro?.bitmap && (!e.pronto || !e.video)) continue;
+      if (!quadro?.bitmap) this._sincronizar(e.video, t - tt.startSec);
       // As transformacoes moram AQUI, nao no clipe assado — mesma conta do
       // render (scale/rotate/overlay) e do motor. posY do painel e positivo
       // pra cima; o _camada quer positivo pra baixo, dai o sinal.
-      this._camada('t' + (tt.id || tt.startSec), e.video, {
-        alphaLateral: true,
+      this._camada('t' + (tt.id || tt.startSec), quadro?.bitmap || e.video, {
+        alphaLateral: !quadro?.bitmap,
         posX: tt.posX || 0,
         posY: -(tt.posY || 0),
         escala: tt.scale == null ? 1 : tt.scale,
@@ -886,9 +1029,10 @@ class KlipePlayer {
       // Buscar exatamente no começo de um range/keyframe pode deixar alguns
       // Chromium em readyState=1 mesmo com o intervalo já no buffer. Um frame
       // para dentro evita a borda sem deslocar o tempo lógico da composição.
-      const alvoVideo = this.t > 0
+      const hasCutout = (this.cfg.brolls || []).some(b => b.alpha && b.foreground && this.t >= b.startSec && this.t < b.endSec);
+      const alvoVideo = this.t > 0 && !hasCutout
         ? Math.min(this.t + 1 / Math.max(1, this.cfg.fps || 30), this.duracao)
-        : 0;
+        : this.t;
       if (!this.tocando) {
         v.addEventListener('seeked', () => {
           pintarSeek();
@@ -902,7 +1046,15 @@ class KlipePlayer {
       // Vídeo destacado do DOM pode não concluir o seek enquanto permanece
       // pausado. Acordar só dentro de `seeked` criava um ciclo: o evento
       // esperava a decodificação, e a decodificação esperava o evento.
-      if (!this.tocando) this._cutucar(v, alvoVideo).finally(pintarSeek);
+      if (!this.tocando) this._cutucar(v, alvoVideo).finally(() => {
+        // Decoder warm-up briefly plays the source. Restore the exact frame
+        // afterwards so the paused source cannot lead its person cutout.
+        if (hasCutout && !this.tocando && this.t === alvoVideo && Math.abs(v.currentTime-alvoVideo) > 0.001) {
+          v.addEventListener('seeked', pintarSeek, {once:true});
+          try { v.currentTime = alvoVideo; } catch {}
+        }
+        pintarSeek();
+      });
       // Em certos builds do Chromium o quadro novo fica disponível para
       // texImage2D sem `seeked` nem rVFC. Redesenhos baratos e limitados
       // cobrem esse caminho sem manter um laço permanente.
@@ -967,12 +1119,17 @@ class KlipePlayer {
   destruir() {
     this.pause();
     if (this.video) this.video.src = '';
-    for (const v of this._brolls.values()) v.src = '';
+    for (const v of this._brolls.values()) { v.src = ''; v.remove(); }
     for (const e of this._titulos.values()) if (e.video) e.video.src = '';
     this.invalidarLegendas();
     for (const a of this._audios.values()) { a.pause(); a.src = ''; }
     this._audios.clear();
     this._titulos.clear();
+    for (const e of (this._quadrosTitulos?.values() || [])) {
+      e.controller.abort();
+      e.bitmap?.close();
+    }
+    this._quadrosTitulos?.clear();
     this._brolls.clear();
   }
 }

@@ -8,7 +8,7 @@
 
 <p align="center">
   <img alt="Local first" src="https://img.shields.io/badge/local--first-111827?style=flat-square">
-  <img alt="Node 20+" src="https://img.shields.io/badge/Node.js-20%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white">
+  <img alt="Node 22+" src="https://img.shields.io/badge/Node.js-22%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white">
   <img alt="Python 3.11" src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Windows e macOS" src="https://img.shields.io/badge/Windows%20%7C%20macOS-compatível-7C3AED?style=flat-square">
   <a href="LICENSE"><img alt="Uso gratuito; revenda restrita" src="https://img.shields.io/badge/uso-gratuito-22863A?style=flat-square"></a>
@@ -73,17 +73,29 @@ hardware, qualidade de saída e condições de cache.
 - Importação local e por URL, transcrição e busca opcional de B-roll
 - Integrações opcionais com Veo e Omni, configuradas apenas na máquina local
 - Launchers para Windows e macOS
+- Remoção de fundo em **Propriedades → Vídeo → Recorte**, com pessoa à frente dos títulos
+- Instalador automático para Windows, incluindo as dependências do recorte local
 
 ## Começo rápido
 
 ### Windows
 
-1. Instale [Node.js 20+](https://nodejs.org/), Python 3.11 e FFmpeg.
-2. Execute `Iniciar Klipe.bat`.
-3. Abra `http://127.0.0.1:3002` caso o navegador não abra sozinho.
+1. Baixe o [ZIP do Klipe](https://github.com/neuroinovatech-lab/Klipe/archive/refs/heads/main.zip).
+2. **Extraia tudo** para uma pasta permanente, por exemplo `Documentos\Klipe`.
+3. Dê dois cliques em **`Instalar Klipe.bat`** e confirme com **S**.
+4. Quando terminar, abra o atalho **Klipe** na área de trabalho.
 
-O launcher verifica o ambiente Python, as dependências Node e o FFmpeg antes
-de iniciar o editor.
+O instalador verifica Node.js, Python 3.11 e FFmpeg, instala o que faltar pelo
+WinGet e prepara as dependências e o modelo de remoção de fundo. **Não precisa
+instalar Conda nem digitar comandos.** Requer Windows 10/11 de 64 bits, internet
+e WinGet; a instalação do Node pode solicitar permissão do Windows.
+
+Depois, `Iniciar Klipe.bat` abre o editor no navegador quando o servidor estiver
+pronto. Se a porta 3002 estiver ocupada, escolhe outra disponível. A edição
+continua local e os projetos não são apagados pelo instalador.
+
+Veja [o guia de instalação e solução de problemas](docs/INSTALACAO.md).
+Esta primeira versão é um instalador por script, não um `.exe` assinado.
 
 ### macOS
 

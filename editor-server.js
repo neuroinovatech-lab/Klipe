@@ -273,23 +273,35 @@ function docRestaurar(rel) {
 // fontes) e o custo real, o desenho em si e barato.
 const MC_PORTA = Number(process.env.MOTIONCORE_PORT) || 3011;
 let _mcProc = null;
+let _mcStarting = null;
+let _mcReady = false;
 function _subirMotionCore() {
-  if (_mcProc && !_mcProc.killed) return new Promise(r => setTimeout(r, 400));
+  if (_mcReady && _mcProc && _mcProc.exitCode === null) return Promise.resolve();
+  if (_mcStarting) return _mcStarting;
   const py = pythonExe();
-  _mcProc = spawn(py, ["-m", "motioncore.preview_server", String(MC_PORTA)],
-                  { cwd: __dirname, stdio: ["ignore", "pipe", "pipe"] });
-  _mcProc.stdout.on("data", d => process.stdout.write("[MotionCore] " + d));
-  _mcProc.stderr.on("data", d => process.stderr.write("[MotionCore] " + d));
-  _mcProc.on("exit", (c) => { console.log(`[MotionCore] saiu (${c})`); _mcProc = null; });
-  // espera o "ouvindo" aparecer, com teto — carregar o skia leva alguns segundos
-  return new Promise((ok) => {
-    const t0 = Date.now();
-    const olha = (d) => { if (String(d).includes("ouvindo")) { _mcProc.stdout.off("data", olha); ok(); } };
-    _mcProc.stdout.on("data", olha);
-    const tick = setInterval(() => {
-      if (Date.now() - t0 > 30000 || !_mcProc) { clearInterval(tick); ok(); }
-    }, 500);
-  });
+  const proc = spawn(py, ["-m", "motioncore.preview_server", String(MC_PORTA)],
+                     { cwd: __dirname, stdio: ["ignore", "pipe", "pipe"] });
+  _mcProc = proc;
+  _mcStarting = new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("MotionCore demorou a iniciar")), 30000);
+    const pronto = (d) => {
+      if (!String(d).includes("ouvindo")) return;
+      clearTimeout(timer);
+      _mcReady = true;
+      resolve();
+    };
+    proc.stdout.on("data", d => { process.stdout.write("[MotionCore] " + d); pronto(d); });
+    proc.stderr.on("data", d => process.stderr.write("[MotionCore] " + d));
+    proc.on("error", err => { clearTimeout(timer); reject(err); });
+    proc.on("exit", c => {
+      console.log(`[MotionCore] saiu (${c})`);
+      _mcReady = false;
+      if (_mcProc === proc) _mcProc = null;
+      clearTimeout(timer);
+      reject(new Error(`MotionCore saiu (${c}) antes de iniciar`));
+    });
+  }).finally(() => { _mcStarting = null; });
+  return _mcStarting;
 }
 process.on("exit", () => { if (_mcProc) try { _mcProc.kill(); } catch {} });
 
@@ -4170,10 +4182,7 @@ ${connectedClips}            </asset-clip>
     return;
   }
 
-  // ── ESCOLHER PASTA DE DESTINO (dialogo nativo do Windows) ──
-  // O navegador nao sabe pedir uma pasta do sistema — so arquivo pra upload.
-  // Entao o dialogo abre no servidor, que e a mesma maquina. Loopback so, pelo
-  // mesmo motivo do /api/open-folder.
+  // ── ESCOLHER PASTA DE DESTINO (dialogo nativo do sistema) ──
   if (url.pathname === "/api/pick-folder" && req.method === "POST") {
     const remoto = req.socket.remoteAddress;
     const ehLocal = remoto === "127.0.0.1" || remoto === "::1" || remoto === "::ffff:127.0.0.1";
@@ -4182,42 +4191,42 @@ ${connectedClips}            </asset-clip>
       res.end(JSON.stringify({ ok: false, error: "so no PC que roda o Klipe" }));
       return;
     }
-    // O dialogo precisa de uma janela DONA, senao o Windows o abre atras do
-    // Chrome: ele fica esperando resposta, o usuario nao ve nada, e parece que
-    // o botao nao funciona. Foi exatamente o que aconteceu — e como o `spawn`
-    // fica pendurado esperando, o render nunca comeca.
-    //
-    // A dona e um formulario invisivel e TopMost; passando ele pro ShowDialog,
-    // o dialogo herda a frente.
-    const ps = [
-      "Add-Type -AssemblyName System.Windows.Forms",
-      "$dona = New-Object System.Windows.Forms.Form",
-      "$dona.Width = 1",
-      "$dona.Height = 1",
-      "$dona.StartPosition = 'CenterScreen'",
-      "$dona.ShowInTaskbar = $false",
-      // Opacity 0 faz o Windows recusar foco em algumas configuracoes. Quase
-      // invisivel ainda serve como dona real do dialogo e aceita foreground.
-      "$dona.Opacity = 0.01",
-      "$dona.Show()",
-      "$dona.TopMost = $true",
-      "$dona.BringToFront()",
-      "$dona.Activate()",
-      "$d = New-Object System.Windows.Forms.FolderBrowserDialog",
-      "$d.Description = 'Onde salvar o video'",
-      "$d.ShowNewFolderButton = $true",
-      "if ($d.ShowDialog($dona) -eq 'OK') { Write-Output $d.SelectedPath }",
-      "$dona.Close()",
-    ].join("; ");
-    const p = require("child_process").spawn(
-      "powershell.exe", ["-NoProfile", "-STA", "-Command", ps],
-      { windowsHide: true });
-    let saida = "";
+    const { spawn } = require("child_process");
+    const inicial = path.join(os.homedir(), "Downloads");
+    let programa, args;
+    if (process.platform === "win32") {
+      // IFileOpenDialog e o seletor moderno do Explorer. Ele recebe como dona
+      // a janela em primeiro plano, portanto aparece na frente do Klipe.
+      programa = "powershell.exe";
+      args = ["-NoProfile", "-STA", "-ExecutionPolicy", "Bypass", "-File",
+        path.join(__dirname, "tools", "pick-folder.ps1"),
+        "-InitialDirectory", inicial];
+    } else if (process.platform === "darwin") {
+      programa = "osascript";
+      args = ["-e", `POSIX path of (choose folder with prompt "Onde salvar o vídeo" default location POSIX file "${inicial.replace(/"/g, '\\"')}")`];
+    } else {
+      programa = "zenity";
+      args = ["--file-selection", "--directory", "--title=Onde salvar o vídeo", `--filename=${inicial}/`];
+    }
+
+    const p = spawn(programa, args, { windowsHide: true });
+    let saida = "", erro = "", respondeu = false;
     p.stdout.on("data", (c) => { saida += c; });
-    p.on("close", () => {
-      const pasta = saida.trim();
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ ok: !!pasta, path: pasta || null }));
+    p.stderr.on("data", (c) => { erro += c; });
+    const responder = (status, corpo) => {
+      if (respondeu) return;
+      respondeu = true;
+      res.writeHead(status, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(corpo));
+    };
+    p.on("error", (e) => responder(500, { ok: false, error: `Não consegui abrir o seletor: ${e.message}` }));
+    p.on("close", (code) => {
+      const pasta = saida.trim().replace(/[\\\/]$/, "");
+      if (code && !pasta && erro.trim()) {
+        responder(500, { ok: false, error: "O seletor de pasta não abriu." });
+        return;
+      }
+      responder(200, { ok: !!pasta, path: pasta || null });
     });
     return;
   }

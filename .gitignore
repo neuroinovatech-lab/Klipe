@@ -1,5 +1,7 @@
 # Dependencias e ambientes locais
 node_modules/
+.klipe-runtime.json
+logs/
 .venv/
 .venv-vision/
 models/*.tflite

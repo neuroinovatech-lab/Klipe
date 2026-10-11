@@ -1,0 +1,51 @@
+name: Instalacao Windows
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/*windows*.ps1'
+      - '*Klipe.bat'
+      - 'requirements*.txt'
+      - 'package*.json'
+      - 'tests/windows-installer.test.ps1'
+      - '.github/workflows/windows-install.yml'
+  pull_request:
+    paths:
+      - 'tools/*windows*.ps1'
+      - '*Klipe.bat'
+      - 'requirements*.txt'
+      - 'package*.json'
+      - 'tests/windows-installer.test.ps1'
+      - '.github/workflows/windows-install.yml'
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Testar instalador com Windows PowerShell
+        shell: powershell
+        run: ./tests/windows-installer.test.ps1
+      - name: Instalar dependencias e recorte local
+        shell: powershell
+        run: ./tools/install-windows.ps1 -Yes
+      - name: Testar editor
+        run: node --test tests/*.test.cjs
+      - name: Iniciar e verificar servidor
+        shell: powershell
+        run: ./tools/start-windows.ps1 -SmokeTest
+      - name: Guardar logs em caso de falha
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalacao-windows-logs
+          path: logs/

@@ -3404,7 +3404,6 @@ body.theme-v2 .timeline-area, body.theme-v2 .tracks-scroll { background: var(--b
 #accent-picker:hover { border-color: var(--accent-line, #888); }
 body:not(.theme-v2) #accent-picker { display: none; }
 </style>
-<link rel="stylesheet" href="/klipe-assistant.css">
 </head>
 <body>
 
@@ -3460,7 +3459,6 @@ body:not(.theme-v2) #accent-picker { display: none; }
          exportacao FCPXML usava esses segmentos quando existiam e ja tinha
          caminho alternativo (marcadores), entao segue funcionando. -->
     <button class="tb-btn tb-icon" id="btn-tema-claro" onclick="alternarTemaClaro()" title="Mudar para claro"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M4.9 19.1l1.9-1.9M17.2 6.8l1.9-1.9"/></svg></button>
-    <button class="tb-btn" onclick="NLE.ia.abrir()" title="Ferramentas de IA"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg>IA</button>
     <button class="tb-btn" onclick="NLE.gravar.abrir()" title="Gravar tela, câmera ou as duas, com teleprompter"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Gravar</button>
     <button class="tb-btn" onclick="NLE.texto.abrir()" title="Editar pelo texto: apague a frase, ela some do vídeo"><svg class="icon" viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="17" x2="18" y2="17"/></svg>Texto</button>
     <button class="tb-btn tb-icon" onclick="NLE.ajustes.abrir()" title="Configurações"><svg class="icon" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2.4"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2.4"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="18" r="2.4"/></svg></button>
@@ -3862,7 +3860,7 @@ body:not(.theme-v2) #accent-picker { display: none; }
           <input id="render-outdir" placeholder="renders/ (dentro do projeto)"
                  style="flex:1;min-width:0" readonly
                  title="Pasta de destino — clique em Escolher pra trocar">
-          <button type="button" onclick="NLE.renderPanel.escolherPasta()"
+          <button type="button" id="render-choose-folder-btn" onclick="NLE.renderPanel.escolherPasta()"
                   style="white-space:nowrap">Escolher…</button>
           <button type="button" onclick="NLE.renderPanel.limparPasta()"
                   title="Voltar pra pasta padrão do projeto" style="white-space:nowrap">Padrão</button>
@@ -8354,37 +8352,36 @@ class PropertiesPanel {
                a timeline no preview. O b-roll mantem velocidade, que la funciona. -->
           <button class="cc-tab-main" data-cctab="anim">Animação</button>
           <button class="cc-tab-main" data-cctab="ajuste">Ajuste</button>
-          <button class="cc-tab-main" data-cctab="ai">IA</button>
         </div>
         <div class="cc-panels-main">
           <!-- ═══════ VÍDEO ═══════ -->
           <div class="cc-panel-main active" data-ccpanel="video">
             <div class="cc-tabs-sub">
-              <!-- "Basico" e "Remover fundo" sairam: a primeira ficou vazia quando a
-                   secao Transformar (toda decorativa) foi removida, e a segunda NUNCA
-                   teve painel — era aba orfa desde antes. Aba que abre em branco engana
-                   igual a controle que nao faz nada. As duas abaixo dizem a verdade. -->
-
-              <button class="cc-tab-sub active" data-ccsub="mask">Mascarar</button>
-              <button class="cc-tab-sub" data-ccsub="retouch">Retoque</button>
+              <button class="cc-tab-sub active" data-ccsub="basico">Básico</button>
+              <button class="cc-tab-sub" data-ccsub="mask">Recorte</button>
             </div>
             <div class="cc-panels-sub">
 
-              <!-- MASCARAR -->
-              <div class="cc-panel-sub" data-ccsubpanel="mask">
-                <div class="cc-placeholder">
-                  <span class="icon"></span>
-                  Mascarar em breve — Fase 3<br>
-                  <span style="font-size:9px;color:var(--dim)">formas, trajetória, track</span>
+              <div class="cc-panel-sub active" data-ccsubpanel="basico">
+                <div class="cc-section">
+                  <div class="cc-section-header"><span class="title">Transformar</span>
+                    <button type="button" id="video-transform-reset" class="cc-align-btn" style="flex:0 0 28px;width:28px;height:28px;padding:0" title="Restaurar enquadramento" aria-label="Restaurar enquadramento">↺</button>
+                  </div>
+                  ${[['Posição X','posX',0,-(NLE.config.width || 1920),NLE.config.width || 1920,1],
+                     ['Posição Y','posY',0,-(NLE.config.height || 1080),NLE.config.height || 1080,1],
+                     ['Escala','scale',1,0.1,3,0.01]].map(([label,key,fallback,min,max,step]) => {
+                       const value=(key==='posY'?-1:1)*(clip[key] ?? fallback);
+                       return `<div class="cc-field"><div class="cc-field-label"><span>${label}${key==='scale'?' (x)':' (px)'}</span></div>
+                         <div class="cc-slider-row">
+                           <input type="range" aria-label="${label} do vídeo, controle" min="${min}" max="${max}" step="${step}" value="${value}" data-prop="${key}" ${key==='posY'?'data-negate="1"':''}>
+                           <input type="number" aria-label="${label} do vídeo" min="${min}" max="${max}" step="${step}" value="${value}" data-prop="${key}" ${key==='posY'?'data-negate="1"':''} class="num-input">
+                         </div></div>`;
+                     }).join('')}
                 </div>
               </div>
-              <!-- RETOQUE -->
-              <div class="cc-panel-sub" data-ccsubpanel="retouch">
-                <div class="cc-placeholder">
-                  <span class="icon"></span>
-                  Retoque em breve<br>
-                  <span style="font-size:9px;color:var(--dim)">healing, dust, wrinkle</span>
-                </div>
+              <!-- RECORTE -->
+              <div class="cc-panel-sub" data-ccsubpanel="mask">
+                <div data-background-removal-host></div>
               </div>
             </div>
           </div>
@@ -8433,14 +8430,6 @@ class PropertiesPanel {
             ${ajusteHtml}
           </div>
 
-          <!-- ═══════ IA ═══════ -->
-          <div class="cc-panel-main" data-ccpanel="ai">
-            <div class="cc-placeholder">
-              <span class="icon"></span>
-              Estilização de IA em breve<br>
-              <span style="font-size:9px;color:var(--dim)">style transfer, upscale, enhance</span>
-            </div>
-          </div>
         </div>`;
     }
 
@@ -8452,6 +8441,7 @@ class PropertiesPanel {
     html += `</div>`;
 
     contentEl.innerHTML = html;
+    NLE.backgroundRemoval?.mount(contentEl.querySelector('[data-background-removal-host]'));
 
     // ── CapCut-style: group sections into tabs by category ──
     // Videos have their own cc-tabs system, skip the generic grouper for them.
@@ -8461,10 +8451,15 @@ class PropertiesPanel {
 
     // ── Wire the CapCut main+sub tab click handlers (video panel) ──
     if (type === 'video') {
+      contentEl.querySelector('#video-transform-reset')?.addEventListener('click', () => {
+        this.sm.pushUndo();
+        Object.assign(clip, {posX:0,posY:0,scale:1});
+        NLE.renderProperties();NLE.syncPlayerFromState();NLE.renderer.renderAll();
+      });
       const mainBtns = contentEl.querySelectorAll('.cc-tab-main');
       const mainPanels = contentEl.querySelectorAll('.cc-panel-main');
       // Restore previously active main tab (persist across re-renders)
-      const savedMain = this._activeCcTab || 'video';
+      const savedMain = [...mainBtns].some(b => b.dataset.cctab === this._activeCcTab) ? this._activeCcTab : 'video';
       mainBtns.forEach(b => b.classList.toggle('active', b.dataset.cctab === savedMain));
       mainPanels.forEach(p => p.classList.toggle('active', p.dataset.ccpanel === savedMain));
       mainBtns.forEach(btn => {
@@ -8478,7 +8473,7 @@ class PropertiesPanel {
       const subBtns = contentEl.querySelectorAll('.cc-tab-sub[data-ccsub]');
       const subPanels = contentEl.querySelectorAll('.cc-panel-sub[data-ccsubpanel]');
       // Restore sub tab
-      const savedSub = this._activeCcSubTab || 'basico';
+      const savedSub = [...subBtns].some(b => b.dataset.ccsub === this._activeCcSubTab) ? this._activeCcSubTab : 'basico';
       subBtns.forEach(b => b.classList.toggle('active', b.dataset.ccsub === savedSub));
       subPanels.forEach(p => p.classList.toggle('active', p.dataset.ccsubpanel === savedSub));
       subBtns.forEach(btn => {
@@ -8544,6 +8539,11 @@ class PropertiesPanel {
       inputs.forEach(inp => {
         const handler = () => {
           let val = boolProps.includes(prop) ? inp.checked : numProps.includes(prop) ? parseFloat(inp.value) : inp.value;
+          if (type === 'video' && ['posX','posY','scale'].includes(prop)) {
+            if (!Number.isFinite(val)) return;
+            val = Math.max(Number(inp.min), Math.min(Number(inp.max), val));
+            inp.value = String(val);
+          }
           if (inp.dataset.negate) val = -val; // posY: UI positive=up, internal positive=down
 
           // Special case: speed is a destructive timeline edit — route through _setClipProp
@@ -9760,19 +9760,25 @@ const NLE = {
     _outDir: '',            // vazio = pasta padrao do projeto (output/)
     _lastOutputName: '',
 
-    // Abre o dialogo NATIVO de pasta. O navegador nao sabe pedir uma pasta do
-    // sistema, entao quem abre e o servidor — que roda na mesma maquina.
+    // O servidor abre o seletor nativo do sistema operacional, usando a janela
+    // ativa do Klipe como dona para o dialogo nascer na frente.
     async escolherPasta() {
+      const botao = document.getElementById('render-choose-folder-btn');
+      if (botao) { botao.disabled = true; botao.textContent = 'Abrindo…'; }
       try {
         const r = await fetch(`${API_BASE}/api/pick-folder`, { method: 'POST' });
         const j = await r.json();
+        if (!r.ok || j.error) throw new Error(j.error || 'Não consegui abrir o seletor');
         if (j.ok && j.path) {
           this._outDir = j.path;
           document.getElementById('render-outdir').value = j.path;
           this.atualizarEstimativa();
+          NLE.showToast('Pasta do render selecionada');
         }
       } catch (e) {
-        NLE.showToast('so funciona no PC que roda o Klipe', true);
+        NLE.showToast(e.message, true);
+      } finally {
+        if (botao) { botao.disabled = false; botao.textContent = 'Escolher…'; }
       }
     },
 
@@ -10455,6 +10461,9 @@ const NLE = {
       barColor: s.barColor || '#E8940A',
       barHeight: s.barHeight || 4,
       // Video base transform (from the video clip properties)
+      videoClips: this._clipsByType('video').map(c => ({
+        startSec:c.startSec,endSec:c.endSec,posX:c.posX || 0,posY:c.posY || 0,scale:c.scale ?? 1,
+      })),
       videoPosX: (() => { const vc = this._clipsByType('video')[0]; return vc?.posX || 0; })(),
       videoPosY: (() => { const vc = this._clipsByType('video')[0]; return vc?.posY || 0; })(),
       videoBaseScale: (() => { const vc = this._clipsByType('video')[0]; return vc?.scale || 1; })(),
@@ -21349,6 +21358,7 @@ setTimeout(() => {
 setTimeout(() => { if (NLE.mediaLib && NLE.mediaLib.render) NLE.mediaLib.render(); }, 1500);
 </script>
 <script src="/klipe-assist-core.js"></script>
-<script src="/klipe-assistant.js"></script>
+<link rel="stylesheet" href="/klipe-background.css">
+<script src="/klipe-background.js"></script>
 </body>
 </html>

@@ -1,17 +1,34 @@
 # Assistente de edicao
 
-Abra um projeto e entre em **IA > Assistente**. A analise usa a timeline atual,
-incluindo alteracoes ainda nao salvas. Ela confere os arquivos com FFprobe e
-sugere destaques, aproximacoes suaves e SFX da biblioteca local. As sugestoes
-sao heuristicas locais, nao uma nova chamada de modelo de linguagem.
+A edicao assistida acontece na conversa com Codex ou Claude Code, com acesso
+local ao projeto. Nao ha painel de assistente dentro do editor.
+As ferramentas locais de analise e recorte continuam disponiveis para o agente.
 
-Selecione os itens desejados e aplique. Os titulos continuam editaveis, os sons
-ficam na faixa SFX e os zooms na sua faixa. Uma acao Desfazer remove a aplicacao.
-Use Save para gravar o projeto. Pausas ficam como pontos para revisao; nao ha
-corte automatico de fala. O relatorio confere estrutura, nao substitui assistir
-e ouvir o resultado.
+Salve as alteracoes da timeline antes de uma analise baseada no arquivo.
+`POST /api/assistant/analyze` recebe `{config, faces: false}` e o header
+`X-Projeto` com o slug. Consulte `/api/assistant/job?id=...` para o resultado.
+A analise e somente leitura: confere midias com FFprobe e sugere destaques,
+zooms e SFX por regras locais, sem outra chamada de modelo de linguagem.
+O agente deve revisar as sugestoes antes de alterar o projeto e preservar os
+titulos, sons e zooms como clips editaveis. Save continua manual.
+Pausas sao pontos para revisao, nao cortes automaticos. O relatorio estrutural
+nao substitui assistir e ouvir o resultado.
 
 ## Visao opcional
+
+O instalador Windows inclui este modulo por padrao. Dentro do editor, selecione
+o video principal e abra **Propriedades > Video > Recorte**. Escolha o modo,
+o intervalo, limpeza e suavidade; clique **Gerar recorte**, aguarde e use
+**Aplicar na timeline**. Confira o resultado e use **Save** para salvar.
+
+- **Remover cenario:** cria uma camada de fundo e outra de pessoa recortada.
+  Sao separadas de proposito para permitir trocar o fundo e manter a pessoa.
+- **Pessoa na frente dos titulos:** cria apenas a pessoa recortada e preserva
+  o cenario original por baixo dos titulos.
+
+O painel divide intervalos de ate 10 minutos em tarefas de ate 30 segundos.
+Os ajustes nao sao ao vivo: gere novamente depois de modifica-los. Cancelar
+aguarda o trecho atual terminar e nao altera a timeline. O processamento e local.
 
 Com Python 3.11, na raiz do Klipe:
 

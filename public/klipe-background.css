@@ -1,0 +1,17 @@
+#bg-remove-panel{width:100%;min-width:0;box-sizing:border-box;color:var(--text,#f1f5f9);padding:12px 0;font:12px system-ui;letter-spacing:0}
+#bg-remove-panel header,#bg-remove-panel footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#bg-remove-panel header{margin-bottom:12px;font-size:13px}
+#bg-remove-panel button{background:#293b4c;color:#fff;border:1px solid #536171;border-radius:4px;padding:8px 10px;cursor:pointer}
+#bg-remove-panel button:disabled{opacity:.4;cursor:default}
+#bg-remove-panel fieldset{border:0;padding:0;margin:0 0 14px}
+#bg-remove-panel label{display:block;margin:10px 0}
+#bg-remove-panel legend{color:#a9bccb}
+#bg-remove-panel .bg-range{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+#bg-remove-panel input[type=number]{width:100%;box-sizing:border-box;margin-top:5px;background:#0b131c;color:#fff;border:1px solid #536171;padding:7px;border-radius:3px}
+#bg-remove-panel input[type=range],#bg-remove-panel progress{display:block;width:100%;margin-top:8px;accent-color:#42bdac}
+#bg-remove-panel output{float:right;color:#8de0d2}
+#bg-remove-panel #bg-status{min-height:36px;line-height:1.5;overflow-wrap:anywhere}
+#bg-remove-panel #bg-apply{background:#1c675e}
+#bg-remove-panel [hidden]{display:none}
+#bg-remove-panel footer{flex-wrap:wrap}
+#bg-remove-panel footer button{flex:1 1 100px;white-space:normal;overflow-wrap:anywhere}

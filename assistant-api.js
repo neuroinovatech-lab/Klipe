@@ -120,14 +120,23 @@ function createAssistantAPI({root,pythonExe,ffbin,listSfx}) {
            (config.zooms || []).some(c=>Assist.overlap(c,{startSec:start,endSec:end})) ||
            (config.videoClips || []).some(c=>c.posX || c.posY || c.rotation || c.scale && c.scale!==1))
           throw Error('Recorte automatico requer trecho sem zoom, velocidade ou transformacao do video. Ajuste o trecho antes de gerar.');
+        const strength=body.strength===undefined?0:Number(body.strength);
+        const feather=body.feather===undefined?0.6:Number(body.feather);
+        if(!Number.isFinite(strength)||strength<0||strength>100||!Number.isFinite(feather)||feather<0||feather>4)
+          throw Error('Limpeza deve estar entre 0 e 100 e suavidade entre 0 e 4.');
+        if(body.mode!==undefined && !['remove','foreground'].includes(body.mode))throw Error('Modo de recorte invalido.');
         const rel=`projects/${slug}/assistant/person-${crypto.randomUUID()}.mp4`;
+        const background=body.mode==='remove'?rel.replace('.mp4','-background.mp4'):null;
         send(202,launch(slug,'person',async()=>{
           const output=path.join(publicDir,rel);fs.mkdirSync(path.dirname(output),{recursive:true});
           const result=await run(visionPython(),[path.join(root,'tools','assistant_vision.py'),'person'],{
             input:{source,output,config,startSec:start,endSec:end,ffmpeg:ffbin('ffmpeg'),
-              model:path.join(root,'models','selfie_multiclass.tflite')},timeout:600000,cwd:root});
+              model:path.join(root,'models','selfie_multiclass.tflite'),strength,feather,
+              backgroundOutput:background?path.join(publicDir,background):null},timeout:600000,cwd:root});
           return {clip:{id:'assist-person-'+crypto.randomUUID(),src:rel,label:'Pessoa recortada',startSec:start,
-            endSec:roundEnd(start,result.duration),alpha:true,foreground:true,baseDurationSec:result.duration},signature:Assist.hash(config)};
+            endSec:roundEnd(start,result.duration),alpha:true,foreground:true,baseDurationSec:result.duration},
+            background:background?{id:'assist-background-'+crypto.randomUUID(),src:background,label:'Fundo do recorte',startSec:start,
+              endSec:roundEnd(start,result.duration),baseDurationSec:result.duration}:null,signature:Assist.hash(config)};
         }));return true;
       }
       send(404,{error:'Operacao desconhecida.'});

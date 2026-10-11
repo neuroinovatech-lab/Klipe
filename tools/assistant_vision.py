@@ -84,6 +84,10 @@ def segment_person(req):
     if not math.isfinite(fps) or not 1 <= fps <= 120 or not 0 < end-start <= 30:
         raise ValueError('FPS ou intervalo invalido.')
     w, h = dimensions(req['config'], 1280)
+    strength = float(req.get('strength', 0)) / 100
+    feather = float(req.get('feather', .6))
+    if not math.isfinite(strength) or not 0 <= strength <= 1 or not math.isfinite(feather) or not 0 <= feather <= 4:
+        raise ValueError('Ajustes de mascara invalidos.')
     target = Path(req['output'])
     temporary = target.with_name(target.stem + '.tmp.mp4')
     options = mp.tasks.vision.ImageSegmenterOptions(
@@ -106,7 +110,9 @@ def segment_person(req):
                         raise RuntimeError('Modelo deve ser Selfie Multiclass com seis classes.')
                     alpha = np.clip(1-masks[0].numpy_view(), 0, 1)
                     alpha = cv2.resize(alpha, (w,h), interpolation=cv2.INTER_LINEAR)
-                    alpha = cv2.GaussianBlur(alpha, (3,3), .6)
+                    alpha = np.clip((alpha - .292*strength) / (1-.632*strength), 0, 1)
+                    if feather > 0:
+                        alpha = cv2.GaussianBlur(alpha, (0,0), feather)
                     mask = np.repeat((alpha[...,None]*255).astype(np.uint8),3,axis=2)
                     # Klipe's existing alpha transport: RGB | grayscale alpha.
                     encoder.stdin.write(np.concatenate([rgb,mask],axis=1).tobytes())
@@ -125,6 +131,12 @@ def segment_person(req):
             if not encoder.stdin.closed:
                 encoder.stdin.close()
             temporary.unlink(missing_ok=True)
+    if req.get('backgroundOutput'):
+        subprocess.run([req['ffmpeg'], '-v', 'error', '-y', '-f', 'lavfi', '-i',
+                        f'color=c=black:s={w}x{h}:r={fps}', '-t', str(count/fps), '-an',
+                        '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p',
+                        '-movflags', '+faststart', req['backgroundOutput']], check=True,
+                       creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
     return {'duration': count/fps, 'frames': count, 'width': w, 'height': h}
 
 

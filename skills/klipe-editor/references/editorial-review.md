@@ -33,11 +33,13 @@ that an animation matches.
 
 ## Local Assistant
 
-The editor exposes IA > Assistente. `POST /api/assistant/analyze` takes
+There is no in-editor assistant panel; use the local tools from the agent chat.
+Save pending editor changes before analyzing the on-disk config.
+`POST /api/assistant/analyze` takes
 `{config, faces: false}` and the current project's `X-Projeto` header. It returns
 a job id; poll `/api/assistant/job?id=...` for the result. Analysis is read-only.
 Suggestions are rule-based, grounded in the current captions/transcript. Applying
-them inserts ordinary editable clips with one Undo action; Save remains manual.
+them must preserve ordinary editable clips; Save remains manual.
 An analysis is invalid once the project snapshot changes.
 
 The vision worker is optional. Install with `python tools/setup_assistant_vision.py`.
