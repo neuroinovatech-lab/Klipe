@@ -68,8 +68,7 @@ def luz(x: float, y: float, r: float, cor: str, t: float = 0.0,
 
 
 def _rnd(i: int, k: int) -> float:
-    """`random("spark-x-3")` do Remotion nao e portavel; o que importa e o
-    espalhamento determinista."""
+    """Espalhamento pseudoaleatorio determinista das particulas."""
     return ((i * 2654435761 + k * 40503 + 12345) % 65536) / 65536.0
 
 

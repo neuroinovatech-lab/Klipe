@@ -1,6 +1,6 @@
 ---
 name: klipe-editor
-description: Edit, create, repair, validate, and render Klipe video projects with timeline-safe changes and MotionCore preview/render parity. Use for work inside a Klipe repository or a public/projects/SLUG project; do not use for unrelated generic FFmpeg or Remotion tasks unless they are being compared with Klipe.
+description: Edit, create, repair, validate, and render Klipe video projects with timeline-safe changes and MotionCore preview/render parity. Use for work inside a Klipe repository or a public/projects/SLUG project; do not use for unrelated video tools or projects.
 ---
 
 # Klipe Editor

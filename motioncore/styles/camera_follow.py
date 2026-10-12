@@ -2,10 +2,6 @@
 camera_follow.py — "Camera Follow Captions": legenda palavra a palavra onde
 quem se move é a CÂMERA, não o texto.
 
-Porta de uma sessão privada do HyperFrames que o usuário colou à mão em
-2026-08-30 (o original em GSAP/DOM está em
-referencias/hyperframes-sessoes/caption-camera-follow.html).
-
 O layout é autossimilar: cada palavra nova nasce como fração da ALTURA da
 caixa de tudo que já foi escrito, e encosta à direita ou embaixo dessa caixa,
 conforme ela esteja mais estreita ou mais larga que o quadro. Como a caixa

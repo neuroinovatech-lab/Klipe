@@ -70,7 +70,7 @@ def _grad(f: float) -> str:
 
 
 def _rnd(i: int, k: int) -> float:
-    """random() do Remotion nao e portavel; isto tem a mesma distribuicao."""
+    """Distribuicao pseudoaleatoria determinista para as particulas."""
     v = math.sin((i + 1) * 12.9898 + k * 78.233) * 43758.5453
     return v - math.floor(v)
 

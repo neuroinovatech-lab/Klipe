@@ -27,7 +27,7 @@ _PAINEL = "#222222"            # :338 — o painel interno
 
 
 def _mix(a: str, b: str, k: float) -> str:
-    """interpolateColors do Remotion, em hex. Usado no degrade das barras."""
+    """Interpola cores hexadecimais para o degrade das barras."""
     k = max(0.0, min(1.0, k))
     a, b = a.lstrip("#"), b.lstrip("#")
     return "#" + "".join(

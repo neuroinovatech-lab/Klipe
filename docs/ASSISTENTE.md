@@ -61,7 +61,6 @@ do B-roll para voltar a uma camada comum.
 
 ## Referencias da implementacao
 
-Implementacao propria; nenhum codigo ou asset do EDIT-IA-PRO foi incorporado.
 APIs de segmentacao: [MediaPipe Image Segmenter para Python](https://developers.google.com/edge/mediapipe/solutions/vision/image_segmenter/python).
 Modelo: [catalogo oficial e cartao do modelo](https://developers.google.com/edge/mediapipe/solutions/vision/image_segmenter#multi-class_selfie_segmentation_model).
 O instalador baixa dados do modelo, nao scripts externos.

@@ -191,9 +191,6 @@ PRESETS = {
     },
 
     # ── editorial ──────────────────────────────────────────────────────
-    # Porte do "Editorial Emphasis" do HyperFrames (o .zip está em
-    # referencias/hyperframes-sessoes/editorial-emphasis/).
-    #
     # É primo do `serif-mista` — os dois põem serifada itálica na palavra
     # forte e sans no resto — e a diferença entre eles é o EXAGERO, que é
     # justamente o efeito:

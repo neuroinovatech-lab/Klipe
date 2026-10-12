@@ -40,8 +40,7 @@ AMARELO_DIA = "#FFD60040"           # :320 rgba(255,214,0,0.25) — literal no .
 
 # ── utilitarios locais ───────────────────────────────────────────────────
 def _r(i: int, s: int = 0) -> float:
-    """Substituto determinista do `random(seed)` do Remotion: nao da os MESMOS
-    numeros, da a mesma DISTRIBUICAO (uniforme em [0,1))."""
+    """Distribuicao pseudoaleatoria determinista no intervalo [0,1)."""
     return (((i * 2654435761 + s * 40503 + 12345) % 100003) / 100003.0)
 
 

@@ -49,8 +49,7 @@ Save continua manual. O projeto editável precisa de configuração e mídias; M
 é a entrega final, não um substituto da timeline. Desktop e navegador utilizam
 o mesmo editor, e o navegador continua disponível.
 
-O ZIP público não leva projetos de clientes. As ferramentas são implementações
-do Klipe; não foi incorporado código ou assets do EDIT-IA-PRO.
+O ZIP público não leva projetos de clientes.
 
 ## Limites desta versão
 
@@ -58,7 +57,7 @@ do Klipe; não foi incorporado código ou assets do EDIT-IA-PRO.
 - O executável precisa da pasta instalada e de suas dependências. Ainda não há um instalador offline autossuficiente ou assinatura digital.
 - Recorte automático não equivale a rotoscopia perfeita. Há restrições de timeline e de transformação descritas no guia de primeiros passos.
 - Modelos e dependências exigem download na preparação; integrações com serviços externos têm configuração e condições próprias.
-- Não há garantia de desempenho igual em todos os PCs nem de superioridade sobre Remotion em qualquer projeto.
+- O desempenho varia conforme o hardware e a complexidade do projeto.
 
 Para atualizar, salve, feche e faça backup antes de seguir o
 [passo a passo de atualização](INSTALACAO.md#abrir-e-atualizar).

@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-assets_ref.py — componentes do repositorio de referencia, refeitos no MotionCore.
+assets_ref.py — componentes reutilizaveis de titulos no MotionCore.
 
-O repo `creativly.ai-brand-video-remotion` tem 16 componentes reusaveis. Este
-arquivo refaz quatro deles para responder uma pergunta com prova em vez de
-opiniao: da para replicar aquilo aqui?
-
-Escolhi os quatro que mais servem como ASSET DE TITULO — coisa que vira um
-estilo salvo e reaproveitavel, e nao um momento amarrado a uma cena:
+Quatro componentes que podem ser salvos como estilos e usados em varias cenas:
 
     SplitText      texto que entra letra a letra, escalonado
     PulseRings     aneis que pulsam para fora de um ponto

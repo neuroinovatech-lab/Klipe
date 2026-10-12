@@ -155,7 +155,7 @@ def _maquina(txt: str, tam: float, t0: float, t1: float) -> dict:
 
 
 def _estrela_d(r: float) -> str:
-    """makeStar({points:4}) do @remotion/shapes (:360), escrito a mao."""
+    """Gera o contorno de uma estrela de quatro pontas."""
     p = []
     for i in range(8):
         a = -math.pi / 2 + i * math.pi / 4

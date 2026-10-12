@@ -12,9 +12,7 @@ redistribution and commercial or non-commercial use without permission.
 
 Klipe bundles 35 unmodified WAV files, renamed and categorized for the library.
 woven-library.json lists the original source URL, duration and SHA-256 for each
-file. Only the sound assets are included; no EDIT-IA-PRO program code, proprietary
-music collection or paid ElevenLabs generation is included.
+file.
 
-The collection was obtained from the user's supplied EDIT-IA-PRO archive.
-File hashes were checked against its Woven manifest. The upstream license was
-independently checked on 2026-10-11. Existing personal audio is not replaced.
+File hashes were verified. The upstream license was independently checked on
+2026-10-11. Existing personal audio is not replaced.

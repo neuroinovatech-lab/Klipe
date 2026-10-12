@@ -175,9 +175,7 @@ def _estrela_d(R: float) -> str:
 
 
 def _estrelas(n: int, dur: float) -> list:
-    """:115-140 — 15 estrelas com deriva de ruido, giro proprio e pulso por
-    seno. Aqui 9 (teto de camadas) e a posicao e determinista: o `random()` do
-    Remotion nao da pra reproduzir fora dele."""
+    """Estrelas com posicao determinista, deriva, giro e pulso senoidal."""
     fora = []
     for i in range(n):
         bx = ((((i * 173 + 41) % 100) / 100) - 0.5) * W * 0.94

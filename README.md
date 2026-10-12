@@ -35,7 +35,7 @@ O ZIP público não inclui os vídeos e projetos particulares da demonstração.
 
 ## Novidades
 
-- **Biblioteca de sons incluida:** 35 efeitos Woven SFX (CC0), organizados em Audio > Efeitos sonoros. Clique para ouvir ou use + para inserir na timeline; funcionam offline, sem API ou assinatura. [Origem e licenca](public/sfx/WOVEN-LICENSE.txt).
+- **Biblioteca de sons incluida:** 35 efeitos sonoros, organizados em Audio > Efeitos sonoros. Clique para ouvir ou use + para inserir na timeline; funcionam offline, sem API ou assinatura. [Licenca dos sons](public/sfx/WOVEN-LICENSE.txt).
 - **Atualizações pelo GitHub:** botão em Configurações para instalações Git, com proteção para alterações locais. [Como atualizar](docs/ATUALIZACOES.md).
 - **FFmpeg 9.0.2:** instalador com versão fixa e checksum, render compatível e versão anterior preservada.
 - **Klipe Desktop para Windows:** o editor em janela própria, com a marca oficial e atalho na área de trabalho.
@@ -80,9 +80,8 @@ que a duração do próprio vídeo. Uma primeira exportação sem cache pode
 levar mais tempo; hardware, resolução e complexidade da timeline também
 influenciam o resultado.
 
-Este é um resultado medido no demo, não um benchmark comparativo com React
-ou Remotion. Uma comparação de velocidade exige a mesma composição,
-hardware, qualidade de saída e condições de cache.
+Este é um resultado medido no demo. Para reproduzir a medição, utilize a mesma
+composição, hardware, qualidade de saída e condições de cache.
 
 ## Quatro pilares
 

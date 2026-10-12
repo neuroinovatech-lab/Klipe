@@ -123,7 +123,7 @@ def _amostrar(fn, dur, fino=1.2, p1=2 * F, p2=5 * F, casas=2):
 
 
 def _rnd(k: float) -> float:
-    """O `random(seed)` do Remotion: determinista e espalhado."""
+    """Gera valores deterministas para distribuir os elementos."""
     x = math.sin(k * 127.1 + 311.7) * 43758.5453
     return x - math.floor(x)
 

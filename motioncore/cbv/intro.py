@@ -43,7 +43,7 @@ Y_CRIA = -308.0
 Y_HALO = 70.0         # :205-208 translate(-250,-320) sobre o centro
 
 
-# ── pseudoaleatorio deterministico (o `random(seed)` do Remotion) ────────
+# ── pseudoaleatorio deterministico ─────────────────────────────────────
 def _rnd(k: float) -> float:
     x = math.sin(k * 127.1 + 311.7) * 43758.5453
     return x - math.floor(x)
