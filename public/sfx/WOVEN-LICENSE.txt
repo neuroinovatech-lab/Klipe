@@ -1,0 +1,20 @@
+Woven SFX - bundled sound effects
+
+Source: https://github.com/woven-video/woven-sfx
+Sound files: https://assets.sfx.woven.video/sfx/
+Official notice: https://github.com/woven-video/woven-sfx/blob/main/SOUNDS_LICENSE
+License: CC0 1.0 Universal
+License text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+The upstream SOUNDS_LICENSE dedicates the sound files and their CDN distribution
+to the public domain under CC0 1.0. It permits copying, modification,
+redistribution and commercial or non-commercial use without permission.
+
+Klipe bundles 35 unmodified WAV files, renamed and categorized for the library.
+woven-library.json lists the original source URL, duration and SHA-256 for each
+file. Only the sound assets are included; no EDIT-IA-PRO program code, proprietary
+music collection or paid ElevenLabs generation is included.
+
+The collection was obtained from the user's supplied EDIT-IA-PRO archive.
+File hashes were checked against its Woven manifest. The upstream license was
+independently checked on 2026-10-11. Existing personal audio is not replaced.

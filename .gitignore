@@ -50,6 +50,9 @@ renders/
 *.flac
 *.ogg
 
+# Only the licensed bundled Woven collection; personal audio stays ignored.
+!public/sfx/*/woven-*.wav
+
 # Cache, logs e artefatos gerados
 *.log
 *.tmp

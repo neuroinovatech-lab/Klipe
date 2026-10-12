@@ -1,0 +1,358 @@
+{
+  "name": "Woven SFX",
+  "license": "CC0-1.0",
+  "source": "https://github.com/woven-video/woven-sfx",
+  "licenseUrl": "https://github.com/woven-video/woven-sfx/blob/main/SOUNDS_LICENSE",
+  "sounds": [
+    {
+      "id": "airplane-ding",
+      "src": "sfx/shimmer/woven-aviso-aeroporto.wav",
+      "category": "shimmer",
+      "label": "aviso aeroporto",
+      "license": "CC0-1.0",
+      "sha256": "ab7eba449e5d4d9132ead7115169b24fa33511864430679fa3e98b4fac6ba81e",
+      "durationSec": 1.184,
+      "source": "https://assets.sfx.woven.video/sfx/airplane-ding.wav"
+    },
+    {
+      "id": "applause",
+      "src": "sfx/ambience/woven-aplausos.wav",
+      "category": "ambience",
+      "label": "aplausos",
+      "license": "CC0-1.0",
+      "sha256": "4f70bd0339f70940616031e470c1f096cbec8ad0049f700f4a45c7b3463fdcfc",
+      "durationSec": 12.91,
+      "source": "https://assets.sfx.woven.video/sfx/applause.wav"
+    },
+    {
+      "id": "base-drop",
+      "src": "sfx/bass_drop/woven-queda-grave.wav",
+      "category": "bass_drop",
+      "label": "queda grave",
+      "license": "CC0-1.0",
+      "sha256": "9ba6f002bf70ca30903b5fc9ad0db29d5aafb0e939470fdfc303f51cdaeb17ee",
+      "durationSec": 3.297,
+      "source": "https://assets.sfx.woven.video/sfx/base-drop.wav"
+    },
+    {
+      "id": "bass-impact",
+      "src": "sfx/transition_impacts/woven-impacto-grave.wav",
+      "category": "transition_impacts",
+      "label": "impacto grave",
+      "license": "CC0-1.0",
+      "sha256": "4b0cc7237c83d21bba4cd2aa73dffb758b1454bfea679dd227cb674843e40e4e",
+      "durationSec": 2.461,
+      "source": "https://assets.sfx.woven.video/sfx/bass-impact.wav"
+    },
+    {
+      "id": "beep-short",
+      "src": "sfx/pop_click/woven-bipe-curto.wav",
+      "category": "pop_click",
+      "label": "bipe curto",
+      "license": "CC0-1.0",
+      "sha256": "86e3ea1be85386d4ded5f8c42b12d2a90845d91a49d87cd97f9c296966e3b16d",
+      "durationSec": 0.697,
+      "source": "https://assets.sfx.woven.video/sfx/beep-short.wav"
+    },
+    {
+      "id": "camera-analog",
+      "src": "sfx/foley/woven-camera-analogica.wav",
+      "category": "foley",
+      "label": "camera analogica",
+      "license": "CC0-1.0",
+      "sha256": "c910763a81c3b03f70c5d18ec2923ee840a16bb14522d4a470f2e0d8af27d2d9",
+      "durationSec": 0.859,
+      "source": "https://assets.sfx.woven.video/sfx/camera-analog.wav"
+    },
+    {
+      "id": "camera-flash",
+      "src": "sfx/foley/woven-flash-camera.wav",
+      "category": "foley",
+      "label": "flash camera",
+      "license": "CC0-1.0",
+      "sha256": "a3dc1092e6ccf38f5e6fa5109b547a6fd2a6a992d594e80a1644cb80af060ebf",
+      "durationSec": 6.455,
+      "source": "https://assets.sfx.woven.video/sfx/camera-flash.wav"
+    },
+    {
+      "id": "camera-shutter-1-shot",
+      "src": "sfx/foley/woven-camera-disparo.wav",
+      "category": "foley",
+      "label": "camera disparo",
+      "license": "CC0-1.0",
+      "sha256": "a34e1c2447eef7322016445478777c255fab98a3aa0aa0b287918d796384c69f",
+      "durationSec": 0.279,
+      "source": "https://assets.sfx.woven.video/sfx/camera-shutter-1-shot.wav"
+    },
+    {
+      "id": "camera-shutter-8-shots",
+      "src": "sfx/foley/woven-camera-disparos-sequencia.wav",
+      "category": "foley",
+      "label": "camera disparos sequencia",
+      "license": "CC0-1.0",
+      "sha256": "07d8e60ce9c57750d88965bc1b6babd735839c66983c4d18a376e8b803bbfcb4",
+      "durationSec": 1.115,
+      "source": "https://assets.sfx.woven.video/sfx/camera-shutter-8-shots.wav"
+    },
+    {
+      "id": "camera-shutter-release",
+      "src": "sfx/foley/woven-camera-obturador.wav",
+      "category": "foley",
+      "label": "camera obturador",
+      "license": "CC0-1.0",
+      "sha256": "265f81ce80661735cb4190d42834eca2b760aa3ed118ac6b222756f961eefbee",
+      "durationSec": 0.58,
+      "source": "https://assets.sfx.woven.video/sfx/camera-shutter-release.wav"
+    },
+    {
+      "id": "cheers-and-applause",
+      "src": "sfx/ambience/woven-comemoracao-aplausos.wav",
+      "category": "ambience",
+      "label": "comemoracao aplausos",
+      "license": "CC0-1.0",
+      "sha256": "e57f99c9e994f774e9156ed2e19a2e767261af5b4b8b43afce63253178fa00b6",
+      "durationSec": 4.087,
+      "source": "https://assets.sfx.woven.video/sfx/cheers-and-applause.wav"
+    },
+    {
+      "id": "deep-whoosh",
+      "src": "sfx/whooshes/woven-whoosh-profundo.wav",
+      "category": "whooshes",
+      "label": "whoosh profundo",
+      "license": "CC0-1.0",
+      "sha256": "4a5c795193bad8bf5528d58db8f40a15991f4c194d8abf1c33c6a431843a0d7e",
+      "durationSec": 3.228,
+      "source": "https://assets.sfx.woven.video/sfx/deep-whoosh.wav"
+    },
+    {
+      "id": "dj-scratch",
+      "src": "sfx/reverse/woven-scratch-dj.wav",
+      "category": "reverse",
+      "label": "scratch dj",
+      "license": "CC0-1.0",
+      "sha256": "7880ae62cb13cba22cb310b437c157f6902de595af59657c52e06dbbc31bb4bd",
+      "durationSec": 1.556,
+      "source": "https://assets.sfx.woven.video/sfx/dj-scratch.wav"
+    },
+    {
+      "id": "dull-thud",
+      "src": "sfx/transition_impacts/woven-batida-seca.wav",
+      "category": "transition_impacts",
+      "label": "batida seca",
+      "license": "CC0-1.0",
+      "sha256": "0d3bee8611d35bd3cc8b7f957165613b93fe37e694f3a6becbece89f5d242d97",
+      "durationSec": 1.393,
+      "source": "https://assets.sfx.woven.video/sfx/dull-thud.wav"
+    },
+    {
+      "id": "elevator-ding",
+      "src": "sfx/shimmer/woven-aviso-elevador.wav",
+      "category": "shimmer",
+      "label": "aviso elevador",
+      "license": "CC0-1.0",
+      "sha256": "a2a4e8fc590ed1b4d1c7534e8523d5aa0d8cf484b7729793f58cb1dd28f966e8",
+      "durationSec": 1.997,
+      "source": "https://assets.sfx.woven.video/sfx/elevator-ding.wav"
+    },
+    {
+      "id": "explosion",
+      "src": "sfx/transition_impacts/woven-explosao.wav",
+      "category": "transition_impacts",
+      "label": "explosao",
+      "license": "CC0-1.0",
+      "sha256": "c8595576a08e80978da4ee340e6ffbd239e5cc4825a0cab4716b84e9cc1bbf23",
+      "durationSec": 3.181,
+      "source": "https://assets.sfx.woven.video/sfx/explosion.wav"
+    },
+    {
+      "id": "fast-whoosh",
+      "src": "sfx/whooshes/woven-whoosh-rapido.wav",
+      "category": "whooshes",
+      "label": "whoosh rapido",
+      "license": "CC0-1.0",
+      "sha256": "87da86fc4da1eb53583c486cc2d40905ef38f413b64eed7852168c945f0c45b5",
+      "durationSec": 0.395,
+      "source": "https://assets.sfx.woven.video/sfx/fast-whoosh.wav"
+    },
+    {
+      "id": "female-gasp",
+      "src": "sfx/foley/woven-surpresa-feminina.wav",
+      "category": "foley",
+      "label": "surpresa feminina",
+      "license": "CC0-1.0",
+      "sha256": "f3e2292e395391719eb998fe212fbc407a2aa38d8f4c052797387ad38ba21268",
+      "durationSec": 0.488,
+      "source": "https://assets.sfx.woven.video/sfx/female-gasp.wav"
+    },
+    {
+      "id": "frog-ribbit",
+      "src": "sfx/foley/woven-coaxar.wav",
+      "category": "foley",
+      "label": "coaxar",
+      "license": "CC0-1.0",
+      "sha256": "b283d44e2681a72c51e84846534df5b80fed5101aa667570e147eb146bfea46b",
+      "durationSec": 0.697,
+      "source": "https://assets.sfx.woven.video/sfx/frog-ribbit.wav"
+    },
+    {
+      "id": "glitch-logo",
+      "src": "sfx/glitch/woven-glitch-logo.wav",
+      "category": "glitch",
+      "label": "glitch logo",
+      "license": "CC0-1.0",
+      "sha256": "4d46f773968ec16fe459cad3fdd451f7662b84d079be0890fe19c52be19fc49e",
+      "durationSec": 0.627,
+      "source": "https://assets.sfx.woven.video/sfx/glitch-logo.wav"
+    },
+    {
+      "id": "keyboard-typing",
+      "src": "sfx/foley/woven-digitacao.wav",
+      "category": "foley",
+      "label": "digitacao",
+      "license": "CC0-1.0",
+      "sha256": "17f593ff95c4169456c42e6fd039575bf0f60839a781252118dad229041c6597",
+      "durationSec": 10.286,
+      "source": "https://assets.sfx.woven.video/sfx/keyboard-typing.wav"
+    },
+    {
+      "id": "keyboard-typing-realistic",
+      "src": "sfx/foley/woven-digitacao-realista.wav",
+      "category": "foley",
+      "label": "digitacao realista",
+      "license": "CC0-1.0",
+      "sha256": "106da1321cb67b64c4355373f65abccd36ce2a8053498aecea09ae3b20cffb1f",
+      "durationSec": 3.39,
+      "source": "https://assets.sfx.woven.video/sfx/keyboard-typing-realistic.wav"
+    },
+    {
+      "id": "male-gasp",
+      "src": "sfx/foley/woven-surpresa-masculina.wav",
+      "category": "foley",
+      "label": "surpresa masculina",
+      "license": "CC0-1.0",
+      "sha256": "9333657681468b72fdf1e3eade5c7a46a1c34289cc99673ad6e6d0b0ef1f826d",
+      "durationSec": 0.464,
+      "source": "https://assets.sfx.woven.video/sfx/male-gasp.wav"
+    },
+    {
+      "id": "message-pop-reply",
+      "src": "sfx/pop_click/woven-resposta-mensagem.wav",
+      "category": "pop_click",
+      "label": "resposta mensagem",
+      "license": "CC0-1.0",
+      "sha256": "003a5ad8341818450fd8662063269fafdeaa996fde418375ff47d5a2be20f132",
+      "durationSec": 0.882,
+      "source": "https://assets.sfx.woven.video/sfx/message-pop-reply.wav"
+    },
+    {
+      "id": "money-chalking",
+      "src": "sfx/foley/woven-manuseio-dinheiro.wav",
+      "category": "foley",
+      "label": "manuseio dinheiro",
+      "license": "CC0-1.0",
+      "sha256": "797fe3ffd7e6f9c87019bfb9788afc6db75f5cd6b183f2c2562a205f7a152036",
+      "durationSec": 1.858,
+      "source": "https://assets.sfx.woven.video/sfx/money-chalking.wav"
+    },
+    {
+      "id": "mouse-click-1",
+      "src": "sfx/pop_click/woven-clique-mouse-1.wav",
+      "category": "pop_click",
+      "label": "clique mouse 1",
+      "license": "CC0-1.0",
+      "sha256": "37e68fb3fe7fcdc21abde7bb9464f5ff99424899ca49bb74397801dc451c4510",
+      "durationSec": 0.766,
+      "source": "https://assets.sfx.woven.video/sfx/mouse-click-1.wav"
+    },
+    {
+      "id": "mouse-click-2",
+      "src": "sfx/pop_click/woven-clique-mouse-2.wav",
+      "category": "pop_click",
+      "label": "clique mouse 2",
+      "license": "CC0-1.0",
+      "sha256": "144ff9b54529dd3763c269b5bac545891ea761303830f323d8e8bb64d13df867",
+      "durationSec": 0.186,
+      "source": "https://assets.sfx.woven.video/sfx/mouse-click-2.wav"
+    },
+    {
+      "id": "notification-ding",
+      "src": "sfx/shimmer/woven-notificacao.wav",
+      "category": "shimmer",
+      "label": "notificacao",
+      "license": "CC0-1.0",
+      "sha256": "5cb72bb54b78a4482d0d8828ef20c738b3fc9dac13e416fd9dc22e7fa2706269",
+      "durationSec": 1.997,
+      "source": "https://assets.sfx.woven.video/sfx/notification-ding.wav"
+    },
+    {
+      "id": "pop-hand",
+      "src": "sfx/pop_click/woven-pop.wav",
+      "category": "pop_click",
+      "label": "pop",
+      "license": "CC0-1.0",
+      "sha256": "02fed9196bc33a569ab3ddbdcc5d8b3c323346df6fb32e24b23930f990fc1cd5",
+      "durationSec": 0.348,
+      "source": "https://assets.sfx.woven.video/sfx/pop-hand.wav"
+    },
+    {
+      "id": "record-needle-scratch",
+      "src": "sfx/reverse/woven-agulha-disco.wav",
+      "category": "reverse",
+      "label": "agulha disco",
+      "license": "CC0-1.0",
+      "sha256": "1d3447fe8910557668a87a3c29338691be7b2a175214e98a18c62a843ad8bd49",
+      "durationSec": 1.649,
+      "source": "https://assets.sfx.woven.video/sfx/record-needle-scratch.wav"
+    },
+    {
+      "id": "record-scratch",
+      "src": "sfx/reverse/woven-risco-disco.wav",
+      "category": "reverse",
+      "label": "risco disco",
+      "license": "CC0-1.0",
+      "sha256": "c24ed9d04423c25d3b63f4348db186b7e1f2552f88671ec27251a8be4ec55205",
+      "durationSec": 1.277,
+      "source": "https://assets.sfx.woven.video/sfx/record-scratch.wav"
+    },
+    {
+      "id": "several-coins",
+      "src": "sfx/foley/woven-moedas.wav",
+      "category": "foley",
+      "label": "moedas",
+      "license": "CC0-1.0",
+      "sha256": "a51fe8c3d2a071e22c1a8a359620c8f397091c50e77a0e8cff77b2644ebb360d",
+      "durationSec": 1.416,
+      "source": "https://assets.sfx.woven.video/sfx/several-coins.wav"
+    },
+    {
+      "id": "sideways-record-needle",
+      "src": "sfx/reverse/woven-agulha-disco-lateral.wav",
+      "category": "reverse",
+      "label": "agulha disco lateral",
+      "license": "CC0-1.0",
+      "sha256": "4caae85e351d2f65b5395b249e17e9a37e6a12b57a1cff89263d6396fdeacae8",
+      "durationSec": 0.58,
+      "source": "https://assets.sfx.woven.video/sfx/sideways-record-needle.wav"
+    },
+    {
+      "id": "swish-whoosh-large",
+      "src": "sfx/whooshes/woven-whoosh-grande.wav",
+      "category": "whooshes",
+      "label": "whoosh grande",
+      "license": "CC0-1.0",
+      "sha256": "dd03c5bb45d3e9f4ae57e876543ff52ceabe8ebd12597bbf600eedde41c8fd92",
+      "durationSec": 0.789,
+      "source": "https://assets.sfx.woven.video/sfx/swish-whoosh-large.wav"
+    },
+    {
+      "id": "tick-sound",
+      "src": "sfx/pop_click/woven-tique.wav",
+      "category": "pop_click",
+      "label": "tique",
+      "license": "CC0-1.0",
+      "sha256": "4f0cbac876d2514c36fba7f859eb9b41cfb360eba49f3bd27c2b9c2ffbd2bf71",
+      "durationSec": 0.557,
+      "source": "https://assets.sfx.woven.video/sfx/tick-sound.wav"
+    }
+  ]
+}

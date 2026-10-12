@@ -38,6 +38,9 @@ jobs:
       - name: Desktop workspace preferences
         run: node --test tests/workspace.test.cjs
 
+      - name: Verify bundled sound library
+        run: node --test tests/sfx-library.test.cjs
+
       - name: Validar scripts Python
         run: python -m compileall -q -x "(^|/)(node_modules|\.git)/" .
 
