@@ -39,7 +39,7 @@ O ZIP público não inclui os vídeos e projetos particulares da demonstração.
 - **Atualizações pelo GitHub:** botão em Configurações para instalações Git, com proteção para alterações locais. [Como atualizar](docs/ATUALIZACOES.md).
 - **FFmpeg 9.0.2:** instalador com versão fixa e checksum, render compatível e versão anterior preservada.
 - **Klipe Desktop para Windows:** o editor em janela própria, com a marca oficial e atalho na área de trabalho.
-- **Interface Desktop:** menus, biblioteca e propriedades ajustáveis, layouts de edição/revisão e preview em tela cheia. [Como usar](app/README.md#espaco-de-trabalho).
+- **Interface clássica:** a mesma no navegador e no aplicativo Desktop, com modos Edição/Revisão e preview em tela cheia. [Como usar](app/README.md#espaco-de-trabalho).
 - **Instalação automática:** prepara as dependências, o Desktop e o módulo local de remoção de fundo.
 - **Recorte em Propriedades:** modos para remover o cenário ou colocar a pessoa na frente dos títulos, com limpeza e suavidade ajustáveis.
 - **Posição e escala do vídeo principal:** reenquadre cada clipe em Propriedades, sem confundir isso com um zoom animado.
