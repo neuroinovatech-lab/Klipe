@@ -1,6 +1,7 @@
 # Dependencias e ambientes locais
 node_modules/
 .klipe-runtime.json
+.klipe-update.lock
 logs/
 .venv/
 .venv-vision/

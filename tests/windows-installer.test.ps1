@@ -6,8 +6,14 @@ foreach ($file in Get-ChildItem (Join-Path $root 'tools') -Filter '*windows*.ps1
     if ($errors.Count) { throw ($errors | Out-String) }
 }
 . (Join-Path $root 'tools/windows-runtime.ps1')
+. (Join-Path $root 'tools/ffmpeg-windows.ps1')
 function Assert-True($Value, $Message) { if (-not $Value) { throw $Message } }
 $node = Find-Runtime 'node'
+Assert-True ($FFmpegRelease.version -eq '9.0.2') 'Versao testada do FFmpeg mudou sem atualizar os testes.'
+Assert-True ($FFmpegRelease.sha256 -match '^[a-f0-9]{64}$') 'SHA256 do pacote invalido.'
+$rejected = $false
+try { Test-FFmpegArchive (Join-Path $root 'tools/ffmpeg-release.json') } catch { $rejected = $true }
+Assert-True $rejected 'Um pacote com checksum diferente precisa ser recusado.'
 Assert-True ($null -ne $node) 'Node 22+ deve ser detectado, inclusive em caminho com espacos.'
 Assert-True (Test-Executable $node @('-e','process.exit(0)')) 'Execucao valida recusada.'
 Assert-True (-not (Test-Executable $node @('-e','process.exit(7)'))) 'Erro nativo tratado como sucesso.'

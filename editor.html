@@ -4053,6 +4053,7 @@ body:not(.theme-v2) #accent-picker { display: none; }
     <div style="display:flex;gap:6px;padding:12px 20px 0">
       <button class="cfg-aba ativo" data-aba="chaves" onclick="NLE.ajustes.aba('chaves')">Chaves de API</button>
       <button class="cfg-aba" data-aba="render" onclick="NLE.ajustes.aba('render')">Render</button>
+      <button class="cfg-aba" data-aba="atualizacoes" onclick="NLE.ajustes.aba('atualizacoes');KlipeUpdates.load()">Atualizações</button>
       <button class="cfg-aba" data-aba="sons" onclick="NLE.ajustes.aba('sons')">Sons</button>
       <button class="cfg-aba" data-aba="gastos" onclick="NLE.ajustes.aba('gastos')">Gastos</button>
       <button class="cfg-aba" data-aba="instrucoes" onclick="NLE.ajustes.aba('instrucoes')">Instruções</button>
@@ -4189,6 +4190,15 @@ body:not(.theme-v2) #accent-picker { display: none; }
         </p>
       </div>
 
+      <div class="cfg-painel" data-painel="atualizacoes" style="display:none">
+        <h3>Atualizações do Klipe</h3>
+        <p id="klipe-update-version" style="font-family:monospace"></p>
+        <p id="klipe-update-status" role="status" aria-live="polite" style="overflow-wrap:anywhere;min-height:48px">Verifique se há uma nova versão.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="cfg-mini" id="klipe-update-check" onclick="KlipeUpdates.run('check')">Verificar atualizações</button>
+          <button class="cfg-mini primario" id="klipe-update-apply" onclick="KlipeUpdates.run('apply')" disabled>Instalar atualização</button>
+        </div>
+      </div>
       <div class="cfg-painel" data-painel="instrucoes" style="display:none">
         <p class="cfg-nota">O que orienta a IA ao montar um vídeo. Editar aqui <strong>não toca no arquivo original</strong>: sua versão fica por cima e “Voltar ao padrão” a descarta, então não há como perder o texto de fábrica.</p>
         <div style="display:flex;gap:12px;min-height:0;height:420px">
@@ -4214,6 +4224,7 @@ body:not(.theme-v2) #accent-picker { display: none; }
 </div>
 
 <style>
+#klipe-update-check:disabled, #klipe-update-apply:disabled { opacity:.45; cursor:not-allowed; }
 .cfg-aba {
   background:#0d1117; border:1px solid #30363d; color:#8b949e;
   padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px;
@@ -21360,5 +21371,6 @@ setTimeout(() => { if (NLE.mediaLib && NLE.mediaLib.render) NLE.mediaLib.render(
 <script src="/klipe-assist-core.js"></script>
 <link rel="stylesheet" href="/klipe-background.css">
 <script src="/klipe-background.js"></script>
+<script src="/klipe-updates.js"></script>
 </body>
 </html>

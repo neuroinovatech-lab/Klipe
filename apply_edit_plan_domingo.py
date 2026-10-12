@@ -92,7 +92,7 @@ def cut_video(timeline, total_dur, src_path, out_path):
     cmd = [
         FFMPEG, "-y", "-hide_banner", "-loglevel", "warning",
         "-i", str(src_path),
-        "-filter_complex_script", str(fc_file),
+        "-/filter_complex", str(fc_file),
         "-map", "[vout]", "-map", "[aout]",
         "-c:v", "h264_nvenc", "-preset", "p7", "-cq", "20",
         "-c:a", "aac", "-b:a", "192k",

@@ -16,6 +16,11 @@ const PROJECTS_DIR = path.join(__dirname, "projects");
 // Cada projeto tem seu proprio job. Um unico global fazia o modal de qualquer
 // aba mostrar e abrir o ultimo render iniciado em OUTRO projeto.
 const FORGE_RENDERS = new Map();
+const updateAPI = require('./update-api').createUpdateAPI({
+  root: __dirname,
+  busy: () => [...FORGE_RENDERS.values()].some(job => job.status === 'running')
+    || global._shortsRender?.status === 'rendering' || global._davinciSend?.status === 'running',
+});
 const chaveForge = (slug) => slugSeguro(slug) || "_global";
 
 // Normaliza o primeiro intervalo HTTP pedido por players de mídia. Chromium
@@ -166,6 +171,8 @@ const FFMPEG_DIR = path.join(process.env.LOCALAPPDATA || require("os").homedir()
 // pelo botao de Configuracoes recebe o binario em %LOCALAPPDATA%\Klipe, que
 // NAO entra no PATH — entao o Klipe instalava o ffmpeg e continuava sem achar.
 function ffbin(nome) {
+  const env = process.env[`KLIPE_${nome.toUpperCase()}`];
+  if (env && fs.existsSync(env)) return env;
   const cfg = (lerAjustes()[`${nome}_path`] || "").trim();
   if (cfg && fs.existsSync(cfg)) return cfg;
   const irmao = (lerAjustes().ffmpeg_path || "").trim();
@@ -173,6 +180,10 @@ function ffbin(nome) {
     const cand = path.join(path.dirname(irmao), nome + path.extname(irmao));
     if (fs.existsSync(cand)) return cand;
   }
+  try {
+    const runtime = JSON.parse(fs.readFileSync(path.join(__dirname, '.klipe-runtime.json'), 'utf8').replace(/^\uFEFF/, ''));
+    if (runtime[nome] && fs.existsSync(runtime[nome])) return runtime[nome];
+  } catch {}
   for (const dir of [FFMPEG_DIR, "C:\ffmpeg\bin"]) {
     for (const ext of [".exe", ""]) {
       const cand = path.join(dir, nome + ext);
@@ -707,6 +718,11 @@ const server = http.createServer(comRede(async (req, res) => {
     return res.end("O Klipe roda sem login e por isso so aceita conexao local.");
   }
   req.user = auth.getRequestUser(req) || { username: "local", role: "admin" };
+  if (await updateAPI(req, res, url)) return;
+  if (updateAPI.isUpdating() && req.method !== 'GET' && req.method !== 'HEAD') {
+    res.writeHead(409, {'Content-Type': 'application/json'});
+    return res.end(JSON.stringify({error: 'Atualizacao em andamento. Aguarde antes de editar ou renderizar.'}));
+  }
   if (await assistantAPI(req, res, url, _projeto)) return;
 
   // ─── Admin: CRUD de users ────────────────────────────────────────────

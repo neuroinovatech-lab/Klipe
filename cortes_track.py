@@ -219,7 +219,7 @@ def aplicar():
     script = os.path.join(pd, "_cortes_fc.txt")
     open(script, "w").write("".join(fc))
     tmp = os.path.join(pd, "_cortes_tmp.mp4")
-    r = subprocess.run([FF, "-y", "-v", "error", "-i", bkp, "-filter_complex_script", script,
+    r = subprocess.run([FF, "-y", "-v", "error", "-i", bkp, "-/filter_complex", script,
                         "-map", "[v]", "-map", "[a]", "-c:v", "h264_nvenc", "-preset", "p5",
                         "-cq", "19", "-pix_fmt", "yuv420p", "-g", "30",
                         "-c:a", "aac", "-b:a", "192k", tmp], capture_output=True, text=True)

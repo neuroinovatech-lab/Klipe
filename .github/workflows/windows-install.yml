@@ -5,22 +5,30 @@ on:
     branches: [main]
     paths:
       - 'tools/*windows*.ps1'
+      - 'tools/ffmpeg-release.json'
       - 'tools/install-desktop.ps1'
       - 'app/**'
       - '*Klipe.bat'
       - 'requirements*.txt'
       - 'package*.json'
       - 'tests/windows-installer.test.ps1'
+      - 'tests/update-api.test.cjs'
+      - 'update-api.js'
+      - 'public/klipe-updates.js'
       - '.github/workflows/windows-install.yml'
   pull_request:
     paths:
       - 'tools/*windows*.ps1'
+      - 'tools/ffmpeg-release.json'
       - 'tools/install-desktop.ps1'
       - 'app/**'
       - '*Klipe.bat'
       - 'requirements*.txt'
       - 'package*.json'
       - 'tests/windows-installer.test.ps1'
+      - 'tests/update-api.test.cjs'
+      - 'update-api.js'
+      - 'public/klipe-updates.js'
       - '.github/workflows/windows-install.yml'
 permissions:
   contents: read

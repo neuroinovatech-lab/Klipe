@@ -23,14 +23,15 @@ execute o instalador nela; transfira projetos separadamente.
 
 - Node.js 22 se nao houver um Node compativel (22 ou mais novo).
 - Python 3.11 se nao houver uma instalacao compativel.
-- FFmpeg e FFprobe se estiverem faltando.
+- FFmpeg e FFprobe 9.0.2 em pasta propria, com SHA256 verificado; versoes anteriores sao preservadas.
 - Dependencias do editor pelo `package-lock.json` e um ambiente Python `.venv`.
 - Remocao de fundo em `.venv-vision`, com o modelo oficial MediaPipe em `models/`.
 - Atalho na area de trabalho e caminhos locais em `.klipe-runtime.json`.
 - Janela Desktop com WebView2 e executavel gerado em `app/dist/Klipe.exe`.
 
-Os pacotes Windows usam o [WinGet da Microsoft](https://learn.microsoft.com/en-us/windows/package-manager/winget/install),
-com identificadores exatos e verificacao de integridade do gerenciador. O Node
+Node e Python usam o [WinGet da Microsoft](https://learn.microsoft.com/en-us/windows/package-manager/winget/install),
+com identificadores exatos. FFmpeg usa um pacote fixo de gyan.dev, com SHA256
+registrado em `tools/ffmpeg-release.json` e conferido antes de extrair. O Node
 pode pedir autorizacao do Windows. O instalador nao desativa antivirus nem muda
 a politica de execucao permanente do PowerShell. Downloads usam internet; seus
 videos nao sao enviados. A transcricao pode baixar seu modelo no primeiro uso.
@@ -40,6 +41,10 @@ novamente. Ele nao apaga projetos, videos, renders ou configuracoes de edicao.
 O tamanho e o tempo variam com os downloads e a conexao; reserve alguns GB livres.
 
 ## Abrir e atualizar
+
+**Novo:** em clones Git oficiais, use **Configuracoes > Atualizacoes**.
+Para versoes que alterem dependencias/Desktop, use **Atualizar Klipe.bat**
+com o aplicativo fechado. [Passo a passo, ZIP e recuperacao](ATUALIZACOES.md).
 
 **Desktop:** use **Klipe Desktop** ou `Klipe Desktop.bat`. Ele abre a janela e
 inicia seus processos locais. Salve antes de fechar. Fechar durante um render

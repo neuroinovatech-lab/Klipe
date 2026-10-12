@@ -800,7 +800,7 @@ def ensure_audio_stems(cfg, project_dir):
             fc_file = project_dir / ".sfx_filter.txt"
             fc_file.write_text(sfx_filter, encoding="utf-8")
             subprocess.run([FFMPEG_EXTERNAL, "-y", "-hide_banner", "-loglevel", "error",
-                *inputs, "-filter_complex_script", str(fc_file), "-map", "[mix]",
+                *inputs, "-/filter_complex", str(fc_file), "-map", "[mix]",
                 "-ar", str(SR), "-ac", "2", "-c:a", "pcm_s16le", str(sfx_out)], check=True)
             fc_file.unlink(missing_ok=True)
         else:
@@ -1658,7 +1658,7 @@ def render_composite(cfg, titles_mov, out_path, ass_path=None,
     # com 100+ SFX inputs o filter graph fica muito grande pra inline arg
     filter_script = out_path.parent / f".forge_filter_{out_path.stem}.txt"
     filter_script.write_text(filter_complex, encoding="utf-8")
-    cmd.extend(["-filter_complex_script", str(filter_script)])
+    cmd.extend(["-/filter_complex", str(filter_script)])
     if ass_path:
         # o ass entra DEPOIS de tudo (fonte+brolls+titulos), como nos editores
         filter_complex += f";[vout]ass={ass_path}[vsub]"
@@ -1704,6 +1704,8 @@ def render_composite(cfg, titles_mov, out_path, ass_path=None,
             "-aq-strength", "8",
             "-bf", "3",
         ])
+        if codec == "h264":
+            cmd.extend(["-profile:v", "high", "-pix_fmt", "yuv420p"])
     else:
         # CRF equivalente ao cq do NVENC. x264/x265 sao mais eficientes por
         # bit, entao o mesmo numero ja sai melhor — e MUITO mais devagar.

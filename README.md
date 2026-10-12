@@ -35,6 +35,8 @@ O ZIP público não inclui os vídeos e projetos particulares da demonstração.
 
 ## Novidades
 
+- **Atualizações pelo GitHub:** botão em Configurações para instalações Git, com proteção para alterações locais. [Como atualizar](docs/ATUALIZACOES.md).
+- **FFmpeg 9.0.2:** instalador com versão fixa e checksum, render compatível e versão anterior preservada.
 - **Klipe Desktop para Windows:** o editor em janela própria, com a marca oficial e atalho na área de trabalho.
 - **Instalação automática:** prepara as dependências, o Desktop e o módulo local de remoção de fundo.
 - **Recorte em Propriedades:** modos para remover o cenário ou colocar a pessoa na frente dos títulos, com limpeza e suavidade ajustáveis.
@@ -112,8 +114,9 @@ hardware, qualidade de saída e condições de cache.
 4. Quando terminar, abra **Klipe Desktop** na área de trabalho para usar a janela
    própria, ou **Klipe** para abrir no navegador.
 
-O instalador verifica Node.js, Python 3.11 e FFmpeg, instala o que faltar pelo
-WinGet e prepara as dependências e o modelo de remoção de fundo. **Não precisa
+O instalador verifica Node.js e Python 3.11 pelo WinGet e instala FFmpeg 9.0.2
+de um pacote fixo com SHA256 verificado. Prepara as dependências e o modelo de
+remoção de fundo. **Não precisa
 instalar Conda nem digitar comandos.** Requer Windows 10/11 de 64 bits, internet
 e WinGet; a instalação do Node pode solicitar permissão do Windows.
 

@@ -1,5 +1,6 @@
 param([switch]$Yes, [switch]$SkipVision, [switch]$CheckOnly, [switch]$NoShortcut, [switch]$SkipDesktop)
 . "$PSScriptRoot\windows-runtime.ps1"
+. "$PSScriptRoot\ffmpeg-windows.ps1"
 Set-Location -LiteralPath $KlipeRoot
 $logging = $false
 try {
@@ -9,6 +10,7 @@ try {
     Write-Host "`nKlipe - instalacao automatica para Windows`n"
     foreach ($name in $runtime.Keys) { Write-Host ('{0}: {1}' -f $name, $(if($runtime[$name]){$runtime[$name]}else{'sera instalado'})) }
     if ($CheckOnly) { Write-Host 'Diagnostico concluido. Nenhuma instalacao foi executada.'; exit 0 }
+    Write-Host "FFmpeg sera configurado na versao testada $($FFmpegRelease.version), sem substituir instalacoes de outros programas."
     Write-Host "`nSerao instaladas dependencias Node/Python/FFmpeg e criado um ambiente nesta pasta:"
     Write-Host $KlipeRoot
     Write-Host 'Requer internet e espaco em disco. O Windows pode solicitar permissao para instalar o Node.'
@@ -22,10 +24,8 @@ try {
     $logging = $true
     if (-not $runtime.node) { Install-WingetPackage 'OpenJS.NodeJS.22'; $runtime.node = Find-Runtime 'node' }
     if (-not $runtime.python) { Install-WingetPackage 'Python.Python.3.11' 'user'; $runtime.python = Find-Runtime 'python' }
-    if (-not $runtime.ffmpeg -or -not $runtime.ffprobe) {
-        Install-WingetPackage 'Gyan.FFmpeg' 'user'
-        $runtime.ffmpeg = Find-Runtime 'ffmpeg'; $runtime.ffprobe = Find-Runtime 'ffprobe'
-    }
+    $pair = Install-FFmpegRelease
+    $runtime.ffmpeg = $pair.ffmpeg; $runtime.ffprobe = $pair.ffprobe
     foreach ($name in $runtime.Keys) { if (-not $runtime[$name]) { throw "$name nao foi encontrado depois da instalacao. Feche e execute este instalador novamente." } }
     $env:Path = (Split-Path $runtime.node) + ';' + (Split-Path $runtime.ffmpeg) + ';' + $env:Path
     $npm = Join-Path (Split-Path $runtime.node) 'npm.cmd'
@@ -49,6 +49,9 @@ try {
     }
     Write-Host "`n[4/4] Atalho e configuracao local"
     $runtime.python = $python
+    if (Test-Path -LiteralPath $RuntimeFile) {
+        Copy-Item -LiteralPath $RuntimeFile -Destination ($RuntimeFile + '.before-install-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.bak')
+    }
     $runtime | ConvertTo-Json | Set-Content -LiteralPath $RuntimeFile -Encoding UTF8
     if (-not $NoShortcut) {
         $shell = New-Object -ComObject WScript.Shell

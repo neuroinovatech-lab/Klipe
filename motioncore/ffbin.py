@@ -9,9 +9,10 @@ por um motivo:
 
   1. KLIPE_FFMPEG        — a pessoa mandou usar ESTE. Ganha de tudo.
   2. klipe_settings.json — o que ela escolheu em Configuracoes, sem terminal.
-  3. C:\\ffmpeg\\bin        — onde estava cravado; mantido pra nao quebrar
+  3. .klipe-runtime.json — par versionado escolhido pelo instalador.
+  4. Instalacao local / C:\\ffmpeg\\bin — mantidos pra nao quebrar
                             a maquina onde ja funciona.
-  4. PATH                — instalacao normal (choco, winget, apt, brew).
+  5. PATH                — instalacao normal (choco, winget, apt, brew).
 
 O resultado e memorizado: isto e chamado dentro de lacos de render, e
 `shutil.which` bate no disco toda vez.
@@ -75,6 +76,14 @@ def _achar(nome: str) -> str:
         cand = Path(irmao).with_name(f"{nome}{Path(irmao).suffix}")
         if cand.exists():
             return str(cand)
+
+    try:
+        runtime = json.loads((RAIZ / '.klipe-runtime.json').read_text(encoding='utf-8-sig'))
+        configured = runtime.get(nome)
+        if configured and Path(configured).is_file():
+            return configured
+    except (OSError, ValueError, TypeError, AttributeError):
+        pass
 
     # o que o proprio Klipe instalou vem antes do C:\ffmpeg: se a pessoa
     # clicou em "Instalar", e esse que ela espera que seja usado

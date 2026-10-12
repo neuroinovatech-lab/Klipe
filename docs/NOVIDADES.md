@@ -1,5 +1,18 @@
 # Novidades do Klipe
 
+## Atualizacoes e FFmpeg
+
+- Configuracoes agora tem um painel de atualizacoes pelo GitHub para clones Git
+  oficiais. Alteracoes locais, conflitos e caminhos de projetos interrompem a
+  operacao sem descarte de dados.
+- Atualizacoes de dependencias/Desktop usam `Atualizar Klipe.bat`, com o Klipe
+  fechado. Instalacoes por ZIP continuam com o fluxo manual.
+- FFmpeg/FFprobe 9.0.2 instalados em pasta versionada, com checksum e backup de
+  caminhos. O render nao usa mais `-filter_complex_script`, removido no FFmpeg 9.
+
+Veja [as instrucoes e os limites do atualizador](ATUALIZACOES.md), incluindo os
+resultados locais de desempenho e como voltar ao FFmpeg anterior.
+
 [Apresentação](../README.md) · [Primeiros passos](PRIMEIROS-PASSOS.md) · [Instalação](INSTALACAO.md)
 
 ## Atualização de 11 de outubro de 2026

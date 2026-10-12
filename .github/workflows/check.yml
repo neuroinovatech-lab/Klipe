@@ -29,6 +29,9 @@ jobs:
       - name: Validar servidor Node
         run: npm run check
 
+      - name: Testar atualizacoes Git e protecao dos projetos
+        run: node --test tests/update-api.test.cjs
+
       - name: Validar scripts Python
         run: python -m compileall -q -x "(^|/)(node_modules|\.git)/" .
 
