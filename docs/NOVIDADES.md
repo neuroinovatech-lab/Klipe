@@ -1,5 +1,13 @@
 # Novidades do Klipe
 
+## Preview sem ciclo infinito de miniaturas
+
+A finalizacao das miniaturas agora ocorre uma unica vez por video. O editor
+remove os listeners e cancela capturas pendentes antes de liberar a midia,
+evitando que um evento de erro reinicie a finalizacao e redesenhe a timeline
+continuamente, mesmo com o projeto parado. Titulos, efeitos e renders nao mudam.
+Depois de instalar a correcao, salve o projeto e recarregue o editor.
+
 ## Atualizacoes e FFmpeg
 
 - Configuracoes agora tem um painel de atualizacoes pelo GitHub para clones Git

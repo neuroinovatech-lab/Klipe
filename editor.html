@@ -5897,24 +5897,31 @@ class TimelineRenderer {
     v.preload = 'auto';
     v.muted = true;
     v.playsInline = true;
-    v.src = url;
     const thumbs = [];
     let idx = 0;
+    let finished = false;
+    let nextCapture = null;
     const finish = () => {
+      // Releasing media can dispatch more events; complete each source once.
+      if (finished) return;
+      finished = true;
+      clearTimeout(nextCapture);
+      v.removeEventListener('loadedmetadata', captureNext);
+      v.removeEventListener('seeked', onSeeked);
+      v.removeEventListener('error', finish);
       this._videoThumbCache.set(src, thumbs);
       this._videoThumbPending.delete(src);
-      try { v.src = ''; } catch {}
+      try { v.pause(); v.removeAttribute('src'); v.load(); } catch {}
       try { this.renderAll(); } catch {}
     };
     const captureNext = () => {
+      if (finished) return;
       if (idx >= NUM_THUMBS) { finish(); return; }
       const t = (idx / NUM_THUMBS) * baseDurationSec;
       v.currentTime = Math.min(baseDurationSec - 0.05, t);
     };
-    v.addEventListener('loadedmetadata', () => {
-      captureNext();
-    });
-    v.addEventListener('seeked', () => {
+    const onSeeked = () => {
+      if (finished) return;
       try {
         const c = document.createElement('canvas');
         c.width = THUMB_W; c.height = THUMB_H;
@@ -5923,10 +5930,13 @@ class TimelineRenderer {
         thumbs.push({ time: v.currentTime, canvas: c });
       } catch (e) { /* tainted frame? ignore */ }
       idx++;
-      if (idx < NUM_THUMBS) setTimeout(captureNext, 0);
+      if (idx < NUM_THUMBS) nextCapture = setTimeout(captureNext, 0);
       else finish();
-    });
-    v.addEventListener('error', () => { finish(); });
+    };
+    v.addEventListener('loadedmetadata', captureNext);
+    v.addEventListener('seeked', onSeeked);
+    v.addEventListener('error', finish);
+    v.src = url;
   }
 
   secToX(sec) {

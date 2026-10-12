@@ -32,6 +32,9 @@ jobs:
       - name: Testar atualizacoes Git e protecao dos projetos
         run: node --test tests/update-api.test.cjs
 
+      - name: Testar ciclo de vida das miniaturas do preview
+        run: node --test tests/video-thumbnails.test.cjs
+
       - name: Validar scripts Python
         run: python -m compileall -q -x "(^|/)(node_modules|\.git)/" .
 
