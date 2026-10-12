@@ -7,7 +7,13 @@
     if(last<=first)throw Error('O trecho precisa ter pelo menos um quadro.');
     const out=[];for(let f=first;f<last;f+=step)out.push([f/fps,Math.min(last,f+step)/fps]);return out;
   }
-  if(typeof module==='object'&&module.exports){module.exports={ranges};return;}
+  function hasVideoTransform(c){
+    if(c.transformEnabled===false)return false;
+    return ['posX','posY','rotation','pitch','yaw'].some(k=>Number(c[k]??0)!==0) ||
+      Number(c.scaleX??c.scale??1)!==1 || Number(c.scaleY??c.scale??1)!==1 ||
+      c.flipX===true || c.flipY===true;
+  }
+  if(typeof module==='object'&&module.exports){module.exports={ranges,hasVideoTransform};return;}
   const A=window.KlipeAssist;
   const state=()=>A.snapshot(NLE.sm.getState(),NLE.config||{});
   let busy=false,pending=null,cancelled=false;
@@ -41,6 +47,8 @@
     if(busy)return;pending=null;cancelled=false;setBusy(true);
     try{
       const config=state(),signature=A.hash(config),parts=ranges(Number($('bg-start').value),Number($('bg-end').value),config.videoDuration,config.fps);
+      if((config.videoClips||[]).some(hasVideoTransform))
+        throw Error('Desative ou restaure Transformar no video antes de gerar o recorte.');
       const mode=panel.querySelector('input[name="bg-mode"]:checked').value;
       const results=[];$('bg-progress').hidden=false;$('bg-progress').max=parts.length;$('bg-progress').value=0;
       for(let i=0;i<parts.length;i++){

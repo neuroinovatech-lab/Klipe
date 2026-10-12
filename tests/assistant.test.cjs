@@ -88,3 +88,13 @@ test('media resolver isolates projects and denies traversal',()=>{
       assert.throws(()=>resolveMedia(root,'a',src));
   }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
+test('source analysis rejects active transforms but accepts disabled or anchor-only changes',()=>{
+  const {hasVideoTransform}=require('../public/klipe-background');
+  for(const change of [{scale:1.2},{scaleX:1.2},{scaleY:.8},{rotation:20},{posY:5},{pitch:4},{yaw:7},{flipX:true},{flipY:true}]){
+    assert.equal(hasVideoTransform(change),true);
+    assert.equal(hasVideoTransform({...change,transformEnabled:false}),false);
+  }
+  assert.equal(hasVideoTransform({}),false);
+  assert.equal(hasVideoTransform({anchorX:150,anchorY:-20,scaleX:1,scaleY:1}),false);
+  assert.equal(hasVideoTransform({scale:2,scaleX:1,scaleY:1}),false);
+});

@@ -4,6 +4,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const {spawn} = require('node:child_process');
 const Assist = require('./public/klipe-assist-core');
+const {hasVideoTransform} = require('./public/klipe-background');
 
 function resolveMedia(publicDir, slug, src) {
   if (typeof src !== 'string' || !src || src.includes('\0') || path.isAbsolute(src) || src.includes('\\')) throw Error('Caminho de midia invalido.');
@@ -98,7 +99,7 @@ function createAssistantAPI({root,pythonExe,ffbin,listSfx}) {
           if(body.faces){
             try{const source=resolveMedia(publicDir,slug,config.videoSrc);
               requireSourceTimeline(config);
-              if((config.videoClips || []).some(c=>c.src!==config.videoSrc || c.posX || c.posY || c.rotation || c.scale && c.scale!==1 || c.speed && c.speed!==1) || (config.zooms || []).length)
+              if((config.videoClips || []).some(c=>c.src!==config.videoSrc || hasVideoTransform(c) || c.speed && c.speed!==1) || (config.zooms || []).length)
                 throw Error('Rostos: analise automatica requer video sem transformacoes ou zoom. Confira o enquadramento manualmente neste projeto.');
               const data=await run(visionPython(),[path.join(root,'tools','assistant_vision.py'),'faces'],
                 {input:{source,config,ffmpeg:ffbin('ffmpeg')},timeout:180000,cwd:root});faces=data.faces;
@@ -118,7 +119,7 @@ function createAssistantAPI({root,pythonExe,ffbin,listSfx}) {
         requireSourceTimeline(config);
         if((config.videoClips || []).some(c=>c.src && c.src!==config.videoSrc || c.speed && c.speed!==1) ||
            (config.zooms || []).some(c=>Assist.overlap(c,{startSec:start,endSec:end})) ||
-           (config.videoClips || []).some(c=>c.posX || c.posY || c.rotation || c.scale && c.scale!==1))
+           (config.videoClips || []).some(hasVideoTransform))
           throw Error('Recorte automatico requer trecho sem zoom, velocidade ou transformacao do video. Ajuste o trecho antes de gerar.');
         const strength=body.strength===undefined?0:Number(body.strength);
         const feather=body.feather===undefined?0.6:Number(body.feather);

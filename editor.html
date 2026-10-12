@@ -4707,6 +4707,8 @@ body:not(.theme-v2) #accent-picker { display: none; }
 </div>
 
 <script src="/klipe_player.js?v=1788642600"></script>
+<link rel="stylesheet" href="/klipe-video-transform.css">
+<script src="/klipe-video-transform.js"></script>
 <script>
 /* ========================================================================
    MOTIONFORGE NLE - Complete Application with Canvas Preview Rendering
@@ -8379,26 +8381,12 @@ class PropertiesPanel {
           <div class="cc-panel-main active" data-ccpanel="video">
             <div class="cc-tabs-sub">
               <button class="cc-tab-sub active" data-ccsub="basico">Básico</button>
-              <button class="cc-tab-sub" data-ccsub="mask">Recorte</button>
+              <button class="cc-tab-sub" data-ccsub="mask">Remover plano de fundo</button>
             </div>
             <div class="cc-panels-sub">
 
               <div class="cc-panel-sub active" data-ccsubpanel="basico">
-                <div class="cc-section">
-                  <div class="cc-section-header"><span class="title">Transformar</span>
-                    <button type="button" id="video-transform-reset" class="cc-align-btn" style="flex:0 0 28px;width:28px;height:28px;padding:0" title="Restaurar enquadramento" aria-label="Restaurar enquadramento">↺</button>
-                  </div>
-                  ${[['Posição X','posX',0,-(NLE.config.width || 1920),NLE.config.width || 1920,1],
-                     ['Posição Y','posY',0,-(NLE.config.height || 1080),NLE.config.height || 1080,1],
-                     ['Escala','scale',1,0.1,3,0.01]].map(([label,key,fallback,min,max,step]) => {
-                       const value=(key==='posY'?-1:1)*(clip[key] ?? fallback);
-                       return `<div class="cc-field"><div class="cc-field-label"><span>${label}${key==='scale'?' (x)':' (px)'}</span></div>
-                         <div class="cc-slider-row">
-                           <input type="range" aria-label="${label} do vídeo, controle" min="${min}" max="${max}" step="${step}" value="${value}" data-prop="${key}" ${key==='posY'?'data-negate="1"':''}>
-                           <input type="number" aria-label="${label} do vídeo" min="${min}" max="${max}" step="${step}" value="${value}" data-prop="${key}" ${key==='posY'?'data-negate="1"':''} class="num-input">
-                         </div></div>`;
-                     }).join('')}
-                </div>
+                ${KlipeVideoTransformUI.render(clip, NLE.config.width || 1920, NLE.config.height || 1080)}
               </div>
               <!-- RECORTE -->
               <div class="cc-panel-sub" data-ccsubpanel="mask">
@@ -8454,12 +8442,13 @@ class PropertiesPanel {
         </div>`;
     }
 
-    // ── ACTION BUTTONS (all types) — sticky bottom ──
-    html += `<div class="props-actions-bar">`;
-    html += `<button class="prop-btn accent" onclick="NLE.seekToClip()" style="flex:1">Ir</button>`;
-    if (type !== 'video') html += `<button class="prop-btn" onclick="NLE.duplicateSelected()" style="flex:1">Duplicar</button>`;
-    if (type !== 'video') html += `<button class="prop-btn danger" onclick="NLE.deleteSelected()" style="flex:1">Deletar</button>`;
-    html += `</div>`;
+    // Navigation belongs to timeline clips, not to the main video's transform controls.
+    if (type !== 'video') {
+      html += `<div class="props-actions-bar">
+        <button class="prop-btn" onclick="NLE.seekToClip()" title="Posicionar o cursor no início deste clipe" style="flex:1">Ir ao início</button>
+        <button class="prop-btn" onclick="NLE.duplicateSelected()" style="flex:1">Duplicar</button>
+        <button class="prop-btn danger" onclick="NLE.deleteSelected()" style="flex:1">Deletar</button></div>`;
+    }
 
     contentEl.innerHTML = html;
     NLE.backgroundRemoval?.mount(contentEl.querySelector('[data-background-removal-host]'));
@@ -8472,11 +8461,9 @@ class PropertiesPanel {
 
     // ── Wire the CapCut main+sub tab click handlers (video panel) ──
     if (type === 'video') {
-      contentEl.querySelector('#video-transform-reset')?.addEventListener('click', () => {
-        this.sm.pushUndo();
-        Object.assign(clip, {posX:0,posY:0,scale:1});
-        NLE.renderProperties();NLE.syncPlayerFromState();NLE.renderer.renderAll();
-      });
+      KlipeVideoTransformUI.bind(contentEl.querySelector('[data-video-transform]'),clip,this.sm,
+        () => { NLE.syncPlayerFromState(); NLE.renderer.renderAll(); },
+        NLE.config.width || 1920, NLE.config.height || 1080);
       const mainBtns = contentEl.querySelectorAll('.cc-tab-main');
       const mainPanels = contentEl.querySelectorAll('.cc-panel-main');
       // Restore previously active main tab (persist across re-renders)
@@ -9169,6 +9156,7 @@ const NLE = {
             posY: c.posY || 0,
             scale: c.scale !== undefined ? c.scale : 1,
             rotation: c.rotation || 0,
+            ...KlipeVideoTransform.savedFields(c),
             opacity: c.opacity !== undefined ? c.opacity : 1,
             volume: c.volume !== undefined ? c.volume : 1,
             muted: !!c.muted,
@@ -9423,6 +9411,7 @@ const NLE = {
           if (c.posY) v.posY = c.posY;
           if (c.scale !== undefined && c.scale !== 1) v.scale = c.scale;
           if (c.rotation) v.rotation = c.rotation;
+          Object.assign(v, KlipeVideoTransform.savedFields(c));
           if (c.opacity !== undefined && c.opacity !== 1) v.opacity = c.opacity;
           if (c.volume !== undefined && c.volume !== 1) v.volume = c.volume;
           if (c.muted) v.muted = true;
@@ -10484,6 +10473,7 @@ const NLE = {
       // Video base transform (from the video clip properties)
       videoClips: this._clipsByType('video').map(c => ({
         startSec:c.startSec,endSec:c.endSec,posX:c.posX || 0,posY:c.posY || 0,scale:c.scale ?? 1,
+        rotation:c.rotation || 0,...KlipeVideoTransform.savedFields(c),
       })),
       videoPosX: (() => { const vc = this._clipsByType('video')[0]; return vc?.posX || 0; })(),
       videoPosY: (() => { const vc = this._clipsByType('video')[0]; return vc?.posY || 0; })(),
@@ -21382,5 +21372,7 @@ setTimeout(() => { if (NLE.mediaLib && NLE.mediaLib.render) NLE.mediaLib.render(
 <link rel="stylesheet" href="/klipe-background.css">
 <script src="/klipe-background.js"></script>
 <script src="/klipe-updates.js"></script>
+<link rel="stylesheet" href="/klipe-workspace.css">
+<script src="/klipe-workspace.js"></script>
 </body>
 </html>

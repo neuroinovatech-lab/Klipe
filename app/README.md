@@ -14,6 +14,41 @@ Esta primeira versao usa o Klipe e suas dependencias na pasta instalada. O
 distribua apenas o executavel como se ele incluisse Node, Python, FFmpeg e os
 modelos. O executavel ainda nao tem assinatura digital.
 
+## Espaco de trabalho
+
+O Desktop abre com menus **Arquivo**, **Editar**, **Exibir** e **Ferramentas**.
+O motor de preview e render continua sendo o MotionCore; a interface nao muda
+a resolucao ou o conteudo dos projetos.
+
+- **Edicao:** biblioteca, monitor, propriedades e timeline.
+- **Revisao:** esconde temporariamente os paineis laterais e amplia o monitor.
+- Arraste as divisorias da biblioteca, das propriedades ou da timeline.
+  As larguras e a altura ficam salvas localmente neste navegador/instalacao.
+  As divisorias tambem aceitam foco pelo Tab e ajuste pelas setas.
+- O botao no canto direito do monitor alterna o preview em tela cheia.
+- **Exibir > Restaurar espaco de trabalho** volta ao layout inicial.
+- **Interface antiga**, no topo, retorna ao layout anterior, sem recarregar
+  nem salvar o projeto. Tambem fica em **Exibir > Interface classica**.
+  O botao **Interface nova** permite voltar ao novo layout.
+- Na aba **Video**, **Remover plano de fundo** abre a ferramenta antes chamada
+  de **Recorte**. A geracao da mascara e a aplicacao na timeline nao mudaram.
+
+Para experimentar no navegador, acrescente `?workspace=desktop` ao endereco
+do projeto. A preferencia e local e pode ser diferente entre Desktop e navegador.
+Nao edite o mesmo projeto em duas janelas ao mesmo tempo.
+
+O tamanho minimo da janela Desktop e 960 x 640. Em janelas web menores, os
+paineis laterais sao ocultados quando nao ha espaco para o monitor.
+Ainda nao ha paineis destacaveis para outro monitor.
+
+Os modos Edicao e Revisao tambem estao disponiveis na interface antiga.
+Revisao oculta os paineis laterais; Edicao os restaura. Essa escolha muda
+somente o espaco de trabalho, nao o projeto.
+
+Em Propriedades > Video > Basico, Transformar agora inclui escala X/Y
+vinculada ou independente, posicao, rotacao, ancora, inclinacao (pitch/yaw)
+e espelhamento horizontal/vertical. Veja [Transformar](../docs/TRANSFORMAR.md).
+
 ## Processos e projetos
 
 - Cada instancia desktop inicia seu proprio servidor em portas locais livres.

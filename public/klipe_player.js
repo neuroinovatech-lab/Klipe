@@ -30,16 +30,61 @@
 // que nao e quadrado, esmagaria o titulo na diagonal. Positivo = horario,
 // igual ao skia do motor (y desce la, y sobe aqui — dai o sinal trocado no
 // seno). Com rot=0 a conta colapsa na antiga: pr == p*escala.
+const KlipeVideoTransform = (() => {
+  const fields = ['scaleX','scaleY','anchorX','anchorY','pitch','yaw','flipX','flipY','transformEnabled','scaleLinked'];
+  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  function normalize(clip = {}, w = 1920, h = 1080) {
+    const num = (key, fallback, min, max) => {
+      const n = clip[key] == null ? fallback : Number(clip[key]);
+      return clamp(Number.isFinite(n) ? n : fallback, min, max);
+    };
+    const base = num('scale', 1, .1, 3);
+    return {posX:num('posX',0,-w,w), posY:num('posY',0,-h,h),
+      scaleX:num('scaleX',base,.1,3), scaleY:num('scaleY',base,.1,3),
+      anchorX:num('anchorX',0,-w,w), anchorY:num('anchorY',0,-h,h),
+      rotation:num('rotation',0,-360,360), pitch:num('pitch',0,-60,60), yaw:num('yaw',0,-60,60),
+      flipX:clip.flipX === true, flipY:clip.flipY === true, enabled:clip.transformEnabled !== false,
+      linked:clip.scaleLinked !== false};
+  }
+  function matrix(clip, w, h) {
+    const t = normalize(clip,w,h);
+    if (!t.enabled) return [1,0,0,0,1,0,0,0,1];
+    const r=t.rotation*Math.PI/180, p=t.pitch*Math.PI/180, y=t.yaw*Math.PI/180;
+    const sx=t.scaleX*(t.flipX?-1:1), sy=t.scaleY*(t.flipY?-1:1);
+    const distance=4*Math.hypot(w,h)*Math.max(1,t.scaleX,t.scaleY);
+    // Homogeneous positions keep texture interpolation perspective-correct.
+    const point = (u,v) => {
+      const x=(u*w/2-t.anchorX)*sx, yy=(-v*h/2-t.anchorY)*sy;
+      const yp=yy*Math.cos(p), zp=yy*Math.sin(p);
+      const xy=x*Math.cos(y)+zp*Math.sin(y), z=-x*Math.sin(y)+zp*Math.cos(y);
+      const xr=xy*Math.cos(r)-yp*Math.sin(r), yr=xy*Math.sin(r)+yp*Math.cos(r);
+      const q=1+z/distance;
+      return [2*(xr+(t.anchorX+t.posX)*q)/w,-2*(yr+(t.anchorY+t.posY)*q)/h,q];
+    };
+    const c=point(0,0), a=point(1,0), b=point(0,1);
+    return [a[0]-c[0],a[1]-c[1],a[2]-c[2],b[0]-c[0],b[1]-c[1],b[2]-c[2],...c];
+  }
+  function savedFields(clip) {
+    return Object.fromEntries(fields.filter(key=>clip[key] !== undefined).map(key=>[key,clip[key]]));
+  }
+  return {normalize, matrix, savedFields};
+})();
+if (typeof window !== 'undefined') window.KlipeVideoTransform = KlipeVideoTransform;
+
 const VS_FONTE = `attribute vec2 p; varying vec2 uv;
   uniform float zoom; uniform vec2 desloc; uniform float escala;
   uniform float rot; uniform vec2 dim; uniform vec2 uvOff;
+  uniform float usarMatrizVideo; uniform mat3 matrizVideo;
   void main(){
     vec2 t = p / zoom;
     uv = vec2((t.x+1.0)/2.0, 1.0-(t.y+1.0)/2.0) + uvOff;
     vec2 px = p * escala * dim;
     float c = cos(rot), s = sin(rot);
     vec2 pr = vec2(c*px.x + s*px.y, -s*px.x + c*px.y);
-    gl_Position = vec4(pr / dim + desloc, 0, 1);
+    if (usarMatrizVideo > 0.5) {
+      vec3 hp = matrizVideo * vec3(p, 1.0);
+      gl_Position = vec4(hp.xy, 0.0, hp.z);
+    } else gl_Position = vec4(pr / dim + desloc, 0, 1);
   }`;
 
 // duas amostragens: opaco (vídeo normal) e lado-a-lado (título com alpha)
@@ -166,6 +211,8 @@ class KlipePlayer {
     this.uRot = gl.getUniformLocation(prog, 'rot');
     this.uDim = gl.getUniformLocation(prog, 'dim');
     this.uUvOff = gl.getUniformLocation(prog, 'uvOff');
+    this.uVideoMatrix = gl.getUniformLocation(prog, 'matrizVideo');
+    this.uUseVideoMatrix = gl.getUniformLocation(prog, 'usarMatrizVideo');
     const cc = this.cfg.colorCorrection || {};
     // só o vídeo entra na correção de cor: no render ela é aplicada na fonte,
     // ANTES dos overlays. Corrigir o título junto mudaria a cor que você
@@ -225,7 +272,7 @@ class KlipePlayer {
   /** Desenha uma fonte de vídeo/imagem cobrindo o quadro inteiro. */
   _camada(chave, fonte, { alphaLateral = false, opacidade = 1, recorte = null,
                           corrigirCor = false,
-                          posX = 0, posY = 0, escala = 1, rotacao = 0 } = {}) {
+                          posX = 0, posY = 0, escala = 1, rotacao = 0, matrizVideo = null } = {}) {
     if (!fonte || !fonte.videoWidth && !fonte.width) return;
     const gl = this.gl;
     gl.bindTexture(gl.TEXTURE_2D, this._textura(chave));
@@ -242,8 +289,9 @@ class KlipePlayer {
     // mesmo zero: uniform e estado global e vazaria pra proxima camada.
     gl.uniform2f(this.uUvOff, 0, (recorte && recorte.length > 4) ? recorte[4] : 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
+    const bounds = matrizVideo ? [-1,-1,1,1] : q;
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      q[0], q[1], q[2], q[1], q[0], q[3], q[2], q[3],
+      bounds[0], bounds[1], bounds[2], bounds[1], bounds[0], bounds[3], bounds[2], bounds[3],
     ]), gl.DYNAMIC_DRAW);
     gl.vertexAttribPointer(this._locP, 2, gl.FLOAT, false, 0, 0);
 
@@ -258,6 +306,8 @@ class KlipePlayer {
     // graus -> radianos; dim nunca pode ser zero (divide no shader)
     gl.uniform1f(this.uRot, (rotacao || 0) * Math.PI / 180);
     gl.uniform2f(this.uDim, Math.max(1, cw / 2), Math.max(1, chh / 2));
+    gl.uniform1f(this.uUseVideoMatrix, matrizVideo ? 1 : 0);
+    gl.uniformMatrix3fv(this.uVideoMatrix, false, matrizVideo || [1,0,0,0,1,0,0,0,1]);
 
     gl.uniform1f(this.uAlpha, alphaLateral ? 1 : 0);
     gl.uniform1f(this.uOpac, opacidade);
@@ -867,12 +917,12 @@ class KlipePlayer {
   _videoTransform(t) {
     const clips = this.cfg.videoClips || [];
     const c = clips.length ? (clips.find(c => t >= c.startSec && t < c.endSec) || {}) :
-      {posX:this.cfg.videoPosX,posY:this.cfg.videoPosY,scale:this.cfg.videoBaseScale};
+      {posX:this.cfg.videoPosX,posY:this.cfg.videoPosY,scale:this.cfg.videoBaseScale,rotation:this.cfg.videoRotation};
     const finite = (value, fallback) => Number.isFinite(Number(value)) && value != null ? Number(value) : fallback;
     const w = this.cfg.width || 1920, h = this.cfg.height || 1080;
     return {posX:Math.max(-w,Math.min(w,finite(c.posX,0))),
       posY:Math.max(-h,Math.min(h,finite(c.posY,0))),
-      escala:Math.max(.1,Math.min(3,finite(c.scale,1)))};
+      escala:Math.max(.1,Math.min(3,finite(c.scale,1))), matrizVideo:KlipeVideoTransform.matrix(c,w,h)};
   }
 
   // ── desenho ──────────────────────────────────────────────────────────
@@ -903,17 +953,7 @@ class KlipePlayer {
     // o catalogo desenha os titulos sobre ele, como folha em branco.
     if (this.video) {
       const transform = this._videoTransform(t);
-      const w=this.cfg.width || 1920, h=this.cfg.height || 1080;
-      const cw=gl.drawingBufferWidth, ch=gl.drawingBufferHeight, e=transform.escala;
-      // Crop the animated zoom inside the transformed source rectangle.
-      // Otherwise shrinking a zoomed source reveals pixels beyond its frame.
-      const left=Math.max(0,Math.min(cw,Math.round(((1-e)/2+transform.posX/w)*cw)));
-      const right=Math.max(0,Math.min(cw,Math.round(((1+e)/2+transform.posX/w)*cw)));
-      const bottom=Math.max(0,Math.min(ch,Math.round(((1-e)/2-transform.posY/h)*ch)));
-      const top=Math.max(0,Math.min(ch,Math.round(((1+e)/2-transform.posY/h)*ch)));
-      gl.enable(gl.SCISSOR_TEST);gl.scissor(left,bottom,right-left,top-bottom);
-      try { this._camada('fonte',this.video,{recorte:this._recorteZoom(t),corrigirCor:true,...transform}); }
-      finally { gl.disable(gl.SCISSOR_TEST); }
+      this._camada('fonte',this.video,{recorte:this._recorteZoom(t),corrigirCor:true,...transform});
     }
 
     const paintBrolls = (foreground) => {

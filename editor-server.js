@@ -4670,7 +4670,11 @@ ${connectedClips}            </asset-clip>
     if (fs.existsSync(editorPath)) {
       res.writeHead(200, {"Content-Type": "text/html; charset=utf-8",
                           "Cache-Control": "no-cache, must-revalidate"});
-      res.end(fs.readFileSync(editorPath, "utf-8"));
+      let editorHtml = fs.readFileSync(editorPath, "utf-8");
+      if (process.env.KLIPE_DESKTOP_TOKEN) {
+        editorHtml = editorHtml.replace('<body', '<body data-klipe-desktop="true"');
+      }
+      res.end(editorHtml);
     } else {
       res.writeHead(404); res.end("editor.html not found");
     }

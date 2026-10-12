@@ -42,6 +42,7 @@ EDIT_CONFIG = PUBLIC / "edit_config.json"
 # cravar o caminho aqui fazia o render morrer em qualquer maquina que nao
 # fosse a de quem escreveu. Ver motioncore/ffbin.py.
 from motioncore.ffbin import ffmpeg as _ffmpeg
+from motioncore.video_transform import normalize as normalize_video_transform, project_point as project_video_point
 FFMPEG_EXTERNAL = _ffmpeg()
 CACHE_BASE = OUTPUT / ".forge_cache"
 
@@ -1183,6 +1184,7 @@ def main_video_transform_filters(cfg, source_label, width, height):
         "startSec": 0, "endSec": cfg.get("videoDuration", 0),
         "posX": cfg.get("videoPosX", 0), "posY": cfg.get("videoPosY", 0),
         "scale": cfg.get("videoBaseScale", 1),
+        "rotation": cfg.get("videoRotation", 0),
     }]
     active, earlier = [], []
     for clip in clips:
@@ -1192,26 +1194,40 @@ def main_video_transform_filters(cfg, source_label, width, height):
         own = f"gte(t,{start:g})*lt(t,{end:g})"
         enabled = own + "".join(f"*(1-({condition}))" for condition in earlier)
         earlier.append(own)
-        scale = max(.1, min(3, finite(clip.get("scale"), 1)))
-        x = max(-width, min(width, finite(clip.get("posX"), 0)))
-        y = max(-height, min(height, finite(clip.get("posY"), 0)))
-        if scale != 1 or x != 0 or y != 0:
-            active.append((scale, x, y, enabled))
+        transform = normalize_video_transform(clip, width, height)
+        if transform != normalize_video_transform({}, width, height):
+            active.append((transform, enabled))
     if not active:
         return [], source_label
     outputs = "".join(f"[main_tf_input_{i}]" for i in range(len(active)))
     parts = [f"[{source_label}]split={len(active)+1}[main_tf_base]{outputs}"]
-    any_enabled = "+".join(f"({item[3]})" for item in active)
+    any_enabled = "+".join(f"({item[1]})" for item in active)
     parts.append(f"[main_tf_base]drawbox=x=0:y=0:w=iw:h=ih:color=black:t=fill:"
                  f"enable='{any_enabled}'[main_tf_black]")
     current = "main_tf_black"
-    for i, (scale, x, y, enabled) in enumerate(active):
-        w = max(2, math.floor(width*scale/2+.5)*2)
-        h = max(2, math.floor(height*scale/2+.5)*2)
-        parts.append(f"[main_tf_input_{i}]scale={w}:{h},setsar=1[main_tf_scaled_{i}]")
+    for i, (transform, enabled) in enumerate(active):
+        t = transform
+        advanced = t["scaleX"] != t["scaleY"] or any(t[key] for key in
+            ("rotation", "anchorX", "anchorY", "pitch", "yaw", "flipX", "flipY"))
+        if advanced:
+            # Transparent guard pixels prevent perspective's edge clamping from
+            # stretching the outermost opaque pixels outside the projected plane.
+            coords = []
+            for corner, (px, py) in enumerate(((-2,-2),(width+2,-2),(-2,height+2),(width+2,height+2))):
+                x, y = project_video_point(t, width, height, px+.5, py+.5)
+                coords.extend((f"x{corner}={x+1.5:.9f}", f"y{corner}={y+1.5:.9f}"))
+            perspective = "perspective=" + ":".join(coords) + ":sense=destination:interpolation=linear:eval=init"
+            parts.append(f"[main_tf_input_{i}]format=yuva444p,pad={width+4}:{height+4}:2:2:color=black@0,"
+                         f"{perspective},crop={width}:{height}:2:2,setsar=1[main_tf_scaled_{i}]")
+            overlay_x = overlay_y = 0
+        else:
+            w = max(2, math.floor(width*t["scaleX"]/2+.5)*2)
+            h = max(2, math.floor(height*t["scaleY"]/2+.5)*2)
+            parts.append(f"[main_tf_input_{i}]scale={w}:{h},setsar=1[main_tf_scaled_{i}]")
+            overlay_x, overlay_y = (width-w)/2+t["posX"], (height-h)/2+t["posY"]
         target = f"main_tf_out_{i}"
         parts.append(f"[{current}][main_tf_scaled_{i}]overlay="
-                     f"x={(width-w)/2+x:g}:y={(height-h)/2+y:g}:"
+                     f"x={overlay_x:g}:y={overlay_y:g}:"
                      f"enable='{enabled}':format=auto:eval=init[{target}]")
         current = target
     return parts, current

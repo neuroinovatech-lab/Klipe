@@ -1,0 +1,23 @@
+.vtf { color: var(--text); padding: 12px 0; font-size: 11px; }
+.vtf header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.vtf header label { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.vtf input[type="checkbox"] { accent-color: var(--accent); }
+.vtf fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.vtf fieldset:disabled { opacity: .45; }
+.vtf-row { display: flex; align-items: center; gap: 5px; padding: 8px 0; border-bottom: 1px solid var(--border-light); min-width: 0; }
+.vtf-row > span, .vtf-row > label { flex: 0 0 74px; color: var(--med); font-size: 10px; }
+.vtf-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; flex: 1; min-width: 0; }
+.vtf-pair label { display: flex; align-items: center; gap: 4px; color: var(--dim); font-size: 9px; min-width: 0; }
+.vtf input[type="number"] { width: 100%; min-width: 0; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 3px; padding: 5px 2px; text-align: center; font-size: 10px; }
+.vtf-slider { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+.vtf input[type="number"] { cursor: ew-resize; touch-action: none; }
+.vtf input[type="number"]:disabled { cursor: default; }
+html.vtf-scrubbing, html.vtf-scrubbing * { cursor: ew-resize !important; user-select: none !important; }
+.vtf input.vtf-scrubbing { border-color: var(--accent); }
+.vtf-slider input[type="range"] { width: 0; flex: 1; min-width: 0; accent-color: var(--accent); }
+.vtf-slider input[type="number"] { flex: 0 0 60px; }
+.vtf button { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex: 0 0 28px; border: 1px solid var(--border); border-radius: 3px; background: var(--s2); color: var(--text); cursor: pointer; }
+.vtf button img { filter: invert(1); }
+body.tema-claro .vtf button img { filter: none; }
+.vtf button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft,var(--s3)); }
+.vtf-flips { display: flex; gap: 6px; }
